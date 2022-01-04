@@ -3,8 +3,8 @@ services:
   hugo:
     image: solareenlo/alpine-hugo:latest
     build: .
-    # command: "hugo server --bind 0.0.0.0 -D --cleanDestinationDir --disableFastRender"
-    command: "hugo server --minify --theme book-fork"
+    command: "hugo server --bind 0.0.0.0 -D --cleanDestinationDir --disableFastRender"
+    # command: "hugo server --minify --theme book-fork"
     volumes:
       - ./:/src
       - ./public/:/output

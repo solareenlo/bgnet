@@ -2,5 +2,5 @@
 headless: true
 ---
 
-- [1 Intro]({{< relref "/docs/intro" >}})
+- [1 Intro](/bgnet/docs/intro)
 <br />
