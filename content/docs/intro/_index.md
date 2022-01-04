@@ -22,7 +22,7 @@ title: "1 Intro"
 
 ## 1.2 Platform and Compiler
 
-この文書に含まれるコードは、Gnu の `gcc` コンパイラを使用して Linux PC でコンパイルされています。しかし、`gcc`を使うプラットフォームであれば、ほぼ全てのプラットフォームでビルドできるはずです。当然ながら、Windows用のプログラミングには適用されません。以下の[section on Windows programming](#windows)を参照してください。
+この文書に含まれるコードは、Gnu の `gcc` コンパイラを使用して Linux PC でコンパイルされています。しかし、`gcc`を使うプラットフォームであれば、ほぼ全てのプラットフォームでビルドできるはずです。当然ながら、Windows用のプログラミングには適用されません。以下の[section on Windows programming](docs/intro/#windows)を参照してください。
 
 
 ## 1.3 Official Homepage and Books For Sale
@@ -33,7 +33,7 @@ title: "1 Intro"
 
 また、サンプルコードや様々な言語への翻訳も掲載されています。
 
-製本された印刷物（「本」と呼ぶ人もいる）を購入するには、以下をご覧ください。
+製本された印刷物（"本"と呼ぶ人もいる）を購入するには、以下をご覧ください。
 
 * [`https://beej.us/guide/url/bgbuy`](https://beej.us/guide/url/bgbuy)
 
@@ -156,7 +156,7 @@ Beej's Guide to Network Programming is Copyright © 2019 Brian "Beej Jorgensen" 
 
 または、Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USAに手紙を送ってください。
 
-本使用許諾の「二次的著作物の禁止」部分の具体的な例外は、次のとおりです：このガイドは、翻訳が正確である限り、どの言語にも自由に翻訳でき、ガイド全体を再印刷することができます。翻訳には、オリジナルのガイドと同じライセンスの制約が適用されます。翻訳には、翻訳者の名前と連絡先も含めることができます。
+本使用許諾の"二次的著作物の禁止"部分の具体的な例外は、次のとおりです：このガイドは、翻訳が正確である限り、どの言語にも自由に翻訳でき、ガイド全体を再印刷することができます。翻訳には、オリジナルのガイドと同じライセンスの制約が適用されます。翻訳には、翻訳者の名前と連絡先も含めることができます。
 
 本書で紹介する C 言語のソースコードは、パブリックドメインとして許諾され、いかなるライセンス制限もありません。
 
@@ -178,4 +178,4 @@ Beej's Guide to Network Programming is Copyright © 2019 Brian "Beej Jorgensen" 
 
 ## 1.11 Publishing Information
 
-この本は、GNU ツールを搭載した Arch Linux のマシン上で vim エディタを使って、Markdown で書かれています。表紙の「アート」とダイアグラムは Inkscape で作成されています。Markdown は Python、Pandoc および XeLaTeX により、Liberation フォントを用いて HTML および LaTex/PDF に変換されます。このツールチェーンは 100% フリーおよびオープンソースソフトウェアで構成されています。
+この本は、GNU ツールを搭載した Arch Linux のマシン上で vim エディタを使って、Markdown で書かれています。表紙の"アート"とダイアグラムは Inkscape で作成されています。Markdown は Python、Pandoc および XeLaTeX により、Liberation フォントを用いて HTML および LaTex/PDF に変換されます。このツールチェーンは 100% フリーおよびオープンソースソフトウェアで構成されています。
