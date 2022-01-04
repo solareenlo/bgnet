@@ -17,14 +17,14 @@
 <meta name=color-scheme content="light dark"><meta property="og:title" content="1 Intro">
 <meta property="og:description" content>
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://solareenlo.com/docs/intro/">
+<meta property="og:url" content="https://solareenlo.com/bgnet/docs/intro/">
 <title>1 Intro | Beej's Guide to Network Programming</title>
-<link rel=manifest href=/manifest.json>
-<link rel=icon href=/favicon.png type=image/x-icon>
-<link rel=stylesheet href=/book.min.7d12d4add234c27cb11a219e7b205a38bbfc902fc5f73a3417e46984bbc3fa91.css integrity="sha256-fRLUrdI0wnyxGiGeeyBaOLv8kC/F9zo0F+RphLvD+pE=" crossorigin=anonymous>
-<script defer src=/flexsearch.min.js></script>
-<script defer src=/en.search.min.937d7d4a8ae38832f31000a6b9c21e497485ab9eb7c26856aa9afdfda0ff1ea8.js integrity="sha256-k319SorjiDLzEACmucIeSXSFq563wmhWqpr9/aD/Hqg=" crossorigin=anonymous></script>
-<link rel=alternate type=application/rss+xml href=https://solareenlo.com/docs/intro/index.xml title="Beej's Guide to Network Programming">
+<link rel=manifest href=/bgnet/manifest.json>
+<link rel=icon href=/bgnet/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/bgnet/book.min.7d12d4add234c27cb11a219e7b205a38bbfc902fc5f73a3417e46984bbc3fa91.css integrity="sha256-fRLUrdI0wnyxGiGeeyBaOLv8kC/F9zo0F+RphLvD+pE=" crossorigin=anonymous>
+<script defer src=/bgnet/flexsearch.min.js></script>
+<script defer src=/bgnet/en.search.min.18417da9886b44bcbd9cfb95b459ab16ec3072dacb9e4a93233460113812f9a8.js integrity="sha256-GEF9qYhrRLy9nPuVtFmrFuwwctrLnkqTIzRgETgS+ag=" crossorigin=anonymous></script>
+<link rel=alternate type=application/rss+xml href=https://solareenlo.com/bgnet/docs/intro/index.xml title="Beej's Guide to Network Programming">
 </head>
 <body dir=ltr>
 <input type=checkbox class="hidden toggle" id=menu-control>
@@ -34,7 +34,7 @@
 <div class=book-menu-content>
 <nav>
 <h2 class=book-brand>
-<a class="flex align-center" href=/><span>Beej's Guide to Network Programming</span>
+<a class="flex align-center" href=/bgnet/><span>Beej's Guide to Network Programming</span>
 </a>
 </h2>
 <div class=book-search>
@@ -62,11 +62,11 @@ Github
 <header class=book-header>
 <div class="flex align-center justify-between">
 <label for=menu-control>
-<img src=/svg/menu.svg class=book-icon alt=Menu>
+<img src=/bgnet/svg/menu.svg class=book-icon alt=Menu>
 </label>
 <strong>1 Intro</strong>
 <label for=toc-control>
-<img src=/svg/toc.svg class=book-icon alt="Table of Contents">
+<img src=/bgnet/svg/toc.svg class=book-icon alt="Table of Contents">
 </label>
 </div>
 <aside class="hidden clearfix">
@@ -109,7 +109,7 @@ Github
 <a class=anchor href=#12-platform-and-compiler>#</a>
 </h2>
 <p>この文書に含まれるコードは、Gnu の <code>gcc</code> コンパイラを使用して Linux PC でコンパイルされています。しかし、<code>gcc</code>を使うプラットフォームであれば、ほぼ全てのプラットフォームでビルドできるはずです。当然ながら、Windows用のプログラミングには適用されません。以下の
-<a href=/#windows>section on Windows programming</a>を参照してください。</p>
+<a href=/bgnet/#windows>section on Windows programming</a>を参照してください。</p>
 <h2 id=13-official-homepage-and-books-for-sale>
 1.3 Official Homepage and Books For Sale
 <a class=anchor href=#13-official-homepage-and-books-for-sale>#</a>
@@ -154,7 +154,7 @@ Github
 <a href=https://docs.microsoft.com/en-us/windows/wsl/about>Windows Subsystem for Linux</a> も検討してみてください。これは基本的に、Windows 10 に Linux の VM 的なものをインストールすることができます。これもまた、間違いなく位置づけられるでしょう。</p>
 <p>しかし、中には純粋な Windows のやり方で物事を進めたいと思う人もいるかもしれません。それはとてもガッツのあることで、こうすればいいんです。すぐに Unix を買ってきてください! いやいや&mdash;冗談です。最近は Windows フレンドリー(笑)なはずなんですが&mldr;。</p>
 <p>これは、あなたがしなければならないことです（
-<a href=/>Cygwin</a>をインストールしない限り！）：まず、ここで私が言及するシステムヘッダーファイルのほとんどを無視してください。あなたがインクルードする必要があるのは、以下のものだけです。</p>
+<a href=/bgnet/>Cygwin</a>をインストールしない限り！）：まず、ここで私が言及するシステムヘッダーファイルのほとんどを無視してください。あなたがインクルードする必要があるのは、以下のものだけです。</p>
 <pre tabindex=0><code class=language-{.c} data-lang={.c}>#include &lt;winsock.h&gt;
 </code></pre><p>待ってください！ソケットライブラリで何かする前に <code>WSAStartup()</code> を呼び出す必要があります。これを行うためのコードは以下のようなものです。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;winsock.h&gt;</span><span style=color:#75715e>
@@ -198,7 +198,7 @@ Github
 <p>もし、このガイドを他の言語に翻訳したい場合は、<code>beej@beej.us</code> までメールをいただければ、メインページからあなたの翻訳をリンクさせていただきます。翻訳にはあなたの名前と連絡先を自由に追加してください。</p>
 <p>このソースマークダウン文書は UTF-8 エンコーディングを使用しています。</p>
 <p>後述の
-<a href=/#legal>Copyright, Distribution, and Legal</a> に記載されている使用許諾条件にご注意ください。</p>
+<a href=/bgnet/#legal>Copyright, Distribution, and Legal</a> に記載されている使用許諾条件にご注意ください。</p>
 <p>もし私に翻訳をホストして欲しいのであれば、言ってください。また、あなたがホストすることを望むなら、私はそれにリンクします；どちらでも構いません。</p>
 <h2 id=legal>
 1.9 Copyright, Distribution, and Legal
@@ -229,14 +229,14 @@ Github
 </article>
 <footer class=book-footer>
 <div class="flex flex-wrap justify-between">
-<div><a class="flex align-center" href=https://github.com/solareenlo/scala/commit/5558c5c1b320ef7fa6d846a7065053e2f05cbc7b title="Last modified by solareenlo | Jan 4, 2022" target=_blank rel=noopener>
-<img src=/svg/calendar.svg class=book-icon alt=Calendar>
+<div><a class="flex align-center" href=https://github.com/solareenlo/bgnet/commit/5558c5c1b320ef7fa6d846a7065053e2f05cbc7b title="Last modified by solareenlo | Jan 4, 2022" target=_blank rel=noopener>
+<img src=/bgnet/svg/calendar.svg class=book-icon alt=Calendar>
 <span>Jan 4, 2022</span>
 </a>
 </div>
 <div>
-<a class="flex align-center" href=https://github.com/solareenlo/scala/edit/master/content/content/docs/intro/_index.md target=_blank rel=noopener>
-<img src=/svg/edit.svg class=book-icon alt=Edit>
+<a class="flex align-center" href=https://github.com/solareenlo/bgnet/edit/master/content/content/docs/intro/_index.md target=_blank rel=noopener>
+<img src=/bgnet/svg/edit.svg class=book-icon alt=Edit>
 <span>Edit this page</span>
 </a>
 </div>
