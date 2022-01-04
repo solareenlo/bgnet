@@ -11,7 +11,7 @@ services:
     environment:
       - HUGO_REFRESH_TIME=3600
       # - HUGO_THEME=book-book
-      - HUGO_BASEURL=https://solareenlo.com/
+      - HUGO_BASEURL=https://solareenlo.com/bgnet
     restart: always
     ports:
       - "1313:1313"

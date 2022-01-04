@@ -22,7 +22,7 @@ jobs:
           hugo-version: 'latest'
 
       - name: Build
-        run: hugo --minify --theme book-fork
+        run: hugo --minify
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3

@@ -1,6 +1,6 @@
 # hugo server --themesDir ... --baseURL=http://0.0.0.0:1313/example
 
-baseURL: https://solareenlo.com
+baseURL: https://solareenlo.com/bgnet/
 title: Beej's Guide to Network Programming
 # theme: book-ori
 theme: book-fork
@@ -64,7 +64,7 @@ params:
 
   # Set source repository location.
   # Used for 'Last Modified' and 'Edit this page' links.
-  BookRepo: https://github.com/solareenlo/scala
+  BookRepo: https://github.com/solareenlo/bgnet
 
   # Enable "Edit this page" links for 'doc' page type.
   # Disabled by default. Uncomment to enable. Requires 'BookRepo' param.
