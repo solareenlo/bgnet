@@ -10,7 +10,7 @@
 1.2 Platform and Compiler #  この文書に含まれるコードは、Gnu の gcc コンパイラを使用して Linux PC でコンパイルされています。しかし、gccを使うプラットフォームであれば、ほぼ全てのプラットフォームでビルドできるはずです。当然ながら、Windows用のプログラミングには適用されません。以下の section on Windows programmingを参照してください。
 1.3 Official Homepage and Books For Sale #  このドキュメントの正式な所在地は
   https://beej.us/guide/bgnet/  また、サンプルコードや様々な言語への翻訳も掲載されています。
-製本された印刷物（「本」と呼ぶ人もいる）を購入するには、以下をご覧ください。
+製本された印刷物（&ldquo;本&#34;と呼ぶ人もいる）を購入するには、以下をご覧ください。
   https://beej.us/guide/url/bgbuy  文書作成生活の維持に役立つので、購入はありがたいです！
 1.4 Note for Solaris/SunOS Programmers #  Solaris または SunOS 用にコンパイルする場合、適切なライブラリをリンクするために、いくつかの特別なコマンドラインスイッチを指定する必要があります。これを行うには、コンパイルコマンドの最後に &ldquo;-lnsl -lsocket -lresolv&rdquo; を以下のように追加するだけです。">
 <meta name=theme-color content="#FFFFFF">
@@ -23,7 +23,7 @@
 <link rel=icon href=/bgnet/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/bgnet/book.min.7d12d4add234c27cb11a219e7b205a38bbfc902fc5f73a3417e46984bbc3fa91.css integrity="sha256-fRLUrdI0wnyxGiGeeyBaOLv8kC/F9zo0F+RphLvD+pE=" crossorigin=anonymous>
 <script defer src=/bgnet/flexsearch.min.js></script>
-<script defer src=/bgnet/en.search.min.18417da9886b44bcbd9cfb95b459ab16ec3072dacb9e4a93233460113812f9a8.js integrity="sha256-GEF9qYhrRLy9nPuVtFmrFuwwctrLnkqTIzRgETgS+ag=" crossorigin=anonymous></script>
+<script defer src=/bgnet/en.search.min.758ca914dfbb68e0b3c6d75e9d2c688770347b233822661e4111bb08875db985.js integrity="sha256-dYypFN+7aOCzxtdenSxoh3A0eyM4ImYeQRG7CIdduYU=" crossorigin=anonymous></script>
 <link rel=alternate type=application/rss+xml href=https://solareenlo.com/bgnet/docs/intro/index.xml title="Beej's Guide to Network Programming">
 </head>
 <body dir=ltr>
@@ -109,7 +109,7 @@ Github
 <a class=anchor href=#12-platform-and-compiler>#</a>
 </h2>
 <p>この文書に含まれるコードは、Gnu の <code>gcc</code> コンパイラを使用して Linux PC でコンパイルされています。しかし、<code>gcc</code>を使うプラットフォームであれば、ほぼ全てのプラットフォームでビルドできるはずです。当然ながら、Windows用のプログラミングには適用されません。以下の
-<a href=/bgnet/#windows>section on Windows programming</a>を参照してください。</p>
+<a href=/bgnet/docs/intro/#windows>section on Windows programming</a>を参照してください。</p>
 <h2 id=13-official-homepage-and-books-for-sale>
 1.3 Official Homepage and Books For Sale
 <a class=anchor href=#13-official-homepage-and-books-for-sale>#</a>
@@ -120,7 +120,7 @@ Github
 <a href=https://beej.us/guide/bgnet/><code>https://beej.us/guide/bgnet/</code></a></li>
 </ul>
 <p>また、サンプルコードや様々な言語への翻訳も掲載されています。</p>
-<p>製本された印刷物（「本」と呼ぶ人もいる）を購入するには、以下をご覧ください。</p>
+<p>製本された印刷物（&ldquo;本"と呼ぶ人もいる）を購入するには、以下をご覧ください。</p>
 <ul>
 <li>
 <a href=https://beej.us/guide/url/bgbuy><code>https://beej.us/guide/url/bgbuy</code></a></li>
@@ -209,7 +209,7 @@ Github
 <p>
 <a href=https://creativecommons.org/licenses/by-nc-nd/3.0/><code>https://creativecommons.org/licenses/by-nc-nd/3.0/</code></a></p>
 <p>または、Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USAに手紙を送ってください。</p>
-<p>本使用許諾の「二次的著作物の禁止」部分の具体的な例外は、次のとおりです：このガイドは、翻訳が正確である限り、どの言語にも自由に翻訳でき、ガイド全体を再印刷することができます。翻訳には、オリジナルのガイドと同じライセンスの制約が適用されます。翻訳には、翻訳者の名前と連絡先も含めることができます。</p>
+<p>本使用許諾の"二次的著作物の禁止"部分の具体的な例外は、次のとおりです：このガイドは、翻訳が正確である限り、どの言語にも自由に翻訳でき、ガイド全体を再印刷することができます。翻訳には、オリジナルのガイドと同じライセンスの制約が適用されます。翻訳には、翻訳者の名前と連絡先も含めることができます。</p>
 <p>本書で紹介する C 言語のソースコードは、パブリックドメインとして許諾され、いかなるライセンス制限もありません。</p>
 <p>教育関係者は、このガイドを生徒に勧めたり、コピーを提供したりすることを自由に推奨します。</p>
 <p>書面による相互の合意がない限り、著者は作品を現状のまま提供し、作品に関して、明示的、黙示的、法定またはその他のいかなる種類の表明または保証（権利、商品性、特定目的への適合性、非侵害、潜在的またはその他の欠陥の不在、精度、または発見可能かどうかにかかわらず誤りの有無の保証を含むが、これに限定されない）も行わないものとします。</p>
@@ -225,11 +225,11 @@ Github
 1.11 Publishing Information
 <a class=anchor href=#111-publishing-information>#</a>
 </h2>
-<p>この本は、GNU ツールを搭載した Arch Linux のマシン上で vim エディタを使って、Markdown で書かれています。表紙の「アート」とダイアグラムは Inkscape で作成されています。Markdown は Python、Pandoc および XeLaTeX により、Liberation フォントを用いて HTML および LaTex/PDF に変換されます。このツールチェーンは 100% フリーおよびオープンソースソフトウェアで構成されています。</p>
+<p>この本は、GNU ツールを搭載した Arch Linux のマシン上で vim エディタを使って、Markdown で書かれています。表紙の"アート"とダイアグラムは Inkscape で作成されています。Markdown は Python、Pandoc および XeLaTeX により、Liberation フォントを用いて HTML および LaTex/PDF に変換されます。このツールチェーンは 100% フリーおよびオープンソースソフトウェアで構成されています。</p>
 </article>
 <footer class=book-footer>
 <div class="flex flex-wrap justify-between">
-<div><a class="flex align-center" href=https://github.com/solareenlo/bgnet/commit/5558c5c1b320ef7fa6d846a7065053e2f05cbc7b title="Last modified by solareenlo | Jan 4, 2022" target=_blank rel=noopener>
+<div><a class="flex align-center" href=https://github.com/solareenlo/bgnet/commit/e16de79af39115430699d5490a51021f7285f30f title="Last modified by solareenlo | Jan 4, 2022" target=_blank rel=noopener>
 <img src=/bgnet/svg/calendar.svg class=book-icon alt=Calendar>
 <span>Jan 4, 2022</span>
 </a>
