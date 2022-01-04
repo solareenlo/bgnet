@@ -1,0 +1,399 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="3 IP Addresses, structs, and Data Munging #  ここからは気分転換にコードの話をするところです。
+その前に、もっとノンコードの話をしましょう! イエーイ! まず最初に IP アドレスとポートについて少しお話したいと思いますので、それを整理します。それからソケット API がどのように IP アドレスや他のデータを保存し、操作するかについて話します。
+3.1 IP Addresses, versions 4 and 6 #  ベン・ケノービがまだオビワン・ケノービと呼ばれていた頃、インターネット・プロトコル・バージョン4（IPv4）と呼ばれる素晴らしいネットワーク・ルーティング・システムが存在しました。IPv4 は4バイト（4オクテット）で構成されるアドレスで、一般に「ドットと数字」で表記されるのが一般的でした。192.0.2.111 のように。
+皆さんも一度は目にしたことがあるのではないでしょうか。
+実際、この記事を書いている時点では、インターネット上のほぼすべてのサイトが IPv4 を使っています。
+オビ・ワンをはじめ、誰もが幸せでした。しかし、ヴィント・サーフという名の否定的な人物が、IPv4 アドレスが足りなくなると警告を発したのです！
+( ヴィント・サーフ氏は、IPv4 による「破滅と暗黒の黙示録」の到来を警告するとともに、「インターネットの父」としても有名です。だから、私は彼の判断に二の足を踏む立場にはないのだ)。
+アドレスが足りなくなる？そんなことがあるのでしょうか？つまり、32ビットの IPv4 アドレスには何十億もの IP アドレスが存在するのです。本当に何十億台ものコンピュータがあるのでしょうか？
+Yes.
+また、コンピュータが数台しかなく、10億という数字があり得ないほど大きいと誰もが思っていた当初、いくつかの大きな組織は、自分たちが使うために何百万というIPアドレスを惜しげもなく割り当てていたのです。(ゼロックス、MIT、フォード、HP、IBM、GE、AT&T、そしてアップルという小さな会社などです)。
+実際、いくつかの応急処置がなかったら、とっくに使い果たしていたでしょう。
+しかし今は、すべての人間がIPアドレスを持ち、すべてのコンピュータ、電卓、電話、パーキングメーター、そして（なぜか）子犬も、という時代です。
+そして、IPv6 が誕生したのです。ヴィント・サーフはおそらく不死身なので（たとえ肉体がこの世を去ったとしても、おそらく彼はすでにインターネット2の奥深くにある超知的な ELIZA プログラムとして存在しているはずです）、もし次のバージョンのインターネットプロトコルで十分なアドレスが確保できなければ、誰も彼の「だから言っただろう」という言葉を再び聞きたくはないでしょう。
+これは何を示唆しているのでしょうか？
+もっとたくさんのアドレスが必要だということです。2倍どころか10億倍でもなく1000兆倍でもなく 7900万ビリオン・トリリオンの数のアドレスが必要なのです！そうこなくちゃ！
+ビージェイ、それは本当なの？大きな数字を信じない理由があるんだ。&ldquo;32ビットと128ビットの差は大したことないように聞こえるかもしれない、96ビット多いだけだろ？しかし、私たちはここで累乗の話をしていることを忘れてはなりません。32ビットは約40億の数字（2^32）を表し、128ビットは約340兆の数字（2^128）を表します。これは、宇宙の星1つに対して、100万個の IPv4 インターネットがあるようなものです。
+IPv4のドットや数字も忘れて、16進数では、2バイトの塊をコロンで区切って、このように表現しています。
+2001:0db8:c9d2:aee5:73e3:934a:a5ae:9551 それだけではありません! 多くの場合、IPアドレスにはたくさんのゼロが含まれていますが、それらを2つのコロンで区切って圧縮することができます。そして、各バイトペアの先頭のゼロを省くことができます。例えば、次のようなアドレスのペアは、それぞれ等価です。
+2001:0db8:c9d2:0012:0000:0000:0000:0051 2001:db8:c9d2:12::51 2001:0db8:ab00:0000:0000:0000:0000:0000 2001:db8:ab00:: 0000:0000:0000:0000:0000:0000:0000:0001 ::1 アドレス ::1 はループバックアドレスです。常に「今走っているこのマシン」という意味です。IPv4 では、ループバックアドレスは 127.">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="3 IP Addresses, structs, and Data Munging">
+<meta property="og:description" content>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://solareenlo.com/bgnet/docs/ip-addresses-structs-and-data-munging/">
+<title>3 IP Addresses, structs, and Data Munging | Beej's Guide to Network Programming</title>
+<link rel=manifest href=/bgnet/manifest.json>
+<link rel=icon href=/bgnet/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/bgnet/book.min.7d12d4add234c27cb11a219e7b205a38bbfc902fc5f73a3417e46984bbc3fa91.css integrity="sha256-fRLUrdI0wnyxGiGeeyBaOLv8kC/F9zo0F+RphLvD+pE=" crossorigin=anonymous>
+<script defer src=/bgnet/flexsearch.min.js></script>
+<script defer src=/bgnet/en.search.min.15c50c7409d4eb7b20026e86ab02f0fcc1105b4ba87231f29a5693c607afc97f.js integrity="sha256-FcUMdAnU63sgAm6GqwLw/MEQW0uocjHymlaTxgevyX8=" crossorigin=anonymous></script>
+<link rel=alternate type=application/rss+xml href=https://solareenlo.com/bgnet/docs/ip-addresses-structs-and-data-munging/index.xml title="Beej's Guide to Network Programming">
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/bgnet/><span>Beej's Guide to Network Programming</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+<ul>
+<li>
+<a href=/bgnet/docs/intro>1 Intro</a></li>
+<li>
+<a href=/bgnet/docs/what-is-a-socket>2 What is a socket?</a></li>
+<li>
+<a href=/bgnet/docs/ip-addresses-structs-and-data-munging>3 IP Addresses, structs, and Data Munging</a>
+<br></li>
+</ul>
+<ul>
+<li>
+<a href=https://github.com/solareenlo/bgnet target=_blank rel=noopener>
+Github
+</a>
+</li>
+</ul>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/bgnet/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>3 IP Addresses, structs, and Data Munging</strong>
+<label for=toc-control>
+<img src=/bgnet/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#3-ip-addresses-structs-and-data-munging>3 IP Addresses, <code>struct</code>s, and Data Munging</a>
+<ul>
+<li><a href=#31-ip-addresses-versions-4-and-6>3.1 IP Addresses, versions 4 and 6</a>
+<ul>
+<li><a href=#311-subnets>3.1.1 Subnets</a></li>
+<li><a href=#312-port-numbers>3.1.2 Port Numbers</a></li>
+</ul>
+</li>
+<li><a href=#32-byte-order>3.2 Byte Order</a></li>
+<li><a href=#structs>3.3 <code>struct</code>s</a></li>
+<li><a href=#34-ip-addresses-part-deux>3.4 IP Addresses, Part Deux</a>
+<ul>
+<li><a href=#341-private-or-disconnected-networks>3.4.1 Private (Or Disconnected) Networks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h1 id=3-ip-addresses-structs-and-data-munging>
+3 IP Addresses, <code>struct</code>s, and Data Munging
+<a class=anchor href=#3-ip-addresses-structs-and-data-munging>#</a>
+</h1>
+<p>ここからは気分転換にコードの話をするところです。</p>
+<p>その前に、もっとノンコードの話をしましょう! イエーイ! まず最初に IP アドレスとポートについて少しお話したいと思いますので、それを整理します。それからソケット API がどのように IP アドレスや他のデータを保存し、操作するかについて話します。</p>
+<h2 id=31-ip-addresses-versions-4-and-6>
+3.1 IP Addresses, versions 4 and 6
+<a class=anchor href=#31-ip-addresses-versions-4-and-6>#</a>
+</h2>
+<p>ベン・ケノービがまだオビワン・ケノービと呼ばれていた頃、インターネット・プロトコル・バージョン4（IPv4）と呼ばれる素晴らしいネットワーク・ルーティング・システムが存在しました。IPv4 は4バイト（4オクテット）で構成されるアドレスで、一般に「ドットと数字」で表記されるのが一般的でした。<code>192.0.2.111</code> のように。</p>
+<p>皆さんも一度は目にしたことがあるのではないでしょうか。</p>
+<p>実際、この記事を書いている時点では、インターネット上のほぼすべてのサイトが IPv4 を使っています。</p>
+<p>オビ・ワンをはじめ、誰もが幸せでした。しかし、ヴィント・サーフという名の否定的な人物が、IPv4 アドレスが足りなくなると警告を発したのです！</p>
+<p>(
+<a href=https://en.wikipedia.org/wiki/Vint_Cerf>ヴィント・サーフ</a>氏は、IPv4 による「破滅と暗黒の黙示録」の到来を警告するとともに、「インターネットの父」としても有名です。だから、私は彼の判断に二の足を踏む立場にはないのだ)。</p>
+<p>アドレスが足りなくなる？そんなことがあるのでしょうか？つまり、32ビットの IPv4 アドレスには何十億もの IP アドレスが存在するのです。本当に何十億台ものコンピュータがあるのでしょうか？</p>
+<p>Yes.</p>
+<p>また、コンピュータが数台しかなく、10億という数字があり得ないほど大きいと誰もが思っていた当初、いくつかの大きな組織は、自分たちが使うために何百万というIPアドレスを惜しげもなく割り当てていたのです。(ゼロックス、MIT、フォード、HP、IBM、GE、AT&T、そしてアップルという小さな会社などです)。</p>
+<p>実際、いくつかの応急処置がなかったら、とっくに使い果たしていたでしょう。</p>
+<p>しかし今は、すべての人間がIPアドレスを持ち、すべてのコンピュータ、電卓、電話、パーキングメーター、そして（なぜか）子犬も、という時代です。</p>
+<p>そして、IPv6 が誕生したのです。ヴィント・サーフはおそらく不死身なので（たとえ肉体がこの世を去ったとしても、おそらく彼はすでにインターネット2の奥深くにある超知的な
+<a href=https://en.wikipedia.org/wiki/ELIZA>ELIZA</a> プログラムとして存在しているはずです）、もし次のバージョンのインターネットプロトコルで十分なアドレスが確保できなければ、誰も彼の「だから言っただろう」という言葉を再び聞きたくはないでしょう。</p>
+<p>これは何を示唆しているのでしょうか？</p>
+<p>もっとたくさんのアドレスが必要だということです。2倍どころか10億倍でもなく1000兆倍でもなく 7900万ビリオン・トリリオンの数のアドレスが必要なのです！そうこなくちゃ！</p>
+<p>ビージェイ、それは本当なの？大きな数字を信じない理由があるんだ。&ldquo;32ビットと128ビットの差は大したことないように聞こえるかもしれない、96ビット多いだけだろ？しかし、私たちはここで累乗の話をしていることを忘れてはなりません。32ビットは約40億の数字（2^32）を表し、128ビットは約340兆の数字（2^128）を表します。これは、宇宙の星1つに対して、100万個の IPv4 インターネットがあるようなものです。</p>
+<p>IPv4のドットや数字も忘れて、16進数では、2バイトの塊をコロンで区切って、このように表現しています。</p>
+<pre tabindex=0><code>2001:0db8:c9d2:aee5:73e3:934a:a5ae:9551
+</code></pre><p>それだけではありません! 多くの場合、IPアドレスにはたくさんのゼロが含まれていますが、それらを2つのコロンで区切って圧縮することができます。そして、各バイトペアの先頭のゼロを省くことができます。例えば、次のようなアドレスのペアは、それぞれ等価です。</p>
+<pre tabindex=0><code>2001:0db8:c9d2:0012:0000:0000:0000:0051
+2001:db8:c9d2:12::51
+
+2001:0db8:ab00:0000:0000:0000:0000:0000
+2001:db8:ab00::
+
+0000:0000:0000:0000:0000:0000:0000:0001
+::1
+</code></pre><p>アドレス <code>::1</code> はループバックアドレスです。常に「今走っているこのマシン」という意味です。IPv4 では、ループバックアドレスは <code>127.0.0.1</code> です。</p>
+<p>最後に、IPv6 アドレスの IPv4 互換モードですが、これは皆さんが遭遇する可能性のあるものです。例えば、<code>192.0.2.33</code>という IPv4 アドレスを IPv6 アドレスとして表現したい場合、次のような表記をします。"<code>::ffff:192.0.2.33</code>"。</p>
+<p>本気で楽しみたいんです。</p>
+<p>実際、IPv6 の開発者たちは、何兆個ものアドレスを軽率にも予約用に切り捨てたほど、IPv6 は楽しいものなのですが、数が多すぎて、正直言って、もう誰が数えているのでしょうか？銀河系のすべての惑星のすべての男性、女性、子供、子犬、そしてパーキングメーターのために十分な数が残されています。 信じてくれ、銀河系のどの星にもパーキングメーターはあるんだ。本当なんだ。</p>
+<h3 id=311-subnets>
+3.1.1 Subnets
+<a class=anchor href=#311-subnets>#</a>
+</h3>
+<p>組織上、「このIPアドレスの先頭からこのビットまでがネットワーク部分、それ以外がホスト部分」と宣言するのが便利な場合があります。</p>
+<p>例えば、IPv4 では <code>192.0.2.12</code> というように、最初の3バイトがネットワークで、最後の1バイトがホストと言えるでしょう。あるいは、別の言い方をすれば、ネットワーク <code>192.0.2.0</code> 上のホスト <code>12</code> について話していることになります (ホストであるバイトをゼロにしているところをご覧ください)。</p>
+<p>そして、さらに時代遅れの情報を! 準備はいいですか？古代では、サブネットには「クラス」があり、アドレスの最初の1バイト、2バイト、3バイトがネットワーク部分でした。運良く1バイトがネットワーク、3バイトがホストの場合、ネットワーク上に24ビット分のホスト（1600万程度）を持つことができます。これが「クラスA」のネットワークである。一方、「クラスC」は、ネットワークが3バイト、ホストが1バイトで、256台のホスト（ただし、予約された数台は除く）を持ちます。</p>
+<p>ご覧のように、Aクラスがほんの少し、Cクラスが大量に、そして真ん中にBクラスが何個かある状態でした。</p>
+<p>IPアドレスのネットワーク部分は、ネットマスクと呼ばれるもので記述されており、IPアドレスとビット単位でANDすることでネットワーク番号を取得します。ネットマスクは通常 <code>255.255.255.0</code> のような形をしています。(例えば、このネットマスクでは、あなたのIPが <code>192.0.2.12</code> なら、あなたのネットワークは <code>192.0.2.12</code> AND <code>255.255.255.0</code> で、 <code>192.0.2.0</code> となります)。</p>
+<p>しかし、残念ながら、これはインターネットの最終的なニーズに対して十分なきめ細かさではないことが判明しました。クラスCのネットワークはすぐに足りなくなったし、クラスAのネットワークも足りなくなったので、わざわざ尋ねる必要はありません。この問題を解決するために、権力者たちはネットマスクを 8、16、24 のどれでもなく、任意のビット数にすることを許可しました。例えば <code>255.255.255.252</code> というネットマスクは、30 ビットのネットワークと 2 ビットのホストで、 ネットワーク上に 4 つのホストを置くことができます。 (ネットマスクは常に1ビットの束と0ビットの束からなることに注意してください)。</p>
+<p>しかし、<code>255.192.0.0</code> のような大きな数字の羅列をネットマスクとして使うのは、少し扱いにくいです。まず、それが何ビットなのかが直感的にわからないし、コンパクトでもありません。そこで新スタイルが登場したのですが、これはもっとすっきりしています。IP アドレスの後にスラッシュを付けて、その後に10進数でネットワークのビット数を指定するだけです。こんな感じです。<code>192.0.2.12/30</code>。</p>
+<p>あるいは、IPv6 の場合、このようなものです。<code>2001:db8::/32</code> または <code>2001:db8:5413:4028::9db9/64</code> です。</p>
+<h3 id=312-port-numbers>
+3.1.2 Port Numbers
+<a class=anchor href=#312-port-numbers>#</a>
+</h3>
+<p>以前、インターネット層（IP）とホスト間トランスポート層（TCPとUDP）を分離した
+<a href=/bgnet/docs/what-is-a-socket/#lowlevel>レイヤードネットワークモデル</a>をご紹介しましたが、覚えていらっしゃいますか？次の段落の前に、そのことをしっかり覚えておいてください。</p>
+<p>IP アドレス（IP 層で使われる）の他に、TCP（ストリームソケット）や、偶然にも UDP（データグラムソケット）で使われるアドレスがあることが判明したのです。それは、ポート番号です。これは16ビットの数字で、接続のためのローカルアドレスのようなものです。</p>
+<p>IP アドレスはホテルの番地、ポート番号は部屋番号だと思ってください。後で自動車業界の例も考えてみましょう。</p>
+<p>例えば、受信メールとウェブサービスの両方を扱うコンピュータを用意したい場合、1つのIPアドレスを持つコンピュータでその2つを区別する方法はあるでしょうか？</p>
+<p>さて、インターネット上のサービスには、それぞれ異なるウェルノウン・ポート番号が設定されています。
+<a href=https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml>IANA のポート一覧</a>か、Unix であれば <code>/etc/services</code> ファイルで確認することができます。HTTP（ウェブ）はポート80、telnet はポート23、SMTP はポート25、ゲーム
+<a href=https://en.wikipedia.org/wiki/Doom_%281993_video_game%29>DOOM</a> はポート666、などなど。1024以下のポートはしばしば特殊とみなされ、通常、使用するには OS の特別な権限が必要です。</p>
+<p>といったところでしょうか。</p>
+<h2 id=32-byte-order>
+3.2 Byte Order
+<a class=anchor href=#32-byte-order>#</a>
+</h2>
+<p>レルムの命令で！バイトの並び順は2種類とします。今後、Lame and Magnificent と呼ばれるようになります。</p>
+<p>というのは冗談ですが、本当にどちらか一方が優れているのです。<code>:-)</code></p>
+<p>あなたのコンピュータは、あなたの背後でバイトを逆順に保存しているかもしれないのです。そうなんです。誰もあなたに言いたくはなかったのです。</p>
+<p>つまり、2バイトの16進数、たとえば <code>b34f</code> を表現する場合、<code>b3</code> と <code>4f</code> の2バイトに続けて格納する、というのがインターネットの世界の共通認識になっているのです。これは理にかなっているし、
+<a href=https://en.wikipedia.org/wiki/Wilford_Brimley>ウィルフォード・ブリムリー</a>も言うように、正しい行為です。このように、大きい方の端が先になるように格納された数字をビッグエンディアン（Big-Endian）と呼びます。</p>
+<p>残念ながら、世界中に散在する一部のコンピュータ、すなわちインテルまたはインテル互換のプロセッサを搭載したものは、バイトを逆に格納しているため、<code>b34f</code>は <code>4f</code> と <code>b3</code> の連続したバイトとしてメモリに格納されることになります。この記憶方式をリトルエンディアンと呼びます。</p>
+<p>でも、ちょっと待ってください！用語の説明はまだ終わっていないのです。もっとまともなビッグエンディアンはネットワークバイトオーダーとも呼ばれ、私たちネットワーク系が好む順序だからです。</p>
+<p>コンピュータはホストバイトオーダーで数字を記憶しています。インテル 80x86 であれば、ホストバイト順はリトルエンディアンです。モトローラ 68K の場合は、ビッグエンディアンです。PowerPC なら、ホストバイトの並びは&mldr;&mldr;まあ、人それぞれですね。</p>
+<p>パケットを作成するときやデータ構造を埋めるときに、2バイトや4バイトの数値がネットワークバイトオーダーになっていることを確認する必要があることがよくあります。しかし、ネイティブなホストバイトオーダーがわからない場合、どのようにすればよいのでしょうか。</p>
+<p>朗報です。ホストのバイトオーダーが正しくないと仮定して、値をネットワークバ イトオーダーに設定するための関数を常に実行するようにすればよいのです。この関数は、必要であれば魔法のような変換を行い、エンディアンが異なるマシンにもコードを移植することができます。</p>
+<p>よしよし。変換できる数値は、<code>short</code>（2バイト）と <code>long</code>（4バイト）の2種類です。これらの関数は、符号なしのバリエーションでも動作します。例えば、<code>short</code> をホストバイトオーダーからネットワークバイトオーダーに変換したいとします。まず &ldquo;h&rdquo; でホスト、その後に &ldquo;to&rdquo; をつけます。そして、&ldquo;n&rdquo; は &ldquo;network&rdquo;、&ldquo;s&rdquo; は &ldquo;short&rdquo; を表します。h-to-n-s または htons() (読み方: &ldquo;ホストからネットワークへのショート&rdquo;) です。</p>
+<p>簡単すぎるくらいに&mldr;。</p>
+<p>&ldquo;n&rdquo;、&ldquo;h&rdquo;、&ldquo;s&rdquo;、&ldquo;l&rdquo; の組み合わせは、本当にくだらないものを除いて、すべて使うことができるのです。たとえば、<code>stolh()</code> (&ldquo;Short to Long Host&rdquo;) という関数はありません&mdash;とにかく、このパーティーでは。しかし、あるのです。</p>
+<table>
+<thead>
+<tr>
+<th>関数</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>htons()</code></td>
+<td><code>h</code>ost <code>to</code> <code>n</code>etwork <code>s</code>hort</td>
+</tr>
+<tr>
+<td><code>htonl()</code></td>
+<td><code>h</code>ost <code>to</code> <code>n</code>etwork <code>l</code>ong</td>
+</tr>
+<tr>
+<td><code>ntohs()</code></td>
+<td><code>n</code>etwork <code>to</code> <code>h</code>ost <code>s</code>hort</td>
+</tr>
+<tr>
+<td><code>ntohl()</code></td>
+<td><code>n</code>etwork <code>to</code> <code>h</code>ost <code>l</code>ong</td>
+</tr>
+</tbody>
+</table>
+<p>基本的には、送出する前にネットワークバイトオーダーに変換し、送出後にホストバイトオーダーに変換します。</p>
+<p>64bitのバリエーションは知らないです、すみません。また、浮動小数点をやりたい場合は、ずっと下の
+<a href=/bgnet/#serialization>Serialization</a> の章をチェックしてください。</p>
+<p>この文書では、特に断らない限り、数値はホストバイトオーダーであると仮定しています。</p>
+<h2 id=structs>
+3.3 <code>struct</code>s
+<a class=anchor href=#structs>#</a>
+</h2>
+<p>さて、ついにここまで来ました。そろそろプログラミングの話をしましょう。この章では、ソケットインターフェイスで使用される様々なデータ型について説明します。</p>
+<p>まず、簡単なものからです。ソケットディスクリプタです。ソケットディスクリプタは以下のような型です。</p>
+<pre tabindex=0><code class=language-{.c} data-lang={.c}>int
+</code></pre><p>普通の <code>int</code> です。</p>
+<p>ここからは変な話なので、我慢して読んでください。</p>
+<p>My First Struct™&mdash;<code>struct addrinfo</code>。この構造体は最近開発されたもので、ソケットアドレス構造体を後で使用するために準備するために使用されます。また、ホスト名のルックアップやサービス名のルックアップにも使用されます。これは、後で実際の使い方を説明するときに、より意味をなすと思いますが、今は、接続を行うときに最初に呼び出されるものの1つであることを知っておいてください。</p>
+<pre tabindex=0><code class=language-{.c} data-lang={.c}>struct addrinfo {
+    int              ai_flags;     // AI_PASSIVE, AI_CANONNAME, etc.
+    int              ai_family;    // AF_INET, AF_INET6, AF_UNSPEC
+    int              ai_socktype;  // SOCK_STREAM, SOCK_DGRAM
+    int              ai_protocol;  // use 0 for &quot;any&quot;
+    size_t           ai_addrlen;   // size of ai_addr in bytes
+    struct sockaddr *ai_addr;      // struct sockaddr_in or _in6
+    char            *ai_canonname; // full canonical hostname
+
+    struct addrinfo *ai_next;      // linked list, next node
+};
+</code></pre><p>この構造体を少し読み込んでから、<code>getaddrinfo()</code> を呼び出します。この構造体のリンクリストへのポインタが返され、必要なものがすべて満たされます。</p>
+<p><code>ai_family</code> フィールドで IPv4 か IPv6 を使うように強制することもできますし、<code>AF_UNSPEC</code> のままにして何でも使えるようにすることも可能です。これは、あなたのコードが IP バージョンに依存しないので、クールです。</p>
+<p>これはリンクされたリストであることに注意してください：<code>ai_next</code> は次の要素を指しています&mdash;そこから選択するためにいくつかの結果があるかもしれません。私は最初にうまくいった結果を使いますが、あなたは異なるビジネスニーズを持っているかもしれません。何でもかんでも知ってるわけじゃないんです！</p>
+<p><code>struct addrinfo</code> の <code>ai_addr</code> フィールドは <code>struct sockaddr</code> へのポインタであることがわかります。ここからが、IP アドレス構造体の中身についての細かい話になります。</p>
+<p>通常、これらの構造体に書き込む必要はありません。多くの場合、<code>addrinfo</code> 構造体を埋めるために <code>getaddrinfo()</code> を呼び出すだけでよいでしょう。しかし、これらの構造体の内部を覗いて値を取得する必要があるため、ここでそれらを紹介します。</p>
+<p>(また、構造体 <code>addrinfo</code> が発明される前に書かれたコードはすべて、これらのものをすべて手作業で梱包していたので、まさにそのような IPv4 コードを多く見かけることができます。このガイドの古いバージョンなどでもそうです)。</p>
+<p>ある構造体は IPv4 で、ある構造体は IPv6 で、ある構造体はその両方です。どれが何なのか、メモしておきます。</p>
+<p>とにかく、構造体 <code>sockaddr</code> は、多くの種類のソケットのためのソケットアドレス情報を保持します。</p>
+<pre tabindex=0><code class=language-{.c} data-lang={.c}>struct sockaddr {
+    unsigned short    sa_family;    // address family, AF_xxx
+    char              sa_data[14];  // 14 bytes of protocol address
+};
+</code></pre><p><code>sa_family</code> には様々なものを指定できますが、この文書ではすべて <code>AF_INET</code> (IPv4) または <code>AF_INET6</code> (IPv6) とします。<code>sa_data</code> にはソケットの宛先アドレスとポート番号を指定します。<code>sa_data</code> にアドレスを手で詰め込むのは面倒なので、これはかなり扱いにくいです。</p>
+<p>構造体 <code>sockaddr</code> を扱うために、プログラマは IPv4 で使用する構造体 <code>sockaddr_in</code>（&ldquo;in&rdquo; は &ldquo;Internet&rdquo; の意）を並列に作成しました。</p>
+<p><code>sockaddr_in</code> 構造体へのポインタは <code>sockaddr</code> 構造体へのポインタにキャストすることができ、その逆も可能です。つまり、<code>connect()</code> が <code>struct sockaddr*</code> を要求しても、<code>struct sockaddr_in</code> を使用して、最後の最後でキャストすることができるのです！</p>
+<pre tabindex=0><code class=language-{.c} data-lang={.c}>// (IPv4 only--see struct sockaddr_in6 for IPv6)
+
+struct sockaddr_in {
+    short int          sin_family;  // Address family, AF_INET
+    unsigned short int sin_port;    // Port number
+    struct in_addr     sin_addr;    // Internet address
+    unsigned char      sin_zero[8]; // Same size as struct sockaddr
+};
+</code></pre><p>この構造体により、ソケットアドレスの要素を簡単に参照することができます。<code>sin_zero</code> (構造体を <code>struct sockaddr</code> の長さに合わせるために含まれます) は、関数 <code>memset()</code> ですべて 0 に設定する必要があることに注意すること。また、<code>sin_family</code> は <code>struct sockaddr</code> の <code>sa_family</code> に相当し、"<code>AF_INET</code>&rdquo; に設定されることに注意します。最後に、<code>sin_port</code> はネットワークバイトオーダーでなければなりません（<code>htons()</code> を使用することで！）。</p>
+<p>もっと掘り下げましょう！<code>sin_addr</code> フィールドは <code>in_addr</code> 構造体であることがわかりますね。あれは何なんだ？まあ、大げさではなく、史上最も恐ろしい組合せの1つです。</p>
+<pre tabindex=0><code class=language-{.c} data-lang={.c}>// (IPv4 only--see struct in6_addr for IPv6)
+
+// Internet address (a structure for historical reasons)
+struct in_addr {
+    uint32_t s_addr; // that's a 32-bit int (4 bytes)
+};
+</code></pre><p>うおぉ まあ、昔はユニオンだったんだけど、今はもうそういう時代じゃないみたいだね。おつかれさまでした。つまり、<code>ina</code> を <code>struct sockaddr_in</code> 型と宣言した場合、<code>ina.sin_addr.s_addr</code> は4バイトの IP アドレス（ネットワークバイトオーダー）を参照することになります。あなたのシステムがまだ <code>struct in_addr</code> のための神々しいユニオンを使用している場合でも、あなたはまだ私が上記のように全く同じ方法で4バイトの IP アドレスを参照することができます（これは <code>#defines</code> によるものです）ことに注意してください。</p>
+<p>IPv6 ではどうでしょうか。これについても同様の構造体が存在します。</p>
+<pre tabindex=0><code class=language-{.c} data-lang={.c}>// (IPv6 only--see struct sockaddr_in and struct in_addr for IPv4)
+
+struct sockaddr_in6 {
+    u_int16_t       sin6_family;   // address family, AF_INET6
+    u_int16_t       sin6_port;     // port number, Network Byte Order
+    u_int32_t       sin6_flowinfo; // IPv6 flow information
+    struct in6_addr sin6_addr;     // IPv6 address
+    u_int32_t       sin6_scope_id; // Scope ID
+};
+
+struct in6_addr {
+    unsigned char   s6_addr[16];   // IPv6 address
+};
+</code></pre><p>IPv4 が IPv4 アドレスとポート番号を持つように、IPv6 も IPv6 アドレスとポート番号を持つことに注意してください。</p>
+<p>また、IPv6 フロー情報やスコープ ID のフィールドについては、今のところ触れないことに注意してください。<code>:-)</code></p>
+<p>最後になりますが、こちらもシンプルな構造体である <code>struct sockaddr_storage</code> は、IPv4 と IPv6 の両方の構造体を保持できるように十分な大きさに設計されています。コールによっては、<code>struct sockaddr</code> に IPv4 と IPv6 のどちらのアドレスが記入されるのか事前にわからないことがありますよね。そこで、この並列構造体を渡しますが、サイズが大きい以外は <code>struct sockaddr</code> とよく似ており、必要な型にキャストします。</p>
+<pre tabindex=0><code class=language-{.c} data-lang={.c}>struct sockaddr_storage {
+    sa_family_t  ss_family;     // address family
+
+    // all this is padding, implementation specific, ignore it:
+    char      __ss_pad1[_SS_PAD1SIZE];
+    int64_t   __ss_align;
+    char      __ss_pad2[_SS_PAD2SIZE];
+};
+</code></pre><p>重要なのは、<code>ss_family</code> フィールドでアドレスファミリーを確認できることで、これが <code>AF_INET</code> か <code>AF_INET6</code>（IPv4 か IPv6 か）かを確認することです。それから、必要なら <code>struct sockaddr_in</code> や <code>struct sockaddr_in6</code> にキャストすることができます。</p>
+<h2 id=34-ip-addresses-part-deux>
+3.4 IP Addresses, Part Deux
+<a class=anchor href=#34-ip-addresses-part-deux>#</a>
+</h2>
+<p>幸いなことに、IP アドレスを操作するための関数がたくさんあります。手書きで把握して <code>&lt;&lt;</code> 演算子で <code>long</code> に詰め込む必要はありません。</p>
+<p>まず、<code>struct sockaddr_in ina</code> があり、そこに格納したい IP アドレスが <code>10.12.110.57</code> または <code>2001:db8:63b3:1::3490</code> だとしましょう。<code>inet_pton()</code> という関数は、数字とドットで表記された IP アドレスを、<code>AF_INET</code> か <code>AF_INET6</code> の指定によって、<code>in_addr</code> 構造体か <code>in6_addr</code> 構造体に変換する関数です。("<code>pton</code>" は &ldquo;presentation to network&rdquo; の略で、覚えやすければ &ldquo;printable to network&rdquo; と呼んでも構いません)。変換は次のように行うことができます。</p>
+<pre tabindex=0><code class=language-{.c} data-lang={.c}>struct sockaddr_in sa; // IPv4
+struct sockaddr_in6 sa6; // IPv6
+
+inet_pton(AF_INET, &quot;10.12.110.57&quot;, &amp;(sa.sin_addr)); // IPv4
+inet_pton(AF_INET6, &quot;2001:db8:63b3:1::3490&quot;, &amp;(sa6.sin6_addr)); // IPv6
+</code></pre><p>(クイックメモ: 古い方法では、<code>inet_addr()</code> という関数や <code>inet_aton()</code> という別の関数を使っていましたが、これらはもう時代遅れで IPv6 では動きません。)</p>
+<p>さて、上記のコードスニペットは、エラーチェックがないため、あまり堅牢ではありません。<code>inet_pton()</code> はエラー時に <code>-1</code> を返し、アドレスがめちゃくちゃになった場合は 0 を返します。ですから、使用する前に結果が 0 よりも大きいことを確認してください！</p>
+<p>さて、これで文字列の IP アドレスをバイナリ表現に変換することができるようになりました。では、その逆はどうでしょうか？<code>in_addr</code> 構造体を持っていて、それを数字とドットの表記で印刷したい場合はどうでしょうか。(この場合、関数 <code>inet_ntop()</code> ("<code>ntop</code>" は &ldquo;network to presentation&rdquo; という意味です。覚えやすければ &ldquo;network to printable&rdquo; と呼んでも構いません) を次のように使用します。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>// IPv4:
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>char</span> ip4[INET_ADDRSTRLEN];  <span style=color:#75715e>// space to hold the IPv4 string
+</span><span style=color:#75715e></span><span style=color:#66d9ef>struct</span> sockaddr_in sa;      <span style=color:#75715e>// pretend this is loaded with something
+</span><span style=color:#75715e></span>
+inet_ntop(AF_INET, <span style=color:#f92672>&amp;</span>(sa.sin_addr), ip4, INET_ADDRSTRLEN);
+
+printf(<span style=color:#e6db74>&#34;The IPv4 address is: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, ip4);
+
+
+<span style=color:#75715e>// IPv6:
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>char</span> ip6[INET6_ADDRSTRLEN]; <span style=color:#75715e>// space to hold the IPv6 string
+</span><span style=color:#75715e></span><span style=color:#66d9ef>struct</span> sockaddr_in6 sa6;    <span style=color:#75715e>// pretend this is loaded with something
+</span><span style=color:#75715e></span>
+inet_ntop(AF_INET6, <span style=color:#f92672>&amp;</span>(sa6.sin6_addr), ip6, INET6_ADDRSTRLEN);
+
+printf(<span style=color:#e6db74>&#34;The address is: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, ip6);
+</code></pre></div><p>呼び出す際には、アドレスの種類（IPv4 または IPv6）、アドレス、結果を格納する文字列へのポインタ、その文字列の最大長を渡すことになります。(2つのマクロは、最大の IPv4 または IPv6 アドレスを保持するために必要な文字列のサイズを都合よく保持します。<code>INET_ADDRSTRLEN</code> と <code>INET6_ADDRSTRLEN</code> です)。</p>
+<p>(古いやり方についてもう一度簡単に触れておくと、この変換を行う歴史的な関数は <code>inet_ntoa()</code> と呼ばれるものでした。これも時代遅れで、IPv6 では動きません。)</p>
+<p>最後に、これらの関数は数値の IP アドレスに対してのみ動作します。"<code>www.example.com</code>" のようなホスト名に対してネームサーバの DNS ルックアップは行いません。後ほど説明するように、そのためには <code>getaddrinfo()</code> を使用します。</p>
+<h3 id=341-private-or-disconnected-networks>
+3.4.1 Private (Or Disconnected) Networks
+<a class=anchor href=#341-private-or-disconnected-networks>#</a>
+</h3>
+<p>多くの場所では、自分たちを守るために、ネットワークを他の地域から隠すファイアウォールがあります。そして多くの場合、ファイアウォールは、ネットワークアドレス変換（NAT）と呼ばれるプロセスを使って、&ldquo;内部&rdquo; IP アドレスを"外部"（世界中の誰もが知っている）IP アドレスに変換しています。</p>
+<p>もう緊張してきましたか？&ldquo;こんな変なことして どこへ行くんだろう？&rdquo;</p>
+<p>まあ、ノンアルコール飲料でも買ってリラックスしてください。初心者の場合、NAT は透過的に行われるので、心配する必要もありませんから。しかし、あなたが見ているネットワーク番号に混乱し始めた場合に備えて、ファイアウォールの背後にあるネットワークについて話したいと思います。</p>
+<p>例えば、私の自宅にはファイアウォールがあります。DSL 会社から割り当てられた2つの固定 IPv4 アドレスを持っていますが、ネットワーク上に7台のコンピューターがあります。どうしてこんなことが可能なのでしょうか？2台のコンピュータが同じ IP アドレスを共有することはできませんし、そうでなければデータはどちらに行けばいいのかわからなくなってしまいます。</p>
+<p>答えは、&ldquo;同じIPアドレスを共有していない"です。2400万個の IP アドレスが割り当てられたプライベートネットワーク上にあるのです。それらはすべて私のためだけのものです。まあ、他の人たちから見れば、すべて私のためのものなのですが。ここで、何が起こっているのかを説明します。</p>
+<p>リモートコンピューターにログインすると、ISP から提供されたパブリック IP アドレスである <code>192.0.2.33</code> からログインしていると表示されるのです。しかし、ローカルコンピューターにその IP アドレスを尋ねると、<code>10.0.0.5</code> と答えるのです。誰が IP アドレスを変換しているのでしょうか？そうです、ファイアウォールです。ファイアウォールが NAT しているのです。</p>
+<p><code>10.x.x.x</code> は、完全に切断されたネットワークか、ファイアウォールの内側にあるネットワークでのみ使用される、数少ない予約ネットワークの1つです。どのプライベート・ネットワーク番号が使用できるかの詳細は、
+<a href=https://datatracker.ietf.org/doc/html/rfc1918>RFC 1918</a> に概説されていますが、一般的によく目にするのは、<code>10.x.x.x</code> と <code>192.168.x.x</code> で、<code>x</code> は通常 0 ～ 255 です。一般的ではないのは、<code>172.y.x.x</code> で、<code>y</code> は16から31の間です。</p>
+<p>NAT するファイアウォールの内側のネットワークは、これらの予約されたネットワークのいずれかにある必要はありませんが、一般的にはそうなっています。</p>
+<p>(楽しい事実！私の外部 IP アドレスは、本当は <code>192.0.2.33</code> ではないのです。<code>192.0.2.x</code> ネットワークは、このガイドのように、ドキュメントで使用するための架空の"本当の&rdquo; IP アドレスのために予約されているのです！わーい、すごい！)</p>
+<p>IPv6 にも、ある意味プライベートネットワークがあります。
+<a href=https://datatracker.ietf.org/doc/html/rfc4193>RFC 4193</a> にあるように、<code>fdXX:</code>（将来的には <code>fcXX:</code>）で始まります。しかし、NAT と IPv6 は一般的に混ざりません(このドキュメントの範囲外である IPv6 から IPv4 へのゲートウェイを行う場合を除きます)。理論的には、自由に使えるアドレスが非常に多くなるため、NAT を使用する必要はなくなるはずです。しかし、外部にルーティングしないネットワーク上で自分のためにアドレスを割り当てたい場合は、このようにします。</p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+<div><a class="flex align-center" href=https://github.com/solareenlo/bgnet/commit/07c499801c881630749280eaa21f4c2d5996bf84 title="Last modified by solareenlo | Jan 4, 2022" target=_blank rel=noopener>
+<img src=/bgnet/svg/calendar.svg class=book-icon alt=Calendar>
+<span>Jan 4, 2022</span>
+</a>
+</div>
+<div>
+<a class="flex align-center" href=https://github.com/solareenlo/bgnet/edit/master/content/content/docs/ip-addresses-structs-and-data-munging/_index.md target=_blank rel=noopener>
+<img src=/bgnet/svg/edit.svg class=book-icon alt=Edit>
+<span>Edit this page</span>
+</a>
+</div>
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#3-ip-addresses-structs-and-data-munging>3 IP Addresses, <code>struct</code>s, and Data Munging</a>
+<ul>
+<li><a href=#31-ip-addresses-versions-4-and-6>3.1 IP Addresses, versions 4 and 6</a>
+<ul>
+<li><a href=#311-subnets>3.1.1 Subnets</a></li>
+<li><a href=#312-port-numbers>3.1.2 Port Numbers</a></li>
+</ul>
+</li>
+<li><a href=#32-byte-order>3.2 Byte Order</a></li>
+<li><a href=#structs>3.3 <code>struct</code>s</a></li>
+<li><a href=#34-ip-addresses-part-deux>3.4 IP Addresses, Part Deux</a>
+<ul>
+<li><a href=#341-private-or-disconnected-networks>3.4.1 Private (Or Disconnected) Networks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>
