@@ -1,0 +1,567 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="6 Client-Server Background #  クライアント-サーバの世界なのです。ネットワーク上のあらゆることが、クライアント・プロセスとサーバ・プロセスとの対話、またはその逆を扱っています。たとえば、telnet を考えてみよう。ポート 23 のリモートホストに telnet で接続すると（クライアント）、そのホスト上のプログラム（telnetd と呼ばれるサーバ）が起動します。このプログラムは、送られてきた telnet 接続を処理し、ログインプロンプトを表示するなどの設定を行います。
+ クライアント-サーバの相互作用  クライアントとサーバ間の情報のやりとりは、上の図のようにまとめられます。
+クライアントとサーバのペアは、SOCK_STREAM、SOCK_DGRAM、その他（同じことを話している限り）何でも話すことができることに注意してください。クライアントとサーバのペアの良い例としては、telnet/telnetd、ftp/ftpd、Firefox/Apache などがあります。ftp を使うときはいつも、リモートプログラム ftpd があなたにサービスを提供します。
+多くの場合、1つのマシンには1つのサーバしかなく、そのサーバは fork() を使用して複数のクライアントを処理します。基本的なルーチンは、サーバが接続を待ち、それを accept() し、それを処理するために子プロセスを fork() する、というものです。これが、次の節で紹介するサンプルサーバが行っていることです。
+6.1 A Simple Stream Server #  このサーバがすることは、ストリーム接続で Hello, world! という文字列を送り出すだけです。このサーバをテストするために必要なことは、あるウィンドウでこのサーバを実行し、別のウィンドウからこのサーバに telnet でアクセスすることだけです。
+$ telnet remotehostname 3490 ここで、remotehostname は実行するマシンの名前です。
+ サーバコード
+/* ** server.c -- a stream socket server demo */ #include <stdio.h>#include <stdlib.h>#include <unistd.h>#include <errno.h>#include <string.h>#include <sys/types.h>#include <sys/socket.h>#include <netinet/in.h>#include <netdb.">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="6 Client-Server Background">
+<meta property="og:description" content>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://solareenlo.com/bgnet/docs/client-server-background/">
+<title>6 Client-Server Background | Beej's Guide to Network Programming</title>
+<link rel=manifest href=/bgnet/manifest.json>
+<link rel=icon href=/bgnet/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/bgnet/book.min.7d12d4add234c27cb11a219e7b205a38bbfc902fc5f73a3417e46984bbc3fa91.css integrity="sha256-fRLUrdI0wnyxGiGeeyBaOLv8kC/F9zo0F+RphLvD+pE=" crossorigin=anonymous>
+<script defer src=/bgnet/flexsearch.min.js></script>
+<script defer src=/bgnet/en.search.min.7210b1719606803135d3160b421e39e6f6e695ed18636a41cd2d7c1b7c9aacb3.js integrity="sha256-chCxcZYGgDE10xYLQh455vbmle0YY2pBzS18G3yarLM=" crossorigin=anonymous></script>
+<link rel=alternate type=application/rss+xml href=https://solareenlo.com/bgnet/docs/client-server-background/index.xml title="Beej's Guide to Network Programming">
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/bgnet/><span>Beej's Guide to Network Programming</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+<ul>
+<li>
+<a href=/bgnet/docs/intro>1 Intro</a></li>
+<li>
+<a href=/bgnet/docs/what-is-a-socket>2 What is a socket?</a></li>
+<li>
+<a href=/bgnet/docs/ip-addresses-structs-and-data-munging>3 IP Addresses, structs, and Data Munging</a></li>
+<li>
+<a href=/bgnet/docs/jumping-from-ipv4-to-ipv6>4 Jumping from IPv4 to IPv6</a></li>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust>5 System Calls or Bust</a></li>
+<li>
+<a href=/bgnet/docs/client-server-background>6 Client-Server Background</a>
+<br></li>
+</ul>
+<ul>
+<li>
+<a href=https://github.com/solareenlo/bgnet target=_blank rel=noopener>
+Github
+</a>
+</li>
+</ul>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/bgnet/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>6 Client-Server Background</strong>
+<label for=toc-control>
+<img src=/bgnet/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#6-client-server-background>6 Client-Server Background</a>
+<ul>
+<li><a href=#61-a-simple-stream-server>6.1 A Simple Stream Server</a></li>
+<li><a href=#62-a-simple-stream-client>6.2 A Simple Stream Client</a></li>
+<li><a href=#datagram>6.3 Datagram Sockets</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h1 id=6-client-server-background>
+6 Client-Server Background
+<a class=anchor href=#6-client-server-background>#</a>
+</h1>
+<p>クライアント-サーバの世界なのです。ネットワーク上のあらゆることが、クライアント・プロセスとサーバ・プロセスとの対話、またはその逆を扱っています。たとえば、<code>telnet</code> を考えてみよう。ポート 23 のリモートホストに <code>telnet</code> で接続すると（クライアント）、そのホスト上のプログラム（telnetd と呼ばれるサーバ）が起動します。このプログラムは、送られてきた <code>telnet</code> 接続を処理し、ログインプロンプトを表示するなどの設定を行います。</p>
+<figure>
+<img src=/bgnet/images/cs.svg alt="[Client-Server Interaction Diagram]">
+<figcaption>クライアント-サーバの相互作用</figcaption>
+</figure>
+<p>クライアントとサーバ間の情報のやりとりは、上の図のようにまとめられます。</p>
+<p>クライアントとサーバのペアは、<code>SOCK_STREAM</code>、<code>SOCK_DGRAM</code>、その他（同じことを話している限り）何でも話すことができることに注意してください。クライアントとサーバのペアの良い例としては、<code>telnet</code>/<code>telnetd</code>、<code>ftp</code>/<code>ftpd</code>、<code>Firefox</code>/<code>Apache</code> などがあります。<code>ftp</code> を使うときはいつも、リモートプログラム <code>ftpd</code> があなたにサービスを提供します。</p>
+<p>多くの場合、1つのマシンには1つのサーバしかなく、そのサーバは <code>fork()</code> を使用して複数のクライアントを処理します。基本的なルーチンは、サーバが接続を待ち、それを <code>accept()</code> し、それを処理するために子プロセスを <code>fork()</code> する、というものです。これが、次の節で紹介するサンプルサーバが行っていることです。</p>
+<h2 id=61-a-simple-stream-server>
+6.1 A Simple Stream Server
+<a class=anchor href=#61-a-simple-stream-server>#</a>
+</h2>
+<p>このサーバがすることは、ストリーム接続で <code>Hello, world!</code> という文字列を送り出すだけです。このサーバをテストするために必要なことは、あるウィンドウでこのサーバを実行し、別のウィンドウからこのサーバに telnet でアクセスすることだけです。</p>
+<pre tabindex=0><code>$ telnet remotehostname 3490
+</code></pre><p>ここで、<code>remotehostname</code> は実行するマシンの名前です。</p>
+<p>
+<a href=https://beej.us/guide/bgnet/examples/server.c>サーバコード</a></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>/*
+</span><span style=color:#75715e>** server.c -- a stream socket server demo
+</span><span style=color:#75715e>*/</span>
+
+<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;errno.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/socket.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netinet/in.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netdb.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;arpa/inet.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/wait.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;signal.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#define PORT &#34;3490&#34;  </span><span style=color:#75715e>// the port users will be connecting to
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#define BACKLOG 10   </span><span style=color:#75715e>// how many pending connections queue will hold
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>void</span> <span style=color:#a6e22e>sigchld_handler</span>(<span style=color:#66d9ef>int</span> s)
+{
+    <span style=color:#75715e>// waitpid() might overwrite errno, so we save and restore it:
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> saved_errno <span style=color:#f92672>=</span> errno;
+
+    <span style=color:#66d9ef>while</span>(waitpid(<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>, NULL, WNOHANG) <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>);
+
+    errno <span style=color:#f92672>=</span> saved_errno;
+}
+
+
+<span style=color:#75715e>// get sockaddr, IPv4 or IPv6:
+</span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>get_in_addr</span>(<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>sa)
+{
+    <span style=color:#66d9ef>if</span> (sa<span style=color:#f92672>-&gt;</span>sa_family <span style=color:#f92672>==</span> AF_INET) {
+        <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin_addr);
+    }
+
+    <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in6<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin6_addr);
+}
+
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+{
+    <span style=color:#66d9ef>int</span> sockfd, new_fd;  <span style=color:#75715e>// listen on sock_fd, new connection on new_fd
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>struct</span> addrinfo hints, <span style=color:#f92672>*</span>servinfo, <span style=color:#f92672>*</span>p;
+    <span style=color:#66d9ef>struct</span> sockaddr_storage their_addr; <span style=color:#75715e>// connector&#39;s address information
+</span><span style=color:#75715e></span>    socklen_t sin_size;
+    <span style=color:#66d9ef>struct</span> sigaction sa;
+    <span style=color:#66d9ef>int</span> yes<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>;
+    <span style=color:#66d9ef>char</span> s[INET6_ADDRSTRLEN];
+    <span style=color:#66d9ef>int</span> rv;
+
+    memset(<span style=color:#f92672>&amp;</span>hints, <span style=color:#ae81ff>0</span>, <span style=color:#66d9ef>sizeof</span> hints);
+    hints.ai_family <span style=color:#f92672>=</span> AF_UNSPEC;
+    hints.ai_socktype <span style=color:#f92672>=</span> SOCK_STREAM;
+    hints.ai_flags <span style=color:#f92672>=</span> AI_PASSIVE; <span style=color:#75715e>// use my IP
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>if</span> ((rv <span style=color:#f92672>=</span> getaddrinfo(NULL, PORT, <span style=color:#f92672>&amp;</span>hints, <span style=color:#f92672>&amp;</span>servinfo)) <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>) {
+        fprintf(stderr, <span style=color:#e6db74>&#34;getaddrinfo: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, gai_strerror(rv));
+        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>1</span>;
+    }
+
+    <span style=color:#75715e>// loop through all the results and bind to the first we can
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>for</span>(p <span style=color:#f92672>=</span> servinfo; p <span style=color:#f92672>!=</span> NULL; p <span style=color:#f92672>=</span> p<span style=color:#f92672>-&gt;</span>ai_next) {
+        <span style=color:#66d9ef>if</span> ((sockfd <span style=color:#f92672>=</span> socket(p<span style=color:#f92672>-&gt;</span>ai_family, p<span style=color:#f92672>-&gt;</span>ai_socktype,
+                p<span style=color:#f92672>-&gt;</span>ai_protocol)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+            perror(<span style=color:#e6db74>&#34;server: socket&#34;</span>);
+            <span style=color:#66d9ef>continue</span>;
+        }
+
+        <span style=color:#66d9ef>if</span> (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, <span style=color:#f92672>&amp;</span>yes,
+                <span style=color:#66d9ef>sizeof</span>(<span style=color:#66d9ef>int</span>)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+            perror(<span style=color:#e6db74>&#34;setsockopt&#34;</span>);
+            exit(<span style=color:#ae81ff>1</span>);
+        }
+
+        <span style=color:#66d9ef>if</span> (bind(sockfd, p<span style=color:#f92672>-&gt;</span>ai_addr, p<span style=color:#f92672>-&gt;</span>ai_addrlen) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+            close(sockfd);
+            perror(<span style=color:#e6db74>&#34;server: bind&#34;</span>);
+            <span style=color:#66d9ef>continue</span>;
+        }
+
+        <span style=color:#66d9ef>break</span>;
+    }
+
+    freeaddrinfo(servinfo); <span style=color:#75715e>// all done with this structure
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>if</span> (p <span style=color:#f92672>==</span> NULL)  {
+        fprintf(stderr, <span style=color:#e6db74>&#34;server: failed to bind</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+        exit(<span style=color:#ae81ff>1</span>);
+    }
+
+    <span style=color:#66d9ef>if</span> (listen(sockfd, BACKLOG) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+        perror(<span style=color:#e6db74>&#34;listen&#34;</span>);
+        exit(<span style=color:#ae81ff>1</span>);
+    }
+
+    sa.sa_handler <span style=color:#f92672>=</span> sigchld_handler; <span style=color:#75715e>// reap all dead processes
+</span><span style=color:#75715e></span>    sigemptyset(<span style=color:#f92672>&amp;</span>sa.sa_mask);
+    sa.sa_flags <span style=color:#f92672>=</span> SA_RESTART;
+    <span style=color:#66d9ef>if</span> (sigaction(SIGCHLD, <span style=color:#f92672>&amp;</span>sa, NULL) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+        perror(<span style=color:#e6db74>&#34;sigaction&#34;</span>);
+        exit(<span style=color:#ae81ff>1</span>);
+    }
+
+    printf(<span style=color:#e6db74>&#34;server: waiting for connections...</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+
+    <span style=color:#66d9ef>while</span>(<span style=color:#ae81ff>1</span>) {  <span style=color:#75715e>// main accept() loop
+</span><span style=color:#75715e></span>        sin_size <span style=color:#f92672>=</span> <span style=color:#66d9ef>sizeof</span> their_addr;
+        new_fd <span style=color:#f92672>=</span> accept(sockfd, (<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>their_addr, <span style=color:#f92672>&amp;</span>sin_size);
+        <span style=color:#66d9ef>if</span> (new_fd <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+            perror(<span style=color:#e6db74>&#34;accept&#34;</span>);
+            <span style=color:#66d9ef>continue</span>;
+        }
+
+        inet_ntop(their_addr.ss_family,
+            get_in_addr((<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>their_addr),
+            s, <span style=color:#66d9ef>sizeof</span> s);
+        printf(<span style=color:#e6db74>&#34;server: got connection from %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, s);
+
+        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>fork()) { <span style=color:#75715e>// this is the child process
+</span><span style=color:#75715e></span>            close(sockfd); <span style=color:#75715e>// child doesn&#39;t need the listener
+</span><span style=color:#75715e></span>            <span style=color:#66d9ef>if</span> (send(new_fd, <span style=color:#e6db74>&#34;Hello, world!&#34;</span>, <span style=color:#ae81ff>13</span>, <span style=color:#ae81ff>0</span>) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
+                perror(<span style=color:#e6db74>&#34;send&#34;</span>);
+            close(new_fd);
+            exit(<span style=color:#ae81ff>0</span>);
+        }
+        close(new_fd);  <span style=color:#75715e>// parent doesn&#39;t need this
+</span><span style=color:#75715e></span>    }
+
+    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div><p>一応、構文的にわかりやすいように、1つの大きな <code>main()</code> 関数にまとめてあります。もし、その方が良いと思われるなら、自由に小さな関数に分割してください。</p>
+<p>（また、この <code>sigaction()</code> 全体は、あなたにとって新しいものかもしれません&mdash;それは大丈夫です。このコードは、<code>fork()</code> された子プロセスが終了するときに現れるゾンビプロセスを刈り取る役割を担っているのです。ゾンビをたくさん作ってそれを刈り取らないと、システム管理者が怒りますよ。）</p>
+<p>このサーバからデータを取得するには、次の節に記載されているクライアントを使用します。</p>
+<h2 id=62-a-simple-stream-client>
+6.2 A Simple Stream Client
+<a class=anchor href=#62-a-simple-stream-client>#</a>
+</h2>
+<p>こいつはサーバよりもっと簡単です。このクライアントがすることはコマンドラインで指定したホスト、ポート 3490 に接続するだけです。サーバが送信する文字列を取得します。</p>
+<p>
+<a href=https://beej.us/guide/bgnet/examples/client.c>クライアントソース</a>。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>/*
+</span><span style=color:#75715e>** client.c -- a stream socket client demo
+</span><span style=color:#75715e>*/</span>
+
+<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;errno.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netdb.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netinet/in.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/socket.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;arpa/inet.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#define PORT &#34;3490&#34; </span><span style=color:#75715e>// the port client will be connecting to
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#define MAXDATASIZE 100 </span><span style=color:#75715e>// max number of bytes we can get at once
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>// get sockaddr, IPv4 or IPv6:
+</span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>get_in_addr</span>(<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>sa)
+{
+    <span style=color:#66d9ef>if</span> (sa<span style=color:#f92672>-&gt;</span>sa_family <span style=color:#f92672>==</span> AF_INET) {
+        <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin_addr);
+    }
+
+    <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in6<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin6_addr);
+}
+
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>int</span> argc, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>argv[])
+{
+    <span style=color:#66d9ef>int</span> sockfd, numbytes;
+    <span style=color:#66d9ef>char</span> buf[MAXDATASIZE];
+    <span style=color:#66d9ef>struct</span> addrinfo hints, <span style=color:#f92672>*</span>servinfo, <span style=color:#f92672>*</span>p;
+    <span style=color:#66d9ef>int</span> rv;
+    <span style=color:#66d9ef>char</span> s[INET6_ADDRSTRLEN];
+
+    <span style=color:#66d9ef>if</span> (argc <span style=color:#f92672>!=</span> <span style=color:#ae81ff>2</span>) {
+        fprintf(stderr,<span style=color:#e6db74>&#34;usage: client hostname</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+        exit(<span style=color:#ae81ff>1</span>);
+    }
+
+    memset(<span style=color:#f92672>&amp;</span>hints, <span style=color:#ae81ff>0</span>, <span style=color:#66d9ef>sizeof</span> hints);
+    hints.ai_family <span style=color:#f92672>=</span> AF_UNSPEC;
+    hints.ai_socktype <span style=color:#f92672>=</span> SOCK_STREAM;
+
+    <span style=color:#66d9ef>if</span> ((rv <span style=color:#f92672>=</span> getaddrinfo(argv[<span style=color:#ae81ff>1</span>], PORT, <span style=color:#f92672>&amp;</span>hints, <span style=color:#f92672>&amp;</span>servinfo)) <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>) {
+        fprintf(stderr, <span style=color:#e6db74>&#34;getaddrinfo: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, gai_strerror(rv));
+        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>1</span>;
+    }
+
+    <span style=color:#75715e>// loop through all the results and connect to the first we can
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>for</span>(p <span style=color:#f92672>=</span> servinfo; p <span style=color:#f92672>!=</span> NULL; p <span style=color:#f92672>=</span> p<span style=color:#f92672>-&gt;</span>ai_next) {
+        <span style=color:#66d9ef>if</span> ((sockfd <span style=color:#f92672>=</span> socket(p<span style=color:#f92672>-&gt;</span>ai_family, p<span style=color:#f92672>-&gt;</span>ai_socktype,
+                p<span style=color:#f92672>-&gt;</span>ai_protocol)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+            perror(<span style=color:#e6db74>&#34;client: socket&#34;</span>);
+            <span style=color:#66d9ef>continue</span>;
+        }
+
+        <span style=color:#66d9ef>if</span> (connect(sockfd, p<span style=color:#f92672>-&gt;</span>ai_addr, p<span style=color:#f92672>-&gt;</span>ai_addrlen) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+            close(sockfd);
+            perror(<span style=color:#e6db74>&#34;client: connect&#34;</span>);
+            <span style=color:#66d9ef>continue</span>;
+        }
+
+        <span style=color:#66d9ef>break</span>;
+    }
+
+    <span style=color:#66d9ef>if</span> (p <span style=color:#f92672>==</span> NULL) {
+        fprintf(stderr, <span style=color:#e6db74>&#34;client: failed to connect</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>2</span>;
+    }
+
+    inet_ntop(p<span style=color:#f92672>-&gt;</span>ai_family, get_in_addr((<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)p<span style=color:#f92672>-&gt;</span>ai_addr),
+            s, <span style=color:#66d9ef>sizeof</span> s);
+    printf(<span style=color:#e6db74>&#34;client: connecting to %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, s);
+
+    freeaddrinfo(servinfo); <span style=color:#75715e>// all done with this structure
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>if</span> ((numbytes <span style=color:#f92672>=</span> recv(sockfd, buf, MAXDATASIZE<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>0</span>)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+        perror(<span style=color:#e6db74>&#34;recv&#34;</span>);
+        exit(<span style=color:#ae81ff>1</span>);
+    }
+
+    buf[numbytes] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;\0&#39;</span>;
+
+    printf(<span style=color:#e6db74>&#34;client: received &#39;%s&#39;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>,buf);
+
+    close(sockfd);
+
+    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div><p>クライアントを実行する前にサーバを実行しない場合、<code>connect()</code> は &ldquo;Connection refused&rdquo; を返すことに注意してください。非常に便利です。</p>
+<h2 id=datagram>
+6.3 Datagram Sockets
+<a class=anchor href=#datagram>#</a>
+</h2>
+<p>UDP データグラムソケットの基本は、上記の
+<a href=/bgnet/docs/system-calls-or-bust/#sendtorecv>5.8 sendto() and recvfrom()</a> ですでに説明しましたので、ここでは <code>talker.c</code> と <code>listener.c</code> という2つのサンプルプログラムのみを紹介します。</p>
+<p><code>listener</code> は、ポート 4950 で入ってくるパケットを待つマシンに座っています。<code>talker</code> は、指定されたマシンのそのポートに、ユーザがコマンドラインに入力したものを含むパケットを送信します。</p>
+<p>データグラムソケットはコネクションレス型であり、パケットを無慈悲に発射するだけなので、クライアントとサーバには IPv6 を使用するように指示することにしています。こうすることで、サーバが IPv6 でリッスンしていて、クライアントが IPv4 で送信するような状況を避けることができます。（接続された TCP ストリームソケットの世界では、まだ不一致があるかもしれませんが、一方のアドレスファミリーの <code>connect()</code> でエラーが発生すると、他方のアドレスファミリーの再試行が行われます。）</p>
+<p>
+<a href=https://beej.us/guide/bgnet/examples/listener.c>listener ソースコード</a></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>/*
+</span><span style=color:#75715e>** listener.c -- a datagram sockets &#34;server&#34; demo
+</span><span style=color:#75715e>*/</span>
+
+<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;errno.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/socket.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netinet/in.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;arpa/inet.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netdb.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#define MYPORT &#34;4950&#34;	</span><span style=color:#75715e>// the port users will be connecting to
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#define MAXBUFLEN 100
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>// get sockaddr, IPv4 or IPv6:
+</span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>get_in_addr</span>(<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>sa)
+{
+	<span style=color:#66d9ef>if</span> (sa<span style=color:#f92672>-&gt;</span>sa_family <span style=color:#f92672>==</span> AF_INET) {
+		<span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin_addr);
+	}
+
+	<span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in6<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin6_addr);
+}
+
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+{
+	<span style=color:#66d9ef>int</span> sockfd;
+	<span style=color:#66d9ef>struct</span> addrinfo hints, <span style=color:#f92672>*</span>servinfo, <span style=color:#f92672>*</span>p;
+	<span style=color:#66d9ef>int</span> rv;
+	<span style=color:#66d9ef>int</span> numbytes;
+	<span style=color:#66d9ef>struct</span> sockaddr_storage their_addr;
+	<span style=color:#66d9ef>char</span> buf[MAXBUFLEN];
+	socklen_t addr_len;
+	<span style=color:#66d9ef>char</span> s[INET6_ADDRSTRLEN];
+
+	memset(<span style=color:#f92672>&amp;</span>hints, <span style=color:#ae81ff>0</span>, <span style=color:#66d9ef>sizeof</span> hints);
+	hints.ai_family <span style=color:#f92672>=</span> AF_INET6; <span style=color:#75715e>// set to AF_INET to use IPv4
+</span><span style=color:#75715e></span>	hints.ai_socktype <span style=color:#f92672>=</span> SOCK_DGRAM;
+	hints.ai_flags <span style=color:#f92672>=</span> AI_PASSIVE; <span style=color:#75715e>// use my IP
+</span><span style=color:#75715e></span>
+	<span style=color:#66d9ef>if</span> ((rv <span style=color:#f92672>=</span> getaddrinfo(NULL, MYPORT, <span style=color:#f92672>&amp;</span>hints, <span style=color:#f92672>&amp;</span>servinfo)) <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>) {
+		fprintf(stderr, <span style=color:#e6db74>&#34;getaddrinfo: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, gai_strerror(rv));
+		<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>1</span>;
+	}
+
+	<span style=color:#75715e>// loop through all the results and bind to the first we can
+</span><span style=color:#75715e></span>	<span style=color:#66d9ef>for</span>(p <span style=color:#f92672>=</span> servinfo; p <span style=color:#f92672>!=</span> NULL; p <span style=color:#f92672>=</span> p<span style=color:#f92672>-&gt;</span>ai_next) {
+		<span style=color:#66d9ef>if</span> ((sockfd <span style=color:#f92672>=</span> socket(p<span style=color:#f92672>-&gt;</span>ai_family, p<span style=color:#f92672>-&gt;</span>ai_socktype,
+				p<span style=color:#f92672>-&gt;</span>ai_protocol)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+			perror(<span style=color:#e6db74>&#34;listener: socket&#34;</span>);
+			<span style=color:#66d9ef>continue</span>;
+		}
+
+		<span style=color:#66d9ef>if</span> (bind(sockfd, p<span style=color:#f92672>-&gt;</span>ai_addr, p<span style=color:#f92672>-&gt;</span>ai_addrlen) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+			close(sockfd);
+			perror(<span style=color:#e6db74>&#34;listener: bind&#34;</span>);
+			<span style=color:#66d9ef>continue</span>;
+		}
+
+		<span style=color:#66d9ef>break</span>;
+	}
+
+	<span style=color:#66d9ef>if</span> (p <span style=color:#f92672>==</span> NULL) {
+		fprintf(stderr, <span style=color:#e6db74>&#34;listener: failed to bind socket</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+		<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>2</span>;
+	}
+
+	freeaddrinfo(servinfo);
+
+	printf(<span style=color:#e6db74>&#34;listener: waiting to recvfrom...</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+
+	addr_len <span style=color:#f92672>=</span> <span style=color:#66d9ef>sizeof</span> their_addr;
+	<span style=color:#66d9ef>if</span> ((numbytes <span style=color:#f92672>=</span> recvfrom(sockfd, buf, MAXBUFLEN<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span> , <span style=color:#ae81ff>0</span>,
+		(<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>their_addr, <span style=color:#f92672>&amp;</span>addr_len)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+		perror(<span style=color:#e6db74>&#34;recvfrom&#34;</span>);
+		exit(<span style=color:#ae81ff>1</span>);
+	}
+
+	printf(<span style=color:#e6db74>&#34;listener: got packet from %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>,
+		inet_ntop(their_addr.ss_family,
+			get_in_addr((<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>their_addr),
+			s, <span style=color:#66d9ef>sizeof</span> s));
+	printf(<span style=color:#e6db74>&#34;listener: packet is %d bytes long</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, numbytes);
+	buf[numbytes] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;\0&#39;</span>;
+	printf(<span style=color:#e6db74>&#34;listener: packet contains </span><span style=color:#ae81ff>\&#34;</span><span style=color:#e6db74>%s</span><span style=color:#ae81ff>\&#34;\n</span><span style=color:#e6db74>&#34;</span>, buf);
+
+	close(sockfd);
+
+	<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div><p><code>getaddrinfo()</code> の呼び出しで、最終的に <code>SOCK_DGRAM</code> を使用していることに注意してください。また、<code>listen()</code> や <code>accept()</code> は必要ないことに注意してください。これは非接続型データグラムソケットを使用する利点の1つです！</p>
+<p>
+<a href=https://beej.us/guide/bgnet/examples/talker.c>talker.c ソースコード</a></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>/*
+</span><span style=color:#75715e>** talker.c -- a datagram &#34;client&#34; demo
+</span><span style=color:#75715e>*/</span>
+
+<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;errno.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/socket.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netinet/in.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;arpa/inet.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netdb.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#define SERVERPORT &#34;4950&#34;	</span><span style=color:#75715e>// the port users will be connecting to
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>int</span> argc, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>argv[])
+{
+	<span style=color:#66d9ef>int</span> sockfd;
+	<span style=color:#66d9ef>struct</span> addrinfo hints, <span style=color:#f92672>*</span>servinfo, <span style=color:#f92672>*</span>p;
+	<span style=color:#66d9ef>int</span> rv;
+	<span style=color:#66d9ef>int</span> numbytes;
+
+	<span style=color:#66d9ef>if</span> (argc <span style=color:#f92672>!=</span> <span style=color:#ae81ff>3</span>) {
+		fprintf(stderr,<span style=color:#e6db74>&#34;usage: talker hostname message</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+		exit(<span style=color:#ae81ff>1</span>);
+	}
+
+	memset(<span style=color:#f92672>&amp;</span>hints, <span style=color:#ae81ff>0</span>, <span style=color:#66d9ef>sizeof</span> hints);
+	hints.ai_family <span style=color:#f92672>=</span> AF_INET6; <span style=color:#75715e>// set to AF_INET to use IPv4
+</span><span style=color:#75715e></span>	hints.ai_socktype <span style=color:#f92672>=</span> SOCK_DGRAM;
+
+	<span style=color:#66d9ef>if</span> ((rv <span style=color:#f92672>=</span> getaddrinfo(argv[<span style=color:#ae81ff>1</span>], SERVERPORT, <span style=color:#f92672>&amp;</span>hints, <span style=color:#f92672>&amp;</span>servinfo)) <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>) {
+		fprintf(stderr, <span style=color:#e6db74>&#34;getaddrinfo: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, gai_strerror(rv));
+		<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>1</span>;
+	}
+
+	<span style=color:#75715e>// loop through all the results and make a socket
+</span><span style=color:#75715e></span>	<span style=color:#66d9ef>for</span>(p <span style=color:#f92672>=</span> servinfo; p <span style=color:#f92672>!=</span> NULL; p <span style=color:#f92672>=</span> p<span style=color:#f92672>-&gt;</span>ai_next) {
+		<span style=color:#66d9ef>if</span> ((sockfd <span style=color:#f92672>=</span> socket(p<span style=color:#f92672>-&gt;</span>ai_family, p<span style=color:#f92672>-&gt;</span>ai_socktype,
+				p<span style=color:#f92672>-&gt;</span>ai_protocol)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+			perror(<span style=color:#e6db74>&#34;talker: socket&#34;</span>);
+			<span style=color:#66d9ef>continue</span>;
+		}
+
+		<span style=color:#66d9ef>break</span>;
+	}
+
+	<span style=color:#66d9ef>if</span> (p <span style=color:#f92672>==</span> NULL) {
+		fprintf(stderr, <span style=color:#e6db74>&#34;talker: failed to create socket</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+		<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>2</span>;
+	}
+
+	<span style=color:#66d9ef>if</span> ((numbytes <span style=color:#f92672>=</span> sendto(sockfd, argv[<span style=color:#ae81ff>2</span>], strlen(argv[<span style=color:#ae81ff>2</span>]), <span style=color:#ae81ff>0</span>,
+			 p<span style=color:#f92672>-&gt;</span>ai_addr, p<span style=color:#f92672>-&gt;</span>ai_addrlen)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+		perror(<span style=color:#e6db74>&#34;talker: sendto&#34;</span>);
+		exit(<span style=color:#ae81ff>1</span>);
+	}
+
+	freeaddrinfo(servinfo);
+
+	printf(<span style=color:#e6db74>&#34;talker: sent %d bytes to %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, numbytes, argv[<span style=color:#ae81ff>1</span>]);
+	close(sockfd);
+
+	<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div><p>と、これだけです！<code>listener</code> をあるマシンで実行し、次に <code>takler</code> を別のマシンで実行します。それらのコミュニケーションをご覧ください！核家族で楽しめるG級興奮体験です！</p>
+<p>今回はサーバを動かす必要もありません。<code>talker</code> はただ楽しくパケットをエーテルに発射し、相手側に <code>recvfrom()</code> の準備が出来ていなければ消えてしまうのです。UDP データグラムソケットを使用して送信されたデータは、到着が保証されていないことを思い出してください！</p>
+<p>過去に何度も述べた、もうひとつの小さなディテールを除いては、コネクテッド・データグラム・ソケットです。このドキュメントのデータグラムセクションにいるので、ここでこれについて話す必要があります。例えば、<code>talker</code> が <code>connect()</code> を呼び出して <code>listener</code> のアドレスを指定したとします。それ以降、<code>talker</code> は <code>connect()</code> で指定されたアドレスにのみ送信と受信ができます。このため、<code>sendto()</code> と <code>recvfrom()</code> を使う必要はなく、単に <code>send()</code> と <code>recv()</code> を使えばいいのです。</p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+<div><a class="flex align-center" href=https://github.com/solareenlo/bgnet/commit/40aef5ecbdba45291c22bc533fd69c896a82e1bf title="Last modified by solareenlo | Jan 5, 2022" target=_blank rel=noopener>
+<img src=/bgnet/svg/calendar.svg class=book-icon alt=Calendar>
+<span>Jan 5, 2022</span>
+</a>
+</div>
+<div>
+<a class="flex align-center" href=https://github.com/solareenlo/bgnet/edit/master/content/content/docs/client-server-background/_index.md target=_blank rel=noopener>
+<img src=/bgnet/svg/edit.svg class=book-icon alt=Edit>
+<span>Edit this page</span>
+</a>
+</div>
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#6-client-server-background>6 Client-Server Background</a>
+<ul>
+<li><a href=#61-a-simple-stream-server>6.1 A Simple Stream Server</a></li>
+<li><a href=#62-a-simple-stream-client>6.2 A Simple Stream Client</a></li>
+<li><a href=#datagram>6.3 Datagram Sockets</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>
