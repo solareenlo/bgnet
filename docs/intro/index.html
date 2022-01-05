@@ -23,7 +23,7 @@
 <link rel=icon href=/bgnet/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/bgnet/book.min.7d12d4add234c27cb11a219e7b205a38bbfc902fc5f73a3417e46984bbc3fa91.css integrity="sha256-fRLUrdI0wnyxGiGeeyBaOLv8kC/F9zo0F+RphLvD+pE=" crossorigin=anonymous>
 <script defer src=/bgnet/flexsearch.min.js></script>
-<script defer src=/bgnet/en.search.min.345498147b13c944506ce6b69f0b9eaa2b9868ca2c837ca1e76341bf826775c0.js integrity="sha256-NFSYFHsTyURQbOa2nwueqiuYaMosg3yh52NBv4JndcA=" crossorigin=anonymous></script>
+<script defer src=/bgnet/en.search.min.e3cda0d7177858d35517a12b6db15915f1324a8e1539df3b8aeb4949229bf0ce.js integrity="sha256-482g1xd4WNNVF6ErbbFZFfEySo4VOd87iutJSSKb8M4=" crossorigin=anonymous></script>
 <link rel=alternate type=application/rss+xml href=https://solareenlo.com/bgnet/docs/intro/index.xml title="Beej's Guide to Network Programming">
 </head>
 <body dir=ltr>
@@ -50,7 +50,9 @@
 <li>
 <a href=/bgnet/docs/ip-addresses-structs-and-data-munging>3 IP Addresses, structs, and Data Munging</a></li>
 <li>
-<a href=/bgnet/docs/jumping-from-ipv4-to-ipv6>4 Jumping from IPv4 to IPv6</a>
+<a href=/bgnet/docs/jumping-from-ipv4-to-ipv6>4 Jumping from IPv4 to IPv6</a></li>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust>5 System Calls or Bust</a>
 <br></li>
 </ul>
 <ul>
@@ -140,9 +142,9 @@ Github
 <pre tabindex=0><code>$ cc -o server server.c -lnsl -lsocket -lresolv
 </code></pre><p>それでもエラーが出るようなら、さらにそのコマンドラインの最後に <code>-lxnet</code> を追加してみるといいでしょう。それが何をするのか正確にはわかりませんが、必要な人もいるようです。</p>
 <p>もう一つ問題がありそうなのは、<code>setsockopt()</code> の呼び出しのところです。プロトタイプは私の Linux ボックスのものとは異なるので、代わりに</p>
-<pre tabindex=0><code class=language-{.c} data-lang={.c}>int yes=1;
-</code></pre><pre tabindex=0><code class=language-{.c} data-lang={.c}>char yes='1';
-</code></pre><p>を入力します。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>int</span> yes<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>;
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>char</span> yes<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;1&#39;</span>;
+</code></pre></div><p>を入力します。</p>
 <p>私は Sunbox を持っていないので、上記の情報を検証したわけではありません&mdash;あくまでメールで教えてもらったことです。</p>
 <h2 id=windows>
 1.5 Note for Windows Programmers
@@ -161,8 +163,8 @@ Github
 <p>しかし、中には純粋な Windows のやり方で物事を進めたいと思う人もいるかもしれません。それはとてもガッツのあることで、こうすればいいんです。すぐに Unix を買ってきてください! いやいや&mdash;冗談です。最近は Windows フレンドリー(笑)なはずなんですが&mldr;。</p>
 <p>これは、あなたがしなければならないことです（
 <a href=/bgnet/>Cygwin</a>をインストールしない限り！）：まず、ここで私が言及するシステムヘッダーファイルのほとんどを無視してください。あなたがインクルードする必要があるのは、以下のものだけです。</p>
-<pre tabindex=0><code class=language-{.c} data-lang={.c}>#include &lt;winsock.h&gt;
-</code></pre><p>待ってください！ソケットライブラリで何かする前に <code>WSAStartup()</code> を呼び出す必要があります。これを行うためのコードは以下のようなものです。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;winsock.h&gt;</span><span style=color:#75715e>
+</span></code></pre></div><p>待ってください！ソケットライブラリで何かする前に <code>WSAStartup()</code> を呼び出す必要があります。これを行うためのコードは以下のようなものです。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;winsock.h&gt;</span><span style=color:#75715e>
 </span><span style=color:#75715e></span>
 {
@@ -235,9 +237,9 @@ Github
 </article>
 <footer class=book-footer>
 <div class="flex flex-wrap justify-between">
-<div><a class="flex align-center" href=https://github.com/solareenlo/bgnet/commit/e16de79af39115430699d5490a51021f7285f30f title="Last modified by solareenlo | Jan 4, 2022" target=_blank rel=noopener>
+<div><a class="flex align-center" href=https://github.com/solareenlo/bgnet/commit/050bcfd0a962625450e0185d01f55cd26bf7dfe9 title="Last modified by solareenlo | Jan 5, 2022" target=_blank rel=noopener>
 <img src=/bgnet/svg/calendar.svg class=book-icon alt=Calendar>
-<span>Jan 4, 2022</span>
+<span>Jan 5, 2022</span>
 </a>
 </div>
 <div>
