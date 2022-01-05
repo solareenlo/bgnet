@@ -19,7 +19,7 @@ $ netstat 唯一のコツは、どのソケットがどのプログラムに関�
 <link rel=icon href=/bgnet/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/bgnet/book.min.3fc729a37471ee87e40517478b6ab5936d22fcb6008d40985724e4295d1a74c0.css integrity="sha256-P8cpo3Rx7ofkBRdHi2q1k20i/LYAjUCYVyTkKV0adMA=" crossorigin=anonymous>
 <script defer src=/bgnet/flexsearch.min.js></script>
-<script defer src=/bgnet/en.search.min.8359b7a63bdb43c9177e9d067fc1524c325fcb61e9a3843ed2d7708e4cd5fdbe.js integrity="sha256-g1m3pjvbQ8kXfp0Gf8FSTDJfy2Hpo4Q+0tdwjkzV/b4=" crossorigin=anonymous></script>
+<script defer src=/bgnet/en.search.min.96186359677d3260e56b54ad32896768914aa874b07c8dc22b598beaa926b613.js integrity="sha256-lhhjWWd9MmDla1StMolnaJFKqHSwfI3CK1mL6qkmthM=" crossorigin=anonymous></script>
 <link rel=alternate type=application/rss+xml href=https://solareenlo.com/bgnet/docs/common-questions/index.xml title="Beej's Guide to Network Programming">
 </head>
 <body dir=ltr>
@@ -408,11 +408,11 @@ Github
 </ol>
 <p>ご注意ください！サーバがクライアントの言うことを実行することは、リモートシェルアクセスを与えるようなもので、サーバに接続すると、あなたのアカウントに何かすることができます。例えば、上記の例で、クライアントが &ldquo;<code>rm -rf ~</code>&rdquo; と送ったらどうでしょう？それはあなたのアカウント内のすべてを削除してしまいます。</p>
 <p>そこで、賢明にも、<code>foobar</code> ユーティリティのような、安全だとわかっているいくつかのユーティリティを除いて、クライアントが何も使えないようにするのです。</p>
-<pre tabindex=0><code class=language-{.c} data-lang={.c}>if (!strncmp(str, &quot;foobar&quot;, 6)) {
-    sprintf(sysstr, &quot;%s &gt; /tmp/server.out&quot;, str);
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#719e07>if</span> (<span style=color:#719e07>!</span>strncmp(str, <span style=color:#2aa198>&#34;foobar&#34;</span>, <span style=color:#2aa198>6</span>)) {
+    sprintf(sysstr, <span style=color:#2aa198>&#34;%s &gt; /tmp/server.out&#34;</span>, str);
     system(sysstr);
 }
-</code></pre><p>しかし、残念ながらまだ安全ではありません。クライアントが &ldquo;<code>foobar; rm -rf ~</code>&rdquo; と入力したらどうでしょうか。最も安全なのは、コマンドの引数に含まれるすべての非英数字（適切であればスペースを含む）の前にエスケープ文字（"<code>\</code>"）を置く小さなルーチンを書くことです。</p>
+</code></pre></div><p>しかし、残念ながらまだ安全ではありません。クライアントが &ldquo;<code>foobar; rm -rf ~</code>&rdquo; と入力したらどうでしょうか。最も安全なのは、コマンドの引数に含まれるすべての非英数字（適切であればスペースを含む）の前にエスケープ文字（"<code>\</code>"）を置く小さなルーチンを書くことです。</p>
 <p>このように、クライアントが送信したものをサーバが実行し始めると、セキュリティはかなり大きな問題になります。</p>
 <h3 id=816-slew-でデータを送っているのですがrecv-すると一度に-536-バイトか-1460-バイトしか受信できませんしかし私のローカルマシンで実行するとすべてのデータを同時に受信することができますどうなっているのでしょうか>
 8.16 slew でデータを送っているのですが、<code>recv()</code> すると、一度に 536 バイトか 1460 バイトしか受信できません。しかし、私のローカルマシンで実行すると、すべてのデータを同時に受信することができます。どうなっているのでしょうか？
@@ -465,7 +465,7 @@ Github
 </article>
 <footer class=book-footer>
 <div class="flex flex-wrap justify-between">
-<div><a class="flex align-center" href=https://github.com/solareenlo/bgnet/commit/45d13047522c225a95f9fda3c8c10d87fb948dfc title="Last modified by solareenlo | Jan 5, 2022" target=_blank rel=noopener>
+<div><a class="flex align-center" href=https://github.com/solareenlo/bgnet/commit/fc42677fd0a39db533709a20a48db6fdeeee9b7a title="Last modified by solareenlo | Jan 5, 2022" target=_blank rel=noopener>
 <img src=/bgnet/svg/calendar.svg class=book-icon alt=Calendar>
 <span>Jan 5, 2022</span>
 </a>
