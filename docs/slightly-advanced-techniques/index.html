@@ -1,0 +1,833 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="7 Slightly Advanced Techniques #  これらは本当に高度なものではありませんが、私たちがすでにカバーしたより基本的なレベルから抜け出したものです。実際、ここまでくれば、Unix ネットワークプログラミングの基本をかなり習得したと考えてよいでしょう！おめでとうございます！
+さて、ここからは、より難解な事柄の勇敢な新世界に突入します。ソケットについて学ぶことができます。どうぞお楽しみに！
+7.1 Blocking #  ブロッキング。聞いたことがあると思います&mdash;さて、一体何でしょう？一言で言えば、&ldquo;ブロック&#34;は技術用語で&#34;スリープ&#34;のことです。上で listener を実行したとき、パケットが到着するまでただそこに座っていることに気付いたと思います。何が起こったかというと、recvfrom() を呼び出したのですが、データがなかったので、recvfrom() はデータが到着するまで &ldquo;block&rdquo;（つまり、そこで眠る）と言われているのです。
+多くの関数がブロックします。accept() がブロックします。すべての recv() 関数がブロックします。このようなことができるのは、ブロックすることが許されているからです。最初に socket() でソケットディスクリプタを作成するとき、カーネルはそれをブロッキングに設定します。もし、ソケットをブロッキングさせたくなければ、fcntl() を呼び出す必要があります。
+#include <unistd.h>#include <fcntl.h>. . . sockfd = socket(PF_INET, SOCK_STREAM, 0); fcntl(sockfd, F_SETFL, O_NONBLOCK); . . . ソケットをノンブロッキングに設定することで、効果的にソケットの情報を&#34;ポール&#34;することができます。ノンブロッキングソケットから読み込もうとしたときに、そこにデータがない場合、ブロックすることは許されません&mdash;その際には -1 が返り、errno には EAGAIN または EWOULDBLOCK がセットされます。
+（待てよ&ndash;EAGAIN や EWOULDBLOCK を返すこともあるのか？どちらをチェックする？仕様では実際にあなたのシステムがどちらを返すかは指定されていないので、移植性のために両方チェックしましょう。）
+しかし、一般的に言って、この種のポーリングは悪い考えです。ソケットのデータを探すためにプログラムをビジーウェイト状態にすると、流行遅れのように CPU 時間を吸い取られてしまうからです。読み込み待ちのデータがあるかどうかを確認するための、よりエレガントなソリューションが、次の poll() の節で紹介されています。
+7.2 poll()&mdash;Synchronous I/O Multiplexing #  本当にやりたいことは、一度にたくさんのソケットを監視して、データの準備ができたものを処理することです。そうすれば、すべてのソケットを継続的にポーリングして、どれが読み込み可能な状態にあるかを確認する必要がなくなります。
+ 警告: poll() は膨大な数のコネクションを持つ場合、恐ろしく遅くなります。そのような状況では、システムで利用可能な最も高速なメソッドを使用しようとする libevent のようなイベントライブラリの方が良いパフォーマンスを得ることができるでしょう。">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="7 Slightly Advanced Techniques">
+<meta property="og:description" content>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://solareenlo.com/bgnet/docs/slightly-advanced-techniques/">
+<title>7 Slightly Advanced Techniques | Beej's Guide to Network Programming</title>
+<link rel=manifest href=/bgnet/manifest.json>
+<link rel=icon href=/bgnet/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/bgnet/book.min.7d12d4add234c27cb11a219e7b205a38bbfc902fc5f73a3417e46984bbc3fa91.css integrity="sha256-fRLUrdI0wnyxGiGeeyBaOLv8kC/F9zo0F+RphLvD+pE=" crossorigin=anonymous>
+<script defer src=/bgnet/flexsearch.min.js></script>
+<script defer src=/bgnet/en.search.min.8dae42eea6c990411c9826e44dff73b66d7575c531c49ac6b1e73d8a8ecf4e6f.js integrity="sha256-ja5C7qbJkEEcmCbkTf9ztm11dcUxxJrGsec9io7PTm8=" crossorigin=anonymous></script>
+<link rel=alternate type=application/rss+xml href=https://solareenlo.com/bgnet/docs/slightly-advanced-techniques/index.xml title="Beej's Guide to Network Programming">
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/bgnet/><span>Beej's Guide to Network Programming</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+<ul>
+<li>
+<a href=/bgnet/docs/intro><strong>1</strong> Intro</a>
+<ul>
+<li>
+<a href=/bgnet/docs/intro/#11-audience><strong>1.1</strong> Audience</a></li>
+<li>
+<a href=/bgnet/docs/intro/#12-platform-and-compiler><strong>1.2</strong> Platform and Compiler</a></li>
+<li>
+<a href=/bgnet/docs/intro/#13-official-homepage-and-books-for-sale><strong>1.3</strong> Official Homepage and Books For Sale</a></li>
+<li>
+<a href=/bgnet/docs/intro/#solaris><strong>1.4</strong> Note for Solaris/SunOS Programmers</a></li>
+<li>
+<a href=/bgnet/docs/intro/#windows><strong>1.5</strong> Note for Windows Programmers</a></li>
+<li>
+<a href=/bgnet/docs/intro/#16-email-policy><strong>1.6</strong> Email Policy</a></li>
+<li>
+<a href=/bgnet/docs/intro/#17-mirroring><strong>1.7</strong> Mirroring</a></li>
+<li>
+<a href=/bgnet/docs/intro/#18-note-for-translators><strong>1.8</strong> Note for Translators</a></li>
+<li>
+<a href=/bgnet/docs/intro/#legal><strong>1.9</strong> Copyright, Distribution, and Legal</a></li>
+<li>
+<a href=/bgnet/docs/intro/#110-dedication><strong>1.10</strong> Dedication</a></li>
+<li>
+<a href=/bgnet/docs/intro/#111-publishing-information><strong>1.11</strong> Publishing Information</a></li>
+</ul>
+</li>
+<li>
+<a href=/bgnet/docs/what-is-a-socket><strong>2</strong> What is a socket?</a>
+<ul>
+<li>
+<a href=/bgnet/docs/what-is-a-socket/#21-two-types-of-internet-sockets><strong>2.1</strong> Two Types of Internet Sockets</a></li>
+<li>
+<a href=/bgnet/docs/what-is-a-socket/#lowlevel><strong>2.2</strong> Low level Nonsense and Network Theory</a></li>
+</ul>
+</li>
+<li>
+<a href=/bgnet/docs/ip-addresses-structs-and-data-munging><strong>3</strong> IP Addresses, structs, and Data Munging</a>
+<ul>
+<li>
+<a href=/bgnet/docs/ip-addresses-structs-and-data-munging/#31-ip-addresses-versions-4-and-6><strong>3.1</strong> IP Addresses, versions 4 and 6</a>
+<ul>
+<li>
+<a href=/bgnet/docs/ip-addresses-structs-and-data-munging/#311-subnets><strong>3.1.1</strong> Subnets</a></li>
+<li>
+<a href=/bgnet/docs/ip-addresses-structs-and-data-munging/#312-port-numbers><strong>3.1.2</strong> Port Numbers</a></li>
+</ul>
+</li>
+<li>
+<a href=/bgnet/docs/ip-addresses-structs-and-data-munging/#32-byte-order><strong>3.2</strong> Byte Order</a></li>
+<li>
+<a href=/bgnet/docs/ip-addresses-structs-and-data-munging/#structs><strong>3.3</strong> structs</a></li>
+<li>
+<a href=/bgnet/docs/ip-addresses-structs-and-data-munging/#34-ip-addresses-part-deux><strong>3.4</strong> IP Addresses, Part Deux</a>
+<ul>
+<li>
+<a href=/bgnet/docs/ip-addresses-structs-and-data-munging/#341-private-or-disconnected-networks><strong>3.4.1</strong> Private (Or Disconnected) Networks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href=/bgnet/docs/jumping-from-ipv4-to-ipv6><strong>4</strong> Jumping from IPv4 to IPv6</a></li>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust><strong>5</strong> System Calls or Bust</a>
+<ul>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust/#51-getaddrinfo---prepare-to-launch><strong>5.1</strong> getaddrinfo()—Prepare to launch!</a></li>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust/#socket><strong>5.2</strong> socket()—Get the File Descriptor!</a></li>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust/#bind><strong>5.3</strong> bind()—What port am I on?</a></li>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust/#connect><strong>5.4</strong> connect()—Hey, you!</a></li>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust/#listen><strong>5.5</strong> listen()—Will somebody please call me?</a></li>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust/#56-accept---thank-you-for-calling-port-3490><strong>5.6</strong> accept()—“Thank you for calling port 3490.”</a></li>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust/#sendrecv><strong>5.7</strong> send() and recv()—Talk to me, baby!</a></li>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust/#sendtorecv><strong>5.8</strong> sendto() and recvfrom()—Talk to me, DGRAM-style</a></li>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust/#59-close-and-shutdown---get-outta-my-face><strong>5.9</strong> close() and shutdown()—Get outta my face!</a></li>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust/#510-getpeername---who-are-you><strong>5.10</strong> getpeername()—Who are you?</a></li>
+<li>
+<a href=/bgnet/docs/system-calls-or-bust/#511-gethostname---who-am-i><strong>5.11</strong> gethostname()—Who am I?</a></li>
+</ul>
+</li>
+<li>
+<a href=/bgnet/docs/client-server-background><strong>6</strong> Client-Server Background</a>
+<ul>
+<li>
+<a href=/bgnet/docs/client-server-background/#61-a-simple-stream-server><strong>6.1</strong> A Simple Stream Server</a></li>
+<li>
+<a href=/bgnet/docs/client-server-background/#62-a-simple-stream-client><strong>6.2</strong> A Simple Stream Client</a></li>
+<li>
+<a href=/bgnet/docs/client-server-background/#datagram><strong>6.3</strong> Datagram Sockets</a></li>
+</ul>
+</li>
+<li>
+<a href=/bgnet/docs/slightly-advanced-techniques><strong>7</strong> Slightly Advanced Techniques</a>
+<ul>
+<li>
+<a href=/bgnet/docs/slightly-advanced-techniques/#blocking><strong>7.1</strong> Blocking</a></li>
+<li>
+<a href=/bgnet/docs/slightly-advanced-techniques/#poll><strong>7.2</strong> poll()—Synchronous I/O Multiplexing</a></li>
+<li>
+<a href=/bgnet/docs/slightly-advanced-techniques/#select><strong>7.3</strong> select()—Synchronous I/O Multiplexing, Old School</a>
+<br></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>
+<a href=https://github.com/solareenlo/bgnet target=_blank rel=noopener>
+Github
+</a>
+</li>
+</ul>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/bgnet/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>7 Slightly Advanced Techniques</strong>
+<label for=toc-control>
+<img src=/bgnet/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#7-slightly-advanced-techniques>7 Slightly Advanced Techniques</a>
+<ul>
+<li><a href=#blocking>7.1 Blocking</a></li>
+<li><a href=#poll>7.2 <code>poll()</code>&mdash;Synchronous I/O Multiplexing</a></li>
+<li><a href=#select>7.3 <code>select()</code>&mdash;Synchronous I/O Multiplexing, Old School</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h1 id=7-slightly-advanced-techniques>
+7 Slightly Advanced Techniques
+<a class=anchor href=#7-slightly-advanced-techniques>#</a>
+</h1>
+<p>これらは本当に高度なものではありませんが、私たちがすでにカバーしたより基本的なレベルから抜け出したものです。実際、ここまでくれば、Unix ネットワークプログラミングの基本をかなり習得したと考えてよいでしょう！おめでとうございます！</p>
+<p>さて、ここからは、より難解な事柄の勇敢な新世界に突入します。ソケットについて学ぶことができます。どうぞお楽しみに！</p>
+<h2 id=blocking>
+7.1 Blocking
+<a class=anchor href=#blocking>#</a>
+</h2>
+<p>ブロッキング。聞いたことがあると思います&mdash;さて、一体何でしょう？一言で言えば、&ldquo;ブロック"は技術用語で"スリープ"のことです。上で <code>listener</code> を実行したとき、パケットが到着するまでただそこに座っていることに気付いたと思います。何が起こったかというと、<code>recvfrom()</code> を呼び出したのですが、データがなかったので、<code>recvfrom()</code> はデータが到着するまで &ldquo;block&rdquo;（つまり、そこで眠る）と言われているのです。</p>
+<p>多くの関数がブロックします。<code>accept()</code> がブロックします。すべての <code>recv()</code> 関数がブロックします。このようなことができるのは、ブロックすることが許されているからです。最初に <code>socket()</code> でソケットディスクリプタを作成するとき、カーネルはそれをブロッキングに設定します。もし、ソケットをブロッキングさせたくなければ、<code>fcntl()</code> を呼び出す必要があります。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;fcntl.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>.
+.
+.
+sockfd <span style=color:#f92672>=</span> socket(PF_INET, SOCK_STREAM, <span style=color:#ae81ff>0</span>);
+fcntl(sockfd, F_SETFL, O_NONBLOCK);
+.
+.
+.
+</code></pre></div><p>ソケットをノンブロッキングに設定することで、効果的にソケットの情報を"ポール"することができます。ノンブロッキングソケットから読み込もうとしたときに、そこにデータがない場合、ブロックすることは許されません&mdash;その際には <code>-1</code> が返り、<code>errno</code> には <code>EAGAIN</code> または <code>EWOULDBLOCK</code> がセットされます。</p>
+<p>（待てよ&ndash;<code>EAGAIN</code> や <code>EWOULDBLOCK</code> を返すこともあるのか？どちらをチェックする？仕様では実際にあなたのシステムがどちらを返すかは指定されていないので、移植性のために両方チェックしましょう。）</p>
+<p>しかし、一般的に言って、この種のポーリングは悪い考えです。ソケットのデータを探すためにプログラムをビジーウェイト状態にすると、流行遅れのように CPU 時間を吸い取られてしまうからです。読み込み待ちのデータがあるかどうかを確認するための、よりエレガントなソリューションが、次の <code>poll()</code> の節で紹介されています。</p>
+<h2 id=poll>
+7.2 <code>poll()</code>&mdash;Synchronous I/O Multiplexing
+<a class=anchor href=#poll>#</a>
+</h2>
+<p>本当にやりたいことは、一度にたくさんのソケットを監視して、データの準備ができたものを処理することです。そうすれば、すべてのソケットを継続的にポーリングして、どれが読み込み可能な状態にあるかを確認する必要がなくなります。</p>
+<blockquote>
+<p>警告: <code>poll()</code> は膨大な数のコネクションを持つ場合、恐ろしく遅くなります。そのような状況では、システムで利用可能な最も高速なメソッドを使用しようとする
+<a href=https://libevent.org/>libevent</a> のようなイベントライブラリの方が良いパフォーマンスを得ることができるでしょう。</p>
+</blockquote>
+<p>では、どうすればポーリングを回避できるのでしょうか。少し皮肉なことに、<code>poll()</code> システムコールを使えばポーリングを避けることができます。簡単に言うと、オペレーティングシステムにすべての汚い仕事を代行してもらい、どのソケットでデータが読めるようになったかだけを知らせてもらうのです。その間、我々のプロセスはスリープして、システムリソースを節約することができます。</p>
+<p>一般的なゲームプランは、どのソケットディスクリプタを監視したいか、どのような種類のイベントを監視したいかという情報を <code>struct pollfd</code> の配列として保持することです。OS は、これらのイベントのいずれかが発生するか（例えば &ldquo;socket ready to read!"）またはユーザが指定したタイムアウトが発生するまで <code>poll()</code> 呼び出しでブロックします。</p>
+<p>便利なことに、 <code>listen()</code>しているソケットは、新しい接続が <code>accept()</code> される準備ができたときに &ldquo;ready to read&rdquo; を返します。</p>
+<p>雑談はこのくらいにして。これをどう使うかです？</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;poll.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>poll</span>(<span style=color:#66d9ef>struct</span> pollfd fds[], nfds_t nfds, <span style=color:#66d9ef>int</span> timeout);
+</code></pre></div><p><code>fds</code> は情報の配列（どのソケットの何を監視するか）、<code>nfds</code> は配列の要素数、そして <code>timeout</code> はミリ秒単位のタイムアウトです。<code>timeout</code> はミリ秒単位のタイムアウトで、<code>poll</code> はイベントが発生した配列の要素数を返します。</p>
+<p><code>struct pollfd</code> を見てみましょう。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>struct</span> pollfd {
+    <span style=color:#66d9ef>int</span> fd;         <span style=color:#75715e>// the socket descriptor
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>short</span> events;   <span style=color:#75715e>// bitmap of events we&#39;re interested in
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>short</span> revents;  <span style=color:#75715e>// when poll() returns, bitmap of events that occurred
+</span><span style=color:#75715e></span>};
+</code></pre></div><p>そして、その配列を用意するんだ。各要素の <code>fd</code> フィールドに、監視したいソケットディスクリプタを指定します。そして、<code>events</code> フィールドには、監視するイベントの種類を指定します。</p>
+<p><code>events</code> フィールドは、以下のビット単位の OR です。</p>
+<table>
+<thead>
+<tr>
+<th>Macro</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POLLIN</code></td>
+<td>このソケットで <code>recv()</code> のためのデータが準備できたときに警告を出す。</td>
+</tr>
+<tr>
+<td><code>POLLOUT</code></td>
+<td>このソケットにブロックせずにデータを <code>send()</code> できるようになったら警告します。</td>
+</tr>
+</tbody>
+</table>
+<p>一旦 <code>struct pollfd</code> の配列を整えたら、それを <code>poll()</code> に渡すことができます。配列のサイズと、ミリ秒単位のタイムアウト値も一緒に渡してください。（タイムアウトに負の値を指定すると、永遠に待つことができます。）</p>
+<p><code>poll()</code> が返った後、<code>revents</code> フィールドをチェックして、<code>POLLIN</code> または <code>POLLOUT</code> がセットされているかどうかを確認し、イベントが発生したことを示すことができます。</p>
+<p>（実際には <code>poll()</code> の呼び出しでできることはもっとたくさんあります。詳細は以下の
+<a href=/bgnet/#pollman><code>poll()</code> man ページ</a>を参照してください。）</p>
+<p>ここでは、標準入力からデータを読み込めるようになるまで、つまり <code>RETURN</code> を押したときに 2.5 秒間待つ
+<a href=https://beej.us/guide/bgnet/examples/poll.c>例</a>を示します。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;poll.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+{
+    <span style=color:#66d9ef>struct</span> pollfd pfds[<span style=color:#ae81ff>1</span>]; <span style=color:#75715e>// More if you want to monitor more
+</span><span style=color:#75715e></span>
+    pfds[<span style=color:#ae81ff>0</span>].fd <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;          <span style=color:#75715e>// Standard input
+</span><span style=color:#75715e></span>    pfds[<span style=color:#ae81ff>0</span>].events <span style=color:#f92672>=</span> POLLIN; <span style=color:#75715e>// Tell me when ready to read
+</span><span style=color:#75715e></span>
+    <span style=color:#75715e>// If you needed to monitor other things, as well:
+</span><span style=color:#75715e></span>    <span style=color:#75715e>//pfds[1].fd = some_socket; // Some socket descriptor
+</span><span style=color:#75715e></span>    <span style=color:#75715e>//pfds[1].events = POLLIN;  // Tell me when ready to read
+</span><span style=color:#75715e></span>
+    printf(<span style=color:#e6db74>&#34;Hit RETURN or wait 2.5 seconds for timeout</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+
+    <span style=color:#66d9ef>int</span> num_events <span style=color:#f92672>=</span> poll(pfds, <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2500</span>); <span style=color:#75715e>// 2.5 second timeout
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>if</span> (num_events <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>) {
+        printf(<span style=color:#e6db74>&#34;Poll timed out!</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+    } <span style=color:#66d9ef>else</span> {
+        <span style=color:#66d9ef>int</span> pollin_happened <span style=color:#f92672>=</span> pfds[<span style=color:#ae81ff>0</span>].revents <span style=color:#f92672>&amp;</span> POLLIN;
+
+        <span style=color:#66d9ef>if</span> (pollin_happened) {
+            printf(<span style=color:#e6db74>&#34;File descriptor %d is ready to read</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, pfds[<span style=color:#ae81ff>0</span>].fd);
+        } <span style=color:#66d9ef>else</span> {
+            printf(<span style=color:#e6db74>&#34;Unexpected event occurred: %d</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, pfds[<span style=color:#ae81ff>0</span>].revents);
+        }
+    }
+
+    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div><p><code>poll()</code> が <code>pfds</code> 配列の中でイベントが発生した要素の数を返していることに再度注目してください。これは配列のどの要素かを教えてくれるわけではありませんが（そのためにはまだスキャンしなければなりません）、<code>revents</code> フィールドが <code>0</code> 以外のエントリがいくつあるかを教えてくれます（したがって、その数がわかったらスキャンをやめることができます。）</p>
+<p>ここで、いくつかの疑問が出てくるかもしれません。<code>poll()</code> に渡したセットに新しいファイルディスクリプタを追加するにはどうしたらいいのでしょうか？これについては、単に配列に必要なだけのスペースがあることを確認するか、必要に応じて <code>realloc()</code> でスペースを追加してください。</p>
+<p>セットから項目を削除する場合はどうすればよいのでしょうか。この場合は、配列の最後の要素をコピーして、削除する要素の上に置くことができます。そして、その数をひとつ減らして <code>poll()</code> に渡します。もうひとつの方法として、<code>fd</code> フィールドに負の数を設定すると、<code>poll()</code> はそれを無視します。</p>
+<p>どうすれば、<code>telnet</code> できるチャットサーバにまとめることができるのでしょうか？</p>
+<p>これから行うのは、リスナーソケットを起動し、それをファイルディスクリプタのセットに追加して <code>poll()</code> に送ることです。（これは、接続があったときに読み込み可能な状態を表示します。）</p>
+<p>そして、新しい接続を <code>struct pollfd</code> 配列に追加していきます。そして、容量が足りなくなったら、動的にそれを増やしていきます。</p>
+<p>接続が終了したら、その接続を配列から削除します。</p>
+<p>そして、ある接続が読み取り可能になったら、そこからデータを読み取り、そのデータを他のすべての接続に送ることで、他のユーザが入力した内容を見ることができるようにします。</p>
+<p>そこで、
+<a href=https://beej.us/guide/bgnet/examples/pollserver.c>このポール・サーバ</a>を試してみてください。あるウィンドウで実行し、他の多くのターミナルウィンドウから <code>telnet localhost 9034</code> を実行してみてください。一つのウィンドウで入力したものが他のウィンドウでも（RETURNを押した後で）見られるようになるはずです。</p>
+<p>それだけでなく、<code>CTRL-]</code> を押して <code>quit</code> とタイプして <code>telnet</code> を終了すると、サーバは切断を検出し、ファイルディスクリプタの配列からあなたを削除するはずです。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>/*
+</span><span style=color:#75715e>** pollserver.c -- a cheezy multiperson chat server
+</span><span style=color:#75715e>*/</span>
+
+<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/socket.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netinet/in.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;arpa/inet.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netdb.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;poll.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#define PORT &#34;9034&#34;   </span><span style=color:#75715e>// Port we&#39;re listening on
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>// Get sockaddr, IPv4 or IPv6:
+</span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>get_in_addr</span>(<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>sa)
+{
+    <span style=color:#66d9ef>if</span> (sa<span style=color:#f92672>-&gt;</span>sa_family <span style=color:#f92672>==</span> AF_INET) {
+        <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin_addr);
+    }
+
+    <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in6<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin6_addr);
+}
+
+<span style=color:#75715e>// Return a listening socket
+</span><span style=color:#75715e></span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>get_listener_socket</span>(<span style=color:#66d9ef>void</span>)
+{
+    <span style=color:#66d9ef>int</span> listener;     <span style=color:#75715e>// Listening socket descriptor
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> yes<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>;        <span style=color:#75715e>// For setsockopt() SO_REUSEADDR, below
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> rv;
+
+    <span style=color:#66d9ef>struct</span> addrinfo hints, <span style=color:#f92672>*</span>ai, <span style=color:#f92672>*</span>p;
+
+    <span style=color:#75715e>// Get us a socket and bind it
+</span><span style=color:#75715e></span>    memset(<span style=color:#f92672>&amp;</span>hints, <span style=color:#ae81ff>0</span>, <span style=color:#66d9ef>sizeof</span> hints);
+    hints.ai_family <span style=color:#f92672>=</span> AF_UNSPEC;
+    hints.ai_socktype <span style=color:#f92672>=</span> SOCK_STREAM;
+    hints.ai_flags <span style=color:#f92672>=</span> AI_PASSIVE;
+    <span style=color:#66d9ef>if</span> ((rv <span style=color:#f92672>=</span> getaddrinfo(NULL, PORT, <span style=color:#f92672>&amp;</span>hints, <span style=color:#f92672>&amp;</span>ai)) <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>) {
+        fprintf(stderr, <span style=color:#e6db74>&#34;selectserver: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, gai_strerror(rv));
+        exit(<span style=color:#ae81ff>1</span>);
+    }
+
+    <span style=color:#66d9ef>for</span>(p <span style=color:#f92672>=</span> ai; p <span style=color:#f92672>!=</span> NULL; p <span style=color:#f92672>=</span> p<span style=color:#f92672>-&gt;</span>ai_next) {
+        listener <span style=color:#f92672>=</span> socket(p<span style=color:#f92672>-&gt;</span>ai_family, p<span style=color:#f92672>-&gt;</span>ai_socktype, p<span style=color:#f92672>-&gt;</span>ai_protocol);
+        <span style=color:#66d9ef>if</span> (listener <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>) {
+            <span style=color:#66d9ef>continue</span>;
+        }
+
+        <span style=color:#75715e>// Lose the pesky &#34;address already in use&#34; error message
+</span><span style=color:#75715e></span>        setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, <span style=color:#f92672>&amp;</span>yes, <span style=color:#66d9ef>sizeof</span>(<span style=color:#66d9ef>int</span>));
+
+        <span style=color:#66d9ef>if</span> (bind(listener, p<span style=color:#f92672>-&gt;</span>ai_addr, p<span style=color:#f92672>-&gt;</span>ai_addrlen) <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>) {
+            close(listener);
+            <span style=color:#66d9ef>continue</span>;
+        }
+
+        <span style=color:#66d9ef>break</span>;
+    }
+
+    freeaddrinfo(ai); <span style=color:#75715e>// All done with this
+</span><span style=color:#75715e></span>
+    <span style=color:#75715e>// If we got here, it means we didn&#39;t get bound
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> (p <span style=color:#f92672>==</span> NULL) {
+        <span style=color:#66d9ef>return</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+    }
+
+    <span style=color:#75715e>// Listen
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> (listen(listener, <span style=color:#ae81ff>10</span>) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+        <span style=color:#66d9ef>return</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+    }
+
+    <span style=color:#66d9ef>return</span> listener;
+}
+
+<span style=color:#75715e>// Add a new file descriptor to the set
+</span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>add_to_pfds</span>(<span style=color:#66d9ef>struct</span> pollfd <span style=color:#f92672>*</span>pfds[], <span style=color:#66d9ef>int</span> newfd, <span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>fd_count, <span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>fd_size)
+{
+    <span style=color:#75715e>// If we don&#39;t have room, add more space in the pfds array
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>*</span>fd_count <span style=color:#f92672>==</span> <span style=color:#f92672>*</span>fd_size) {
+        <span style=color:#f92672>*</span>fd_size <span style=color:#f92672>*=</span> <span style=color:#ae81ff>2</span>; <span style=color:#75715e>// Double it
+</span><span style=color:#75715e></span>
+        <span style=color:#f92672>*</span>pfds <span style=color:#f92672>=</span> realloc(<span style=color:#f92672>*</span>pfds, <span style=color:#66d9ef>sizeof</span>(<span style=color:#f92672>**</span>pfds) <span style=color:#f92672>*</span> (<span style=color:#f92672>*</span>fd_size));
+    }
+
+    (<span style=color:#f92672>*</span>pfds)[<span style=color:#f92672>*</span>fd_count].fd <span style=color:#f92672>=</span> newfd;
+    (<span style=color:#f92672>*</span>pfds)[<span style=color:#f92672>*</span>fd_count].events <span style=color:#f92672>=</span> POLLIN; <span style=color:#75715e>// Check ready-to-read
+</span><span style=color:#75715e></span>
+    (<span style=color:#f92672>*</span>fd_count)<span style=color:#f92672>++</span>;
+}
+
+<span style=color:#75715e>// Remove an index from the set
+</span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>del_from_pfds</span>(<span style=color:#66d9ef>struct</span> pollfd pfds[], <span style=color:#66d9ef>int</span> i, <span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>fd_count)
+{
+    <span style=color:#75715e>// Copy the one from the end over this one
+</span><span style=color:#75715e></span>    pfds[i] <span style=color:#f92672>=</span> pfds[<span style=color:#f92672>*</span>fd_count<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>];
+
+    (<span style=color:#f92672>*</span>fd_count)<span style=color:#f92672>--</span>;
+}
+
+<span style=color:#75715e>// Main
+</span><span style=color:#75715e></span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+{
+    <span style=color:#66d9ef>int</span> listener;     <span style=color:#75715e>// Listening socket descriptor
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>int</span> newfd;        <span style=color:#75715e>// Newly accept()ed socket descriptor
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>struct</span> sockaddr_storage remoteaddr; <span style=color:#75715e>// Client address
+</span><span style=color:#75715e></span>    socklen_t addrlen;
+
+    <span style=color:#66d9ef>char</span> buf[<span style=color:#ae81ff>256</span>];    <span style=color:#75715e>// Buffer for client data
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>char</span> remoteIP[INET6_ADDRSTRLEN];
+
+    <span style=color:#75715e>// Start off with room for 5 connections
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// (We&#39;ll realloc as necessary)
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> fd_count <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>int</span> fd_size <span style=color:#f92672>=</span> <span style=color:#ae81ff>5</span>;
+    <span style=color:#66d9ef>struct</span> pollfd <span style=color:#f92672>*</span>pfds <span style=color:#f92672>=</span> malloc(<span style=color:#66d9ef>sizeof</span> <span style=color:#f92672>*</span>pfds <span style=color:#f92672>*</span> fd_size);
+
+    <span style=color:#75715e>// Set up and get a listening socket
+</span><span style=color:#75715e></span>    listener <span style=color:#f92672>=</span> get_listener_socket();
+
+    <span style=color:#66d9ef>if</span> (listener <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+        fprintf(stderr, <span style=color:#e6db74>&#34;error getting listening socket</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+        exit(<span style=color:#ae81ff>1</span>);
+    }
+
+    <span style=color:#75715e>// Add the listener to set
+</span><span style=color:#75715e></span>    pfds[<span style=color:#ae81ff>0</span>].fd <span style=color:#f92672>=</span> listener;
+    pfds[<span style=color:#ae81ff>0</span>].events <span style=color:#f92672>=</span> POLLIN; <span style=color:#75715e>// Report ready to read on incoming connection
+</span><span style=color:#75715e></span>
+    fd_count <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>; <span style=color:#75715e>// For the listener
+</span><span style=color:#75715e></span>
+    <span style=color:#75715e>// Main loop
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>for</span>(;;) {
+        <span style=color:#66d9ef>int</span> poll_count <span style=color:#f92672>=</span> poll(pfds, fd_count, <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>);
+
+        <span style=color:#66d9ef>if</span> (poll_count <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+            perror(<span style=color:#e6db74>&#34;poll&#34;</span>);
+            exit(<span style=color:#ae81ff>1</span>);
+        }
+
+        <span style=color:#75715e>// Run through the existing connections looking for data to read
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>for</span>(<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> fd_count; i<span style=color:#f92672>++</span>) {
+
+            <span style=color:#75715e>// Check if someone&#39;s ready to read
+</span><span style=color:#75715e></span>            <span style=color:#66d9ef>if</span> (pfds[i].revents <span style=color:#f92672>&amp;</span> POLLIN) { <span style=color:#75715e>// We got one!!
+</span><span style=color:#75715e></span>
+                <span style=color:#66d9ef>if</span> (pfds[i].fd <span style=color:#f92672>==</span> listener) {
+                    <span style=color:#75715e>// If listener is ready to read, handle new connection
+</span><span style=color:#75715e></span>
+                    addrlen <span style=color:#f92672>=</span> <span style=color:#66d9ef>sizeof</span> remoteaddr;
+                    newfd <span style=color:#f92672>=</span> accept(listener,
+                        (<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>remoteaddr,
+                        <span style=color:#f92672>&amp;</span>addrlen);
+
+                    <span style=color:#66d9ef>if</span> (newfd <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+                        perror(<span style=color:#e6db74>&#34;accept&#34;</span>);
+                    } <span style=color:#66d9ef>else</span> {
+                        add_to_pfds(<span style=color:#f92672>&amp;</span>pfds, newfd, <span style=color:#f92672>&amp;</span>fd_count, <span style=color:#f92672>&amp;</span>fd_size);
+
+                        printf(<span style=color:#e6db74>&#34;pollserver: new connection from %s on &#34;</span>
+                            <span style=color:#e6db74>&#34;socket %d</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>,
+                            inet_ntop(remoteaddr.ss_family,
+                                get_in_addr((<span style=color:#66d9ef>struct</span> sockaddr<span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>remoteaddr),
+                                remoteIP, INET6_ADDRSTRLEN),
+                            newfd);
+                    }
+                } <span style=color:#66d9ef>else</span> {
+                    <span style=color:#75715e>// If not the listener, we&#39;re just a regular client
+</span><span style=color:#75715e></span>                    <span style=color:#66d9ef>int</span> nbytes <span style=color:#f92672>=</span> recv(pfds[i].fd, buf, <span style=color:#66d9ef>sizeof</span> buf, <span style=color:#ae81ff>0</span>);
+
+                    <span style=color:#66d9ef>int</span> sender_fd <span style=color:#f92672>=</span> pfds[i].fd;
+
+                    <span style=color:#66d9ef>if</span> (nbytes <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0</span>) {
+                        <span style=color:#75715e>// Got error or connection closed by client
+</span><span style=color:#75715e></span>                        <span style=color:#66d9ef>if</span> (nbytes <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>) {
+                            <span style=color:#75715e>// Connection closed
+</span><span style=color:#75715e></span>                            printf(<span style=color:#e6db74>&#34;pollserver: socket %d hung up</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, sender_fd);
+                        } <span style=color:#66d9ef>else</span> {
+                            perror(<span style=color:#e6db74>&#34;recv&#34;</span>);
+                        }
+
+                        close(pfds[i].fd); <span style=color:#75715e>// Bye!
+</span><span style=color:#75715e></span>
+                        del_from_pfds(pfds, i, <span style=color:#f92672>&amp;</span>fd_count);
+
+                    } <span style=color:#66d9ef>else</span> {
+                        <span style=color:#75715e>// We got some good data from a client
+</span><span style=color:#75715e></span>
+                        <span style=color:#66d9ef>for</span>(<span style=color:#66d9ef>int</span> j <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; j <span style=color:#f92672>&lt;</span> fd_count; j<span style=color:#f92672>++</span>) {
+                            <span style=color:#75715e>// Send to everyone!
+</span><span style=color:#75715e></span>                            <span style=color:#66d9ef>int</span> dest_fd <span style=color:#f92672>=</span> pfds[j].fd;
+
+                            <span style=color:#75715e>// Except the listener and ourselves
+</span><span style=color:#75715e></span>                            <span style=color:#66d9ef>if</span> (dest_fd <span style=color:#f92672>!=</span> listener <span style=color:#f92672>&amp;&amp;</span> dest_fd <span style=color:#f92672>!=</span> sender_fd) {
+                                <span style=color:#66d9ef>if</span> (send(dest_fd, buf, nbytes, <span style=color:#ae81ff>0</span>) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+                                    perror(<span style=color:#e6db74>&#34;send&#34;</span>);
+                                }
+                            }
+                        }
+                    }
+                } <span style=color:#75715e>// END handle data from client
+</span><span style=color:#75715e></span>            } <span style=color:#75715e>// END got ready-to-read from poll()
+</span><span style=color:#75715e></span>        } <span style=color:#75715e>// END looping through file descriptors
+</span><span style=color:#75715e></span>    } <span style=color:#75715e>// END for(;;)--and you thought it would never end!
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div><p>次の節では、似たような古い関数である <code>select()</code> について見ていきます。<code>select()</code> と <code>poll()</code> はどちらも似たような機能とパフォーマンスを持っており、どのように使うかが違うだけです。<code>select()</code> の方が若干移植性が高いかもしれませんが、使い勝手は少し悪いかもしれません。あなたのシステムでサポートされている限り、一番好きなものを選んでください。</p>
+<h2 id=select>
+7.3 <code>select()</code>&mdash;Synchronous I/O Multiplexing, Old School
+<a class=anchor href=#select>#</a>
+</h2>
+<p>この関数、ちょっと不思議なんですが、とても便利なんです。次のような状況を考えてみましょう。あなたはサーバで、入ってくるコネクションをリッスンするだけでなく、すでに持っているコネクションを読み続けたいのです。</p>
+<p>問題ありません。<code>accept()</code> と <code>recv()</code> を数回実行するだけです。そうはいかないよ、バスター！もし <code>accept()</code> の呼び出しがブロックされていたらどうでしょう？どうやって <code>recv()</code> を同時に行うんだ？&ldquo;ノンブロッキングソケットを使いましょう！&ldquo;まさか！CPU を占有するようなことはしない方がいい。じゃあ、何？</p>
+<p><code>select()</code> は同時に複数のソケットを監視する力を与えてくれます。どのソケットが読み込み可能で、どのソケットが書き込み可能か、そしてどのソケットが例外を発生させたか、本当に知りたければ教えてくれるでしょう。</p>
+<blockquote>
+<p>警告: <code>select()</code> は非常にポータブルですが、巨大な数の接続が発生した場合には恐ろしく遅くなります。そのような状況では、
+<a href=https://libevent.org/>libevent</a> のようなイベントライブラリの方が、あなたのシステムで利用可能な最も高速なメソッドを使用しようとするため、より良いパフォーマンスを得ることができることでしょう。</p>
+</blockquote>
+<p>さっそくですが、<code>select()</code>の概要を説明します。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/time.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>select</span>(<span style=color:#66d9ef>int</span> numfds, fd_set <span style=color:#f92672>*</span>readfds, fd_set <span style=color:#f92672>*</span>writefds,
+           fd_set <span style=color:#f92672>*</span>exceptfds, <span style=color:#66d9ef>struct</span> timeval <span style=color:#f92672>*</span>timeout);
+</code></pre></div><p>この関数は、ファイルディスクリプタの"集合&rdquo;、特に <code>readfds</code>、<code>writefds</code>、<code>exceptfds</code> を監視します。標準入力とソケットディスクリプタ <code>sockfd</code> から読み込めるかどうかを確認したい場合、ファイルディスクリプタ <code>0</code> と <code>sockfd</code> を <code>readfds</code> の集合に追加するだけでよいです。パラメータ <code>numfds</code> には、最も大きいファイルディスクリプタの値に <code>1</code> を足した値を設定する必要があります。この例では、標準入力 (<code>0</code>) よりも確実に大きいので、<code>sockfd+1</code> に設定する必要があります。</p>
+<p><code>select()</code> が戻ると、<code>readfds</code> は、選択したファイルディスクリプタのうち、どれが読み込める状態にあるかを反映するように変更されます。以下のマクロ <code>FD_ISSET()</code> を用いて、それらをテストすることができます。</p>
+<p>この先に進む前に、これらのセットを操作する方法について説明します。各セットは <code>fd_set</code> 型です。以下のマクロはこの型を操作します。</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FD_SET(int fd, fd_set *set);</code></td>
+<td><code>set</code> に <code>fd</code> を追加します。</td>
+</tr>
+<tr>
+<td><code>FD_CLR(int fd, fd_set *set);</code></td>
+<td><code>set</code> から <code>fd</code> を削除します。</td>
+</tr>
+<tr>
+<td><code>FD_ISSET(int fd, fd_set *set);</code></td>
+<td><code>fd</code> が <code>set</code> に含まれる場合は true を返します。</td>
+</tr>
+<tr>
+<td><code>FD_ZERO(fd_set *set);</code></td>
+<td><code>set</code> からすべてのエントリをクリアします。</td>
+</tr>
+</tbody>
+</table>
+<p>最後に、この奇妙な <code>struct timeval</code> とは何でしょうか？まあ、誰かがデータを送ってくるのをいつまでも待っていたくない場合もあるでしょう。例えば、96 秒ごとに &ldquo;Still Going&mldr;&rdquo; とターミナルに表示させたい、でも何も起きていない。この time 構造体では、タイムアウト時間を指定することができます。タイムアウト時間を超えても <code>select()</code> がまだ準備のできたファイルディスクリプタを見つけられなければ、処理を続行できるように返されます。</p>
+<p><code>struct timeval</code> は以下のフィールドを持ちます。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>struct</span> timeval {
+    <span style=color:#66d9ef>int</span> tv_sec;     <span style=color:#75715e>// seconds
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> tv_usec;    <span style=color:#75715e>// microseconds
+</span><span style=color:#75715e></span>};
+</code></pre></div><p><code>tv_sec</code> に待ち時間の秒数を、<code>tv_usec</code> に待ち時間のマイクロ秒数を設定するだけです。そう、これはミリ秒ではなくマイクロ秒なのです。ミリ秒の中には 1000 マイクロ秒があり、1 秒の中には 1000 ミリ秒があります。したがって、1 秒の中には 1,000,000 マイクロ秒があることになります。なぜ &ldquo;usec"なのか？&ldquo;u"は、私たちが"マイクロ"に使っているギリシャ文字の μ（ミュー）に似ていると思われるからです。また、関数が戻ってきたとき、<code>timeout</code> はまだ残っている時間を表示するように更新されるかもしれません。これは、あなたが使っている Unix のフレーバーに依存します。</p>
+<p>やったー！マイクロ秒の分解能のタイマーを手に入れたぞ！まあ、当てにしない方がいいです。どんなに小さな <code>struct timeval</code> を設定しても、おそらく標準的な Unix のタイムスライスの一部を待つ必要があります。</p>
+<p>その他、気になること。もし <code>struct timeval</code> のフィールドを <code>0</code> に設定すると、<code>select()</code> は直ちにタイムアウトし、セット内のすべてのファイルディスクリプタを効率よくポーリングします。パラメータ <code>timeout</code> を <code>NULL</code> に設定すると、決してタイムアウトせず、最初のファイルディスクリプタが準備できるまで待ちます。最後に、特定のセットを待つことを気にしないのであれば、<code>select()</code> のコールでそれを <code>NULL</code> に設定することができます。</p>
+<p>
+<a href=https://beej.us/guide/bgnet/examples/select.c>次のコード</a>では、標準入力に何か表示されるまで 2.5 秒待ちます。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>/*
+</span><span style=color:#75715e>** select.c -- a select() demo
+</span><span style=color:#75715e>*/</span>
+
+<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/time.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#define STDIN 0  </span><span style=color:#75715e>// file descriptor for standard input
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+{
+    <span style=color:#66d9ef>struct</span> timeval tv;
+    fd_set readfds;
+
+    tv.tv_sec <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span>;
+    tv.tv_usec <span style=color:#f92672>=</span> <span style=color:#ae81ff>500000</span>;
+
+    FD_ZERO(<span style=color:#f92672>&amp;</span>readfds);
+    FD_SET(STDIN, <span style=color:#f92672>&amp;</span>readfds);
+
+    <span style=color:#75715e>// don&#39;t care about writefds and exceptfds:
+</span><span style=color:#75715e></span>    select(STDIN<span style=color:#f92672>+</span><span style=color:#ae81ff>1</span>, <span style=color:#f92672>&amp;</span>readfds, NULL, NULL, <span style=color:#f92672>&amp;</span>tv);
+
+    <span style=color:#66d9ef>if</span> (FD_ISSET(STDIN, <span style=color:#f92672>&amp;</span>readfds))
+        printf(<span style=color:#e6db74>&#34;A key was pressed!</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+    <span style=color:#66d9ef>else</span>
+        printf(<span style=color:#e6db74>&#34;Timed out.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+
+    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div><p>ラインバッファ端末の場合、押すキーは RETURN でないと、とにかくタイムアウトしてしまいます。</p>
+<p>さて、この方法はデータグラムソケットでデータを待つのに最適な方法だと思う人もいるかもしれませんね。Unice の中にはこの方法で select を使えるものもあれば、使えないものもあります。試してみたいなら、ローカルの man ページに何が書いてあるか見てみるといいです。</p>
+<p>Unices の中には、タイムアウトまでの残り時間を反映して、<code>struct timeval</code> の時間を更新するものがあります。しかし、そうでないものもあります。ポータブルにしたいのであれば、そのようなことが起こることを当てにしないでください。（経過時間を追跡する必要がある場合は、<code>gettimeofday()</code> を使ってください。残念なことですが、それが現実なのです。）</p>
+<p>リードセット内のソケットがコネクションをクローズした場合はどうなるのでしょうか？その場合、<code>select()</code> はそのソケットディスクリプタを &ldquo;ready to read&rdquo; に設定して返す。実際にそこから <code>recv()</code> を実行すると、<code>recv()</code> は <code>0</code> を返します。これが、クライアントが接続を閉じたことを知るための方法です。</p>
+<p>もうひとつ <code>select()</code> について書いておくと、<code>listen()</code> しているソケットがある場合、そのソケットのファイルディスクリプタを <code>readfds</code> セットに入れておけば、新しい接続があるかどうかチェックすることができます。</p>
+<p>以上、全能の関数 <code>select()</code> の概要を簡単に説明しました。</p>
+<p>しかし、ご要望の多かった、より詳細な例をご紹介します。残念ながら、上記のごく簡単な例と、こちらの例では、大きな違いがあります。しかし、ご覧になってから、その後に続く説明をお読みください。</p>
+<p>
+<a href=https://beej.us/guide/bgnet/examples/selectserver.c>このプログラム</a>は、簡単なマルチユーザチャットサーバーのように動作します。一つのウィンドウで起動し、他の複数のウィンドウから <code>telnet</code> ("<code>telnet hostname 9034</code>") で接続してください。ある <code>telnet</code> セッションで何かを入力すると、他のすべてのウィンドウに表示されるはずです。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>/*
+</span><span style=color:#75715e>** selectserver.c -- a cheezy multiperson chat server
+</span><span style=color:#75715e>*/</span>
+
+<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/socket.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netinet/in.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;arpa/inet.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netdb.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#define PORT &#34;9034&#34;   </span><span style=color:#75715e>// port we&#39;re listening on
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>// get sockaddr, IPv4 or IPv6:
+</span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>get_in_addr</span>(<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>sa)
+{
+    <span style=color:#66d9ef>if</span> (sa<span style=color:#f92672>-&gt;</span>sa_family <span style=color:#f92672>==</span> AF_INET) {
+        <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin_addr);
+    }
+
+    <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in6<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin6_addr);
+}
+
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+{
+    fd_set master;    <span style=color:#75715e>// master file descriptor list
+</span><span style=color:#75715e></span>    fd_set read_fds;  <span style=color:#75715e>// temp file descriptor list for select()
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> fdmax;        <span style=color:#75715e>// maximum file descriptor number
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>int</span> listener;     <span style=color:#75715e>// listening socket descriptor
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> newfd;        <span style=color:#75715e>// newly accept()ed socket descriptor
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>struct</span> sockaddr_storage remoteaddr; <span style=color:#75715e>// client address
+</span><span style=color:#75715e></span>    socklen_t addrlen;
+
+    <span style=color:#66d9ef>char</span> buf[<span style=color:#ae81ff>256</span>];    <span style=color:#75715e>// buffer for client data
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> nbytes;
+
+    <span style=color:#66d9ef>char</span> remoteIP[INET6_ADDRSTRLEN];
+
+    <span style=color:#66d9ef>int</span> yes<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>;        <span style=color:#75715e>// for setsockopt() SO_REUSEADDR, below
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> i, j, rv;
+
+    <span style=color:#66d9ef>struct</span> addrinfo hints, <span style=color:#f92672>*</span>ai, <span style=color:#f92672>*</span>p;
+
+    FD_ZERO(<span style=color:#f92672>&amp;</span>master);    <span style=color:#75715e>// clear the master and temp sets
+</span><span style=color:#75715e></span>    FD_ZERO(<span style=color:#f92672>&amp;</span>read_fds);
+
+    <span style=color:#75715e>// get us a socket and bind it
+</span><span style=color:#75715e></span>    memset(<span style=color:#f92672>&amp;</span>hints, <span style=color:#ae81ff>0</span>, <span style=color:#66d9ef>sizeof</span> hints);
+    hints.ai_family <span style=color:#f92672>=</span> AF_UNSPEC;
+    hints.ai_socktype <span style=color:#f92672>=</span> SOCK_STREAM;
+    hints.ai_flags <span style=color:#f92672>=</span> AI_PASSIVE;
+    <span style=color:#66d9ef>if</span> ((rv <span style=color:#f92672>=</span> getaddrinfo(NULL, PORT, <span style=color:#f92672>&amp;</span>hints, <span style=color:#f92672>&amp;</span>ai)) <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>) {
+        fprintf(stderr, <span style=color:#e6db74>&#34;selectserver: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, gai_strerror(rv));
+        exit(<span style=color:#ae81ff>1</span>);
+    }
+
+    <span style=color:#66d9ef>for</span>(p <span style=color:#f92672>=</span> ai; p <span style=color:#f92672>!=</span> NULL; p <span style=color:#f92672>=</span> p<span style=color:#f92672>-&gt;</span>ai_next) {
+        listener <span style=color:#f92672>=</span> socket(p<span style=color:#f92672>-&gt;</span>ai_family, p<span style=color:#f92672>-&gt;</span>ai_socktype, p<span style=color:#f92672>-&gt;</span>ai_protocol);
+        <span style=color:#66d9ef>if</span> (listener <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>) {
+            <span style=color:#66d9ef>continue</span>;
+        }
+
+        <span style=color:#75715e>// lose the pesky &#34;address already in use&#34; error message
+</span><span style=color:#75715e></span>        setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, <span style=color:#f92672>&amp;</span>yes, <span style=color:#66d9ef>sizeof</span>(<span style=color:#66d9ef>int</span>));
+
+        <span style=color:#66d9ef>if</span> (bind(listener, p<span style=color:#f92672>-&gt;</span>ai_addr, p<span style=color:#f92672>-&gt;</span>ai_addrlen) <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>) {
+            close(listener);
+            <span style=color:#66d9ef>continue</span>;
+        }
+
+        <span style=color:#66d9ef>break</span>;
+    }
+
+    <span style=color:#75715e>// if we got here, it means we didn&#39;t get bound
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> (p <span style=color:#f92672>==</span> NULL) {
+        fprintf(stderr, <span style=color:#e6db74>&#34;selectserver: failed to bind</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+        exit(<span style=color:#ae81ff>2</span>);
+    }
+
+    freeaddrinfo(ai); <span style=color:#75715e>// all done with this
+</span><span style=color:#75715e></span>
+    <span style=color:#75715e>// listen
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> (listen(listener, <span style=color:#ae81ff>10</span>) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+        perror(<span style=color:#e6db74>&#34;listen&#34;</span>);
+        exit(<span style=color:#ae81ff>3</span>);
+    }
+
+    <span style=color:#75715e>// add the listener to the master set
+</span><span style=color:#75715e></span>    FD_SET(listener, <span style=color:#f92672>&amp;</span>master);
+
+    <span style=color:#75715e>// keep track of the biggest file descriptor
+</span><span style=color:#75715e></span>    fdmax <span style=color:#f92672>=</span> listener; <span style=color:#75715e>// so far, it&#39;s this one
+</span><span style=color:#75715e></span>
+    <span style=color:#75715e>// main loop
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>for</span>(;;) {
+        read_fds <span style=color:#f92672>=</span> master; <span style=color:#75715e>// copy it
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span> (select(fdmax<span style=color:#f92672>+</span><span style=color:#ae81ff>1</span>, <span style=color:#f92672>&amp;</span>read_fds, NULL, NULL, NULL) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+            perror(<span style=color:#e6db74>&#34;select&#34;</span>);
+            exit(<span style=color:#ae81ff>4</span>);
+        }
+
+        <span style=color:#75715e>// run through the existing connections looking for data to read
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>for</span>(i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;=</span> fdmax; i<span style=color:#f92672>++</span>) {
+            <span style=color:#66d9ef>if</span> (FD_ISSET(i, <span style=color:#f92672>&amp;</span>read_fds)) { <span style=color:#75715e>// we got one!!
+</span><span style=color:#75715e></span>                <span style=color:#66d9ef>if</span> (i <span style=color:#f92672>==</span> listener) {
+                    <span style=color:#75715e>// handle new connections
+</span><span style=color:#75715e></span>                    addrlen <span style=color:#f92672>=</span> <span style=color:#66d9ef>sizeof</span> remoteaddr;
+                    newfd <span style=color:#f92672>=</span> accept(listener,
+                        (<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>remoteaddr,
+                        <span style=color:#f92672>&amp;</span>addrlen);
+
+                    <span style=color:#66d9ef>if</span> (newfd <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+                        perror(<span style=color:#e6db74>&#34;accept&#34;</span>);
+                    } <span style=color:#66d9ef>else</span> {
+                        FD_SET(newfd, <span style=color:#f92672>&amp;</span>master); <span style=color:#75715e>// add to master set
+</span><span style=color:#75715e></span>                        <span style=color:#66d9ef>if</span> (newfd <span style=color:#f92672>&gt;</span> fdmax) {    <span style=color:#75715e>// keep track of the max
+</span><span style=color:#75715e></span>                            fdmax <span style=color:#f92672>=</span> newfd;
+                        }
+                        printf(<span style=color:#e6db74>&#34;selectserver: new connection from %s on &#34;</span>
+                            <span style=color:#e6db74>&#34;socket %d</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>,
+                            inet_ntop(remoteaddr.ss_family,
+                                get_in_addr((<span style=color:#66d9ef>struct</span> sockaddr<span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>remoteaddr),
+                                remoteIP, INET6_ADDRSTRLEN),
+                            newfd);
+                    }
+                } <span style=color:#66d9ef>else</span> {
+                    <span style=color:#75715e>// handle data from a client
+</span><span style=color:#75715e></span>                    <span style=color:#66d9ef>if</span> ((nbytes <span style=color:#f92672>=</span> recv(i, buf, <span style=color:#66d9ef>sizeof</span> buf, <span style=color:#ae81ff>0</span>)) <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0</span>) {
+                        <span style=color:#75715e>// got error or connection closed by client
+</span><span style=color:#75715e></span>                        <span style=color:#66d9ef>if</span> (nbytes <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>) {
+                            <span style=color:#75715e>// connection closed
+</span><span style=color:#75715e></span>                            printf(<span style=color:#e6db74>&#34;selectserver: socket %d hung up</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, i);
+                        } <span style=color:#66d9ef>else</span> {
+                            perror(<span style=color:#e6db74>&#34;recv&#34;</span>);
+                        }
+                        close(i); <span style=color:#75715e>// bye!
+</span><span style=color:#75715e></span>                        FD_CLR(i, <span style=color:#f92672>&amp;</span>master); <span style=color:#75715e>// remove from master set
+</span><span style=color:#75715e></span>                    } <span style=color:#66d9ef>else</span> {
+                        <span style=color:#75715e>// we got some data from a client
+</span><span style=color:#75715e></span>                        <span style=color:#66d9ef>for</span>(j <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; j <span style=color:#f92672>&lt;=</span> fdmax; j<span style=color:#f92672>++</span>) {
+                            <span style=color:#75715e>// send to everyone!
+</span><span style=color:#75715e></span>                            <span style=color:#66d9ef>if</span> (FD_ISSET(j, <span style=color:#f92672>&amp;</span>master)) {
+                                <span style=color:#75715e>// except the listener and ourselves
+</span><span style=color:#75715e></span>                                <span style=color:#66d9ef>if</span> (j <span style=color:#f92672>!=</span> listener <span style=color:#f92672>&amp;&amp;</span> j <span style=color:#f92672>!=</span> i) {
+                                    <span style=color:#66d9ef>if</span> (send(j, buf, nbytes, <span style=color:#ae81ff>0</span>) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+                                        perror(<span style=color:#e6db74>&#34;send&#34;</span>);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } <span style=color:#75715e>// END handle data from client
+</span><span style=color:#75715e></span>            } <span style=color:#75715e>// END got new incoming connection
+</span><span style=color:#75715e></span>        } <span style=color:#75715e>// END looping through file descriptors
+</span><span style=color:#75715e></span>    } <span style=color:#75715e>// END for(;;)--and you thought it would never end!
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div><p>このコードでは、2つのファイル記述子セットを持っていることに注意してください。<code>master</code> と <code>read_fds</code> です。最初の <code>master</code> は、現在接続されているすべてのソケットディスクリプタと、新しい接続を待ち受けているソケットディスクリプタを保持します。</p>
+<p><code>master</code> のセットを持っている理由は、<code>select()</code> が実際に渡すセットを変更して、どのソケットが読み込み可能な状態にあるかを反映させるためです。ある <code>select()</code> から次の <code>select()</code> への呼び出しまでの接続を追跡する必要があるので、これらをどこかに安全に保存しておかなければなりません。最後の最後で、<code>master</code> を <code>read_fds</code> にコピーしてから <code>select()</code> を呼び出します。</p>
+<p>しかし、これでは新しい接続を得るたびに、それを <code>master</code> セットに追加しなければならないのではありませんか？そうです。そして接続が終了するたびに、それを <code>master</code> セットから削除しなければならないのですか？はい、その通りです。</p>
+<p>注目すべきは、<code>listener</code> ソケットが読み込み可能な状態になったかどうかをチェックしていることです。このとき、新しい接続が保留されていることを意味するので、それを <code>accept()</code> して <code>master</code> セットに追加します。同様に、クライアントの接続が読み込み可能な状態になったときに、<code>recv()</code> が <code>0</code> を返したら、クライアントが接続を閉じたことがわかるので、<code>master</code> セットからそれを削除しなければなりません。</p>
+<p>しかし、クライアントの <code>recv()</code> がゼロ以外を返した場合、何らかのデータを受信したことが分かります。そこで私はそれを取得し、<code>master</code> リストを経由して、接続されている残りのすべてのクライアントにそのデータを送信します。</p>
+<p>以上が、全能の関数 <code>select()</code> の簡単でない概要です。</p>
+<p>Linux ファンの皆さんへ：まれに、Linux の <code>select()</code> が &ldquo;ready-to-read&rdquo; を返した後、実際には読み込む準備ができていないことがあります！これは、Linux の <code>select()</code> が &ldquo;ready-to-read&rdquo; を返した後、実際には読み込む準備ができていないことを意味します。これはつまり、<code>select()</code> が読まないと言っているのに、<code>read()</code> でブロックしてしまうということです！なぜだ、この野郎&mdash;！とにかく、回避策は受信側のソケットで <code>O_NONBLOCK</code> フラグをセットして、 <code>EWOULDBLOCK</code> でエラーにすることです（これは発生しても無視しても大丈夫です）。ソケットをノンブロッキングに設定する方法については、
+<a href=/bgnet/#fcntlman><code>fcntl()</code> リファレンスページ</a>を参照してください。</p>
+<p>さらに、ここでボーナス的な余談ですが、<code>poll()</code> という別の関数があります。これは <code>select()</code> とほぼ同じ動作をしますが、ファイルディスクリプタ集合を管理するシステムが異なります。
+<a href=/bgnet/#pollman>チェックしてみてください！</a></p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+<div><a class="flex align-center" href=https://github.com/solareenlo/bgnet/commit/1085bdd6a4d9198c7792f6b3060012a144866bec title="Last modified by solareenlo | Jan 5, 2022" target=_blank rel=noopener>
+<img src=/bgnet/svg/calendar.svg class=book-icon alt=Calendar>
+<span>Jan 5, 2022</span>
+</a>
+</div>
+<div>
+<a class="flex align-center" href=https://github.com/solareenlo/bgnet/edit/master/content/content/docs/slightly-advanced-techniques/_index.md target=_blank rel=noopener>
+<img src=/bgnet/svg/edit.svg class=book-icon alt=Edit>
+<span>Edit this page</span>
+</a>
+</div>
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#7-slightly-advanced-techniques>7 Slightly Advanced Techniques</a>
+<ul>
+<li><a href=#blocking>7.1 Blocking</a></li>
+<li><a href=#poll>7.2 <code>poll()</code>&mdash;Synchronous I/O Multiplexing</a></li>
+<li><a href=#select>7.3 <code>select()</code>&mdash;Synchronous I/O Multiplexing, Old School</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>
