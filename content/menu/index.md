@@ -46,4 +46,8 @@ headless: true
   - [**7.1** Blocking](docs/slightly-advanced-techniques/#blocking)
   - [**7.2** poll()—Synchronous I/O Multiplexing](docs/slightly-advanced-techniques/#poll)
   - [**7.3** select()—Synchronous I/O Multiplexing, Old School](docs/slightly-advanced-techniques/#select)
+  - [**7.4** Handling Partial `send()`s](docs/slightly-advanced-techniques/#sendall)
+  - [**7.5** Serialization---How to Pack Data](docs/slightly-advanced-techniques/#serialization)
+  - [**7.6** Son of Data Encapsulation](docs/slightly-advanced-techniques/#sonofdataencap)
+  - [**7.7** Broadcast Packets---Hello, World!](docs/slightly-advanced-techniques/#77-broadcast-packets---hello-world)
 <br />
