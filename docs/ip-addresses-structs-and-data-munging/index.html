@@ -29,9 +29,9 @@ IPv4のドットや数字も忘れて、16進数では、2バイトの塊をコ�
 <title>3 IP Addresses, structs, and Data Munging | Beej's Guide to Network Programming</title>
 <link rel=manifest href=/bgnet/manifest.json>
 <link rel=icon href=/bgnet/favicon.png type=image/x-icon>
-<link rel=stylesheet href=/bgnet/book.min.7d12d4add234c27cb11a219e7b205a38bbfc902fc5f73a3417e46984bbc3fa91.css integrity="sha256-fRLUrdI0wnyxGiGeeyBaOLv8kC/F9zo0F+RphLvD+pE=" crossorigin=anonymous>
+<link rel=stylesheet href=/bgnet/book.min.3fc729a37471ee87e40517478b6ab5936d22fcb6008d40985724e4295d1a74c0.css integrity="sha256-P8cpo3Rx7ofkBRdHi2q1k20i/LYAjUCYVyTkKV0adMA=" crossorigin=anonymous>
 <script defer src=/bgnet/flexsearch.min.js></script>
-<script defer src=/bgnet/en.search.min.548a4e6caf6a8e194a9d65c10784be13c26d31df96427d7fad63fc602088ca06.js integrity="sha256-VIpObK9qjhlKnWXBB4S+E8JtMd+WQn1/rWP8YCCIygY=" crossorigin=anonymous></script>
+<script defer src=/bgnet/en.search.min.8359b7a63bdb43c9177e9d067fc1524c325fcb61e9a3843ed2d7708e4cd5fdbe.js integrity="sha256-g1m3pjvbQ8kXfp0Gf8FSTDJfy2Hpo4Q+0tdwjkzV/b4=" crossorigin=anonymous></script>
 <link rel=alternate type=application/rss+xml href=https://solareenlo.com/bgnet/docs/ip-addresses-structs-and-data-munging/index.xml title="Beej's Guide to Network Programming">
 </head>
 <body dir=ltr>
@@ -168,10 +168,12 @@ IPv4のドットや数字も忘れて、16進数では、2バイトの塊をコ�
 <li>
 <a href=/bgnet/docs/slightly-advanced-techniques/#sonofdataencap><strong>7.6</strong> Son of Data Encapsulation</a></li>
 <li>
-<a href=/bgnet/docs/slightly-advanced-techniques/#77-broadcast-packets---hello-world><strong>7.7</strong> Broadcast Packets&mdash;Hello, World!</a>
-<br></li>
+<a href=/bgnet/docs/slightly-advanced-techniques/#77-broadcast-packets---hello-world><strong>7.7</strong> Broadcast Packets&mdash;Hello, World!</a></li>
 </ul>
 </li>
+<li>
+<a href=/bgnet/docs/common-questions><strong>8</strong> Common Questions</a>
+<br></li>
 </ul>
 <ul>
 <li>
@@ -338,21 +340,21 @@ Github
 </h2>
 <p>さて、ついにここまで来ました。そろそろプログラミングの話をしましょう。この章では、ソケットインターフェイスで使用される様々なデータ型について説明します。</p>
 <p>まず、簡単なものからです。ソケットディスクリプタです。ソケットディスクリプタは以下のような型です。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>int</span>
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#dc322f>int</span>
 </code></pre></div><p>普通の <code>int</code> です。</p>
 <p>ここからは変な話なので、我慢して読んでください。</p>
 <p>My First Struct™&mdash;<code>struct addrinfo</code>。この構造体は最近開発されたもので、ソケットアドレス構造体を後で使用するために準備するために使用されます。また、ホスト名のルックアップやサービス名のルックアップにも使用されます。これは、後で実際の使い方を説明するときに、より意味をなすと思いますが、今は、接続を行うときに最初に呼び出されるものの1つであることを知っておいてください。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>struct</span> addrinfo {
-    <span style=color:#66d9ef>int</span>              ai_flags;     <span style=color:#75715e>// AI_PASSIVE, AI_CANONNAME, etc.
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span>              ai_family;    <span style=color:#75715e>// AF_INET, AF_INET6, AF_UNSPEC
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span>              ai_socktype;  <span style=color:#75715e>// SOCK_STREAM, SOCK_DGRAM
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span>              ai_protocol;  <span style=color:#75715e>// use 0 for &#34;any&#34;
-</span><span style=color:#75715e></span>    size_t           ai_addrlen;   <span style=color:#75715e>// size of ai_addr in bytes
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>ai_addr;      <span style=color:#75715e>// struct sockaddr_in or _in6
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>char</span>            <span style=color:#f92672>*</span>ai_canonname; <span style=color:#75715e>// full canonical hostname
-</span><span style=color:#75715e></span>
-    <span style=color:#66d9ef>struct</span> addrinfo <span style=color:#f92672>*</span>ai_next;      <span style=color:#75715e>// linked list, next node
-</span><span style=color:#75715e></span>};
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#719e07>struct</span> addrinfo {
+    <span style=color:#dc322f>int</span>              ai_flags;     <span style=color:#586e75>// AI_PASSIVE, AI_CANONNAME, etc.
+</span><span style=color:#586e75></span>    <span style=color:#dc322f>int</span>              ai_family;    <span style=color:#586e75>// AF_INET, AF_INET6, AF_UNSPEC
+</span><span style=color:#586e75></span>    <span style=color:#dc322f>int</span>              ai_socktype;  <span style=color:#586e75>// SOCK_STREAM, SOCK_DGRAM
+</span><span style=color:#586e75></span>    <span style=color:#dc322f>int</span>              ai_protocol;  <span style=color:#586e75>// use 0 for &#34;any&#34;
+</span><span style=color:#586e75></span>    size_t           ai_addrlen;   <span style=color:#586e75>// size of ai_addr in bytes
+</span><span style=color:#586e75></span>    <span style=color:#719e07>struct</span> sockaddr <span style=color:#719e07>*</span>ai_addr;      <span style=color:#586e75>// struct sockaddr_in or _in6
+</span><span style=color:#586e75></span>    <span style=color:#dc322f>char</span>            <span style=color:#719e07>*</span>ai_canonname; <span style=color:#586e75>// full canonical hostname
+</span><span style=color:#586e75></span>
+    <span style=color:#719e07>struct</span> addrinfo <span style=color:#719e07>*</span>ai_next;      <span style=color:#586e75>// linked list, next node
+</span><span style=color:#586e75></span>};
 </code></pre></div><p>この構造体を少し読み込んでから、<code>getaddrinfo()</code> を呼び出します。この構造体のリンクリストへのポインタが返され、必要なものがすべて満たされます。</p>
 <p><code>ai_family</code> フィールドで IPv4 か IPv6 を使うように強制することもできますし、<code>AF_UNSPEC</code> のままにして何でも使えるようにすることも可能です。これは、あなたのコードが IP バージョンに依存しないので、クールです。</p>
 <p>これはリンクされたリストであることに注意してください：<code>ai_next</code> は次の要素を指しています&mdash;そこから選択するためにいくつかの結果があるかもしれません。私は最初にうまくいった結果を使いますが、あなたは異なるビジネスニーズを持っているかもしれません。何でもかんでも知ってるわけじゃないんです！</p>
@@ -361,54 +363,54 @@ Github
 <p>(また、構造体 <code>addrinfo</code> が発明される前に書かれたコードはすべて、これらのものをすべて手作業で梱包していたので、まさにそのような IPv4 コードを多く見かけることができます。このガイドの古いバージョンなどでもそうです)。</p>
 <p>ある構造体は IPv4 で、ある構造体は IPv6 で、ある構造体はその両方です。どれが何なのか、メモしておきます。</p>
 <p>とにかく、構造体 <code>sockaddr</code> は、多くの種類のソケットのためのソケットアドレス情報を保持します。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>struct</span> sockaddr {
-    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>short</span>    sa_family;    <span style=color:#75715e>// address family, AF_xxx
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>char</span>              sa_data[<span style=color:#ae81ff>14</span>];  <span style=color:#75715e>// 14 bytes of protocol address
-</span><span style=color:#75715e></span>};
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#719e07>struct</span> sockaddr {
+    <span style=color:#dc322f>unsigned</span> <span style=color:#dc322f>short</span>    sa_family;    <span style=color:#586e75>// address family, AF_xxx
+</span><span style=color:#586e75></span>    <span style=color:#dc322f>char</span>              sa_data[<span style=color:#2aa198>14</span>];  <span style=color:#586e75>// 14 bytes of protocol address
+</span><span style=color:#586e75></span>};
 </code></pre></div><p><code>sa_family</code> には様々なものを指定できますが、この文書ではすべて <code>AF_INET</code> (IPv4) または <code>AF_INET6</code> (IPv6) とします。<code>sa_data</code> にはソケットの宛先アドレスとポート番号を指定します。<code>sa_data</code> にアドレスを手で詰め込むのは面倒なので、これはかなり扱いにくいです。</p>
 <p>構造体 <code>sockaddr</code> を扱うために、プログラマは IPv4 で使用する構造体 <code>sockaddr_in</code>（&ldquo;in&rdquo; は &ldquo;Internet&rdquo; の意）を並列に作成しました。</p>
 <p><code>sockaddr_in</code> 構造体へのポインタは <code>sockaddr</code> 構造体へのポインタにキャストすることができ、その逆も可能です。つまり、<code>connect()</code> が <code>struct sockaddr*</code> を要求しても、<code>struct sockaddr_in</code> を使用して、最後の最後でキャストすることができるのです！</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#75715e>// (IPv4 only--see struct sockaddr_in6 for IPv6)
-</span><span style=color:#75715e></span>
-<span style=color:#66d9ef>struct</span> sockaddr_in {
-    <span style=color:#66d9ef>short</span> <span style=color:#66d9ef>int</span>          sin_family;  <span style=color:#75715e>// Address family, AF_INET
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>short</span> <span style=color:#66d9ef>int</span> sin_port;    <span style=color:#75715e>// Port number
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>struct</span> in_addr     sin_addr;    <span style=color:#75715e>// Internet address
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span>      sin_zero[<span style=color:#ae81ff>8</span>]; <span style=color:#75715e>// Same size as struct sockaddr
-</span><span style=color:#75715e></span>};
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#586e75>// (IPv4 only--see struct sockaddr_in6 for IPv6)
+</span><span style=color:#586e75></span>
+<span style=color:#719e07>struct</span> sockaddr_in {
+    <span style=color:#dc322f>short</span> <span style=color:#dc322f>int</span>          sin_family;  <span style=color:#586e75>// Address family, AF_INET
+</span><span style=color:#586e75></span>    <span style=color:#dc322f>unsigned</span> <span style=color:#dc322f>short</span> <span style=color:#dc322f>int</span> sin_port;    <span style=color:#586e75>// Port number
+</span><span style=color:#586e75></span>    <span style=color:#719e07>struct</span> in_addr     sin_addr;    <span style=color:#586e75>// Internet address
+</span><span style=color:#586e75></span>    <span style=color:#dc322f>unsigned</span> <span style=color:#dc322f>char</span>      sin_zero[<span style=color:#2aa198>8</span>]; <span style=color:#586e75>// Same size as struct sockaddr
+</span><span style=color:#586e75></span>};
 </code></pre></div><p>この構造体により、ソケットアドレスの要素を簡単に参照することができます。<code>sin_zero</code> (構造体を <code>struct sockaddr</code> の長さに合わせるために含まれます) は、関数 <code>memset()</code> ですべて 0 に設定する必要があることに注意すること。また、<code>sin_family</code> は <code>struct sockaddr</code> の <code>sa_family</code> に相当し、"<code>AF_INET</code>&rdquo; に設定されることに注意します。最後に、<code>sin_port</code> はネットワークバイトオーダーでなければなりません（<code>htons()</code> を使用することで！）。</p>
 <p>もっと掘り下げましょう！<code>sin_addr</code> フィールドは <code>in_addr</code> 構造体であることがわかりますね。あれは何なんだ？まあ、大げさではなく、史上最も恐ろしい組合せの1つです。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#75715e>// (IPv4 only--see struct in6_addr for IPv6)
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>// Internet address (a structure for historical reasons)
-</span><span style=color:#75715e></span><span style=color:#66d9ef>struct</span> in_addr {
-    <span style=color:#66d9ef>uint32_t</span> s_addr; <span style=color:#75715e>// that&#39;s a 32-bit int (4 bytes)
-</span><span style=color:#75715e></span>};
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#586e75>// (IPv4 only--see struct in6_addr for IPv6)
+</span><span style=color:#586e75></span>
+<span style=color:#586e75>// Internet address (a structure for historical reasons)
+</span><span style=color:#586e75></span><span style=color:#719e07>struct</span> in_addr {
+    <span style=color:#dc322f>uint32_t</span> s_addr; <span style=color:#586e75>// that&#39;s a 32-bit int (4 bytes)
+</span><span style=color:#586e75></span>};
 </code></pre></div><p>うおぉ まあ、昔はユニオンだったんだけど、今はもうそういう時代じゃないみたいだね。おつかれさまでした。つまり、<code>ina</code> を <code>struct sockaddr_in</code> 型と宣言した場合、<code>ina.sin_addr.s_addr</code> は4バイトの IP アドレス（ネットワークバイトオーダー）を参照することになります。あなたのシステムがまだ <code>struct in_addr</code> のための神々しいユニオンを使用している場合でも、あなたはまだ私が上記のように全く同じ方法で4バイトの IP アドレスを参照することができます（これは <code>#defines</code> によるものです）ことに注意してください。</p>
 <p>IPv6 ではどうでしょうか。これについても同様の構造体が存在します。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#75715e>// (IPv6 only--see struct sockaddr_in and struct in_addr for IPv4)
-</span><span style=color:#75715e></span>
-<span style=color:#66d9ef>struct</span> sockaddr_in6 {
-    u_int16_t       sin6_family;   <span style=color:#75715e>// address family, AF_INET6
-</span><span style=color:#75715e></span>    u_int16_t       sin6_port;     <span style=color:#75715e>// port number, Network Byte Order
-</span><span style=color:#75715e></span>    u_int32_t       sin6_flowinfo; <span style=color:#75715e>// IPv6 flow information
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>struct</span> in6_addr sin6_addr;     <span style=color:#75715e>// IPv6 address
-</span><span style=color:#75715e></span>    u_int32_t       sin6_scope_id; <span style=color:#75715e>// Scope ID
-</span><span style=color:#75715e></span>};
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#586e75>// (IPv6 only--see struct sockaddr_in and struct in_addr for IPv4)
+</span><span style=color:#586e75></span>
+<span style=color:#719e07>struct</span> sockaddr_in6 {
+    u_int16_t       sin6_family;   <span style=color:#586e75>// address family, AF_INET6
+</span><span style=color:#586e75></span>    u_int16_t       sin6_port;     <span style=color:#586e75>// port number, Network Byte Order
+</span><span style=color:#586e75></span>    u_int32_t       sin6_flowinfo; <span style=color:#586e75>// IPv6 flow information
+</span><span style=color:#586e75></span>    <span style=color:#719e07>struct</span> in6_addr sin6_addr;     <span style=color:#586e75>// IPv6 address
+</span><span style=color:#586e75></span>    u_int32_t       sin6_scope_id; <span style=color:#586e75>// Scope ID
+</span><span style=color:#586e75></span>};
 
-<span style=color:#66d9ef>struct</span> in6_addr {
-    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span>   s6_addr[<span style=color:#ae81ff>16</span>];   <span style=color:#75715e>// IPv6 address
-</span><span style=color:#75715e></span>};
+<span style=color:#719e07>struct</span> in6_addr {
+    <span style=color:#dc322f>unsigned</span> <span style=color:#dc322f>char</span>   s6_addr[<span style=color:#2aa198>16</span>];   <span style=color:#586e75>// IPv6 address
+</span><span style=color:#586e75></span>};
 </code></pre></div><p>IPv4 が IPv4 アドレスとポート番号を持つように、IPv6 も IPv6 アドレスとポート番号を持つことに注意してください。</p>
 <p>また、IPv6 フロー情報やスコープ ID のフィールドについては、今のところ触れないことに注意してください。<code>:-)</code></p>
 <p>最後になりますが、こちらもシンプルな構造体である <code>struct sockaddr_storage</code> は、IPv4 と IPv6 の両方の構造体を保持できるように十分な大きさに設計されています。コールによっては、<code>struct sockaddr</code> に IPv4 と IPv6 のどちらのアドレスが記入されるのか事前にわからないことがありますよね。そこで、この並列構造体を渡しますが、サイズが大きい以外は <code>struct sockaddr</code> とよく似ており、必要な型にキャストします。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>struct</span> sockaddr_storage {
-    sa_family_t  ss_family;     <span style=color:#75715e>// address family
-</span><span style=color:#75715e></span>
-    <span style=color:#75715e>// all this is padding, implementation specific, ignore it:
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>char</span>      __ss_pad1[_SS_PAD1SIZE];
-    <span style=color:#66d9ef>int64_t</span>   __ss_align;
-    <span style=color:#66d9ef>char</span>      __ss_pad2[_SS_PAD2SIZE];
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#719e07>struct</span> sockaddr_storage {
+    sa_family_t  ss_family;     <span style=color:#586e75>// address family
+</span><span style=color:#586e75></span>
+    <span style=color:#586e75>// all this is padding, implementation specific, ignore it:
+</span><span style=color:#586e75></span>    <span style=color:#dc322f>char</span>      __ss_pad1[_SS_PAD1SIZE];
+    <span style=color:#dc322f>int64_t</span>   __ss_align;
+    <span style=color:#dc322f>char</span>      __ss_pad2[_SS_PAD2SIZE];
 };
 </code></pre></div><p>重要なのは、<code>ss_family</code> フィールドでアドレスファミリーを確認できることで、これが <code>AF_INET</code> か <code>AF_INET6</code>（IPv4 か IPv6 か）かを確認することです。それから、必要なら <code>struct sockaddr_in</code> や <code>struct sockaddr_in6</code> にキャストすることができます。</p>
 <h2 id=34-ip-addresses-part-deux>
@@ -417,32 +419,32 @@ Github
 </h2>
 <p>幸いなことに、IP アドレスを操作するための関数がたくさんあります。手書きで把握して <code>&lt;&lt;</code> 演算子で <code>long</code> に詰め込む必要はありません。</p>
 <p>まず、<code>struct sockaddr_in ina</code> があり、そこに格納したい IP アドレスが <code>10.12.110.57</code> または <code>2001:db8:63b3:1::3490</code> だとしましょう。<code>inet_pton()</code> という関数は、数字とドットで表記された IP アドレスを、<code>AF_INET</code> か <code>AF_INET6</code> の指定によって、<code>in_addr</code> 構造体か <code>in6_addr</code> 構造体に変換する関数です。("<code>pton</code>" は &ldquo;presentation to network&rdquo; の略で、覚えやすければ &ldquo;printable to network&rdquo; と呼んでも構いません)。変換は次のように行うことができます。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>struct</span> sockaddr_in sa; <span style=color:#75715e>// IPv4
-</span><span style=color:#75715e></span><span style=color:#66d9ef>struct</span> sockaddr_in6 sa6; <span style=color:#75715e>// IPv6
-</span><span style=color:#75715e></span>
-inet_pton(AF_INET, <span style=color:#e6db74>&#34;10.12.110.57&#34;</span>, <span style=color:#f92672>&amp;</span>(sa.sin_addr)); <span style=color:#75715e>// IPv4
-</span><span style=color:#75715e></span>inet_pton(AF_INET6, <span style=color:#e6db74>&#34;2001:db8:63b3:1::3490&#34;</span>, <span style=color:#f92672>&amp;</span>(sa6.sin6_addr)); <span style=color:#75715e>// IPv6
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#719e07>struct</span> sockaddr_in sa; <span style=color:#586e75>// IPv4
+</span><span style=color:#586e75></span><span style=color:#719e07>struct</span> sockaddr_in6 sa6; <span style=color:#586e75>// IPv6
+</span><span style=color:#586e75></span>
+inet_pton(AF_INET, <span style=color:#2aa198>&#34;10.12.110.57&#34;</span>, <span style=color:#719e07>&amp;</span>(sa.sin_addr)); <span style=color:#586e75>// IPv4
+</span><span style=color:#586e75></span>inet_pton(AF_INET6, <span style=color:#2aa198>&#34;2001:db8:63b3:1::3490&#34;</span>, <span style=color:#719e07>&amp;</span>(sa6.sin6_addr)); <span style=color:#586e75>// IPv6
 </span></code></pre></div><p>(クイックメモ: 古い方法では、<code>inet_addr()</code> という関数や <code>inet_aton()</code> という別の関数を使っていましたが、これらはもう時代遅れで IPv6 では動きません。)</p>
 <p>さて、上記のコードスニペットは、エラーチェックがないため、あまり堅牢ではありません。<code>inet_pton()</code> はエラー時に <code>-1</code> を返し、アドレスがめちゃくちゃになった場合は 0 を返します。ですから、使用する前に結果が 0 よりも大きいことを確認してください！</p>
 <p>さて、これで文字列の IP アドレスをバイナリ表現に変換することができるようになりました。では、その逆はどうでしょうか？<code>in_addr</code> 構造体を持っていて、それを数字とドットの表記で印刷したい場合はどうでしょうか。(この場合、関数 <code>inet_ntop()</code> ("<code>ntop</code>" は &ldquo;network to presentation&rdquo; という意味です。覚えやすければ &ldquo;network to printable&rdquo; と呼んでも構いません) を次のように使用します。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>// IPv4:
-</span><span style=color:#75715e></span>
-<span style=color:#66d9ef>char</span> ip4[INET_ADDRSTRLEN];  <span style=color:#75715e>// space to hold the IPv4 string
-</span><span style=color:#75715e></span><span style=color:#66d9ef>struct</span> sockaddr_in sa;      <span style=color:#75715e>// pretend this is loaded with something
-</span><span style=color:#75715e></span>
-inet_ntop(AF_INET, <span style=color:#f92672>&amp;</span>(sa.sin_addr), ip4, INET_ADDRSTRLEN);
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#586e75>// IPv4:
+</span><span style=color:#586e75></span>
+<span style=color:#dc322f>char</span> ip4[INET_ADDRSTRLEN];  <span style=color:#586e75>// space to hold the IPv4 string
+</span><span style=color:#586e75></span><span style=color:#719e07>struct</span> sockaddr_in sa;      <span style=color:#586e75>// pretend this is loaded with something
+</span><span style=color:#586e75></span>
+inet_ntop(AF_INET, <span style=color:#719e07>&amp;</span>(sa.sin_addr), ip4, INET_ADDRSTRLEN);
 
-printf(<span style=color:#e6db74>&#34;The IPv4 address is: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, ip4);
+printf(<span style=color:#2aa198>&#34;The IPv4 address is: %s</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>, ip4);
 
 
-<span style=color:#75715e>// IPv6:
-</span><span style=color:#75715e></span>
-<span style=color:#66d9ef>char</span> ip6[INET6_ADDRSTRLEN]; <span style=color:#75715e>// space to hold the IPv6 string
-</span><span style=color:#75715e></span><span style=color:#66d9ef>struct</span> sockaddr_in6 sa6;    <span style=color:#75715e>// pretend this is loaded with something
-</span><span style=color:#75715e></span>
-inet_ntop(AF_INET6, <span style=color:#f92672>&amp;</span>(sa6.sin6_addr), ip6, INET6_ADDRSTRLEN);
+<span style=color:#586e75>// IPv6:
+</span><span style=color:#586e75></span>
+<span style=color:#dc322f>char</span> ip6[INET6_ADDRSTRLEN]; <span style=color:#586e75>// space to hold the IPv6 string
+</span><span style=color:#586e75></span><span style=color:#719e07>struct</span> sockaddr_in6 sa6;    <span style=color:#586e75>// pretend this is loaded with something
+</span><span style=color:#586e75></span>
+inet_ntop(AF_INET6, <span style=color:#719e07>&amp;</span>(sa6.sin6_addr), ip6, INET6_ADDRSTRLEN);
 
-printf(<span style=color:#e6db74>&#34;The address is: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, ip6);
+printf(<span style=color:#2aa198>&#34;The address is: %s</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>, ip6);
 </code></pre></div><p>呼び出す際には、アドレスの種類（IPv4 または IPv6）、アドレス、結果を格納する文字列へのポインタ、その文字列の最大長を渡すことになります。(2つのマクロは、最大の IPv4 または IPv6 アドレスを保持するために必要な文字列のサイズを都合よく保持します。<code>INET_ADDRSTRLEN</code> と <code>INET6_ADDRSTRLEN</code> です)。</p>
 <p>(古いやり方についてもう一度簡単に触れておくと、この変換を行う歴史的な関数は <code>inet_ntoa()</code> と呼ばれるものでした。これも時代遅れで、IPv6 では動きません。)</p>
 <p>最後に、これらの関数は数値の IP アドレスに対してのみ動作します。"<code>www.example.com</code>" のようなホスト名に対してネームサーバの DNS ルックアップは行いません。後ほど説明するように、そのためには <code>getaddrinfo()</code> を使用します。</p>

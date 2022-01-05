@@ -21,9 +21,9 @@
 <title>1 Intro | Beej's Guide to Network Programming</title>
 <link rel=manifest href=/bgnet/manifest.json>
 <link rel=icon href=/bgnet/favicon.png type=image/x-icon>
-<link rel=stylesheet href=/bgnet/book.min.7d12d4add234c27cb11a219e7b205a38bbfc902fc5f73a3417e46984bbc3fa91.css integrity="sha256-fRLUrdI0wnyxGiGeeyBaOLv8kC/F9zo0F+RphLvD+pE=" crossorigin=anonymous>
+<link rel=stylesheet href=/bgnet/book.min.3fc729a37471ee87e40517478b6ab5936d22fcb6008d40985724e4295d1a74c0.css integrity="sha256-P8cpo3Rx7ofkBRdHi2q1k20i/LYAjUCYVyTkKV0adMA=" crossorigin=anonymous>
 <script defer src=/bgnet/flexsearch.min.js></script>
-<script defer src=/bgnet/en.search.min.548a4e6caf6a8e194a9d65c10784be13c26d31df96427d7fad63fc602088ca06.js integrity="sha256-VIpObK9qjhlKnWXBB4S+E8JtMd+WQn1/rWP8YCCIygY=" crossorigin=anonymous></script>
+<script defer src=/bgnet/en.search.min.8359b7a63bdb43c9177e9d067fc1524c325fcb61e9a3843ed2d7708e4cd5fdbe.js integrity="sha256-g1m3pjvbQ8kXfp0Gf8FSTDJfy2Hpo4Q+0tdwjkzV/b4=" crossorigin=anonymous></script>
 <link rel=alternate type=application/rss+xml href=https://solareenlo.com/bgnet/docs/intro/index.xml title="Beej's Guide to Network Programming">
 </head>
 <body dir=ltr>
@@ -160,10 +160,12 @@
 <li>
 <a href=/bgnet/docs/slightly-advanced-techniques/#sonofdataencap><strong>7.6</strong> Son of Data Encapsulation</a></li>
 <li>
-<a href=/bgnet/docs/slightly-advanced-techniques/#77-broadcast-packets---hello-world><strong>7.7</strong> Broadcast Packets&mdash;Hello, World!</a>
-<br></li>
+<a href=/bgnet/docs/slightly-advanced-techniques/#77-broadcast-packets---hello-world><strong>7.7</strong> Broadcast Packets&mdash;Hello, World!</a></li>
 </ul>
 </li>
+<li>
+<a href=/bgnet/docs/common-questions><strong>8</strong> Common Questions</a>
+<br></li>
 </ul>
 <ul>
 <li>
@@ -252,8 +254,8 @@ Github
 <pre tabindex=0><code>$ cc -o server server.c -lnsl -lsocket -lresolv
 </code></pre><p>それでもエラーが出るようなら、さらにそのコマンドラインの最後に <code>-lxnet</code> を追加してみるといいでしょう。それが何をするのか正確にはわかりませんが、必要な人もいるようです。</p>
 <p>もう一つ問題がありそうなのは、<code>setsockopt()</code> の呼び出しのところです。プロトタイプは私の Linux ボックスのものとは異なるので、代わりに</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>int</span> yes<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>;
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>char</span> yes<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;1&#39;</span>;
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#dc322f>int</span> yes<span style=color:#719e07>=</span><span style=color:#2aa198>1</span>;
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#dc322f>char</span> yes<span style=color:#719e07>=</span><span style=color:#2aa198>&#39;1&#39;</span>;
 </code></pre></div><p>を入力します。</p>
 <p>私は Sunbox を持っていないので、上記の情報を検証したわけではありません&mdash;あくまでメールで教えてもらったことです。</p>
 <h2 id=windows>
@@ -273,19 +275,19 @@ Github
 <p>しかし、中には純粋な Windows のやり方で物事を進めたいと思う人もいるかもしれません。それはとてもガッツのあることで、こうすればいいんです。すぐに Unix を買ってきてください! いやいや&mdash;冗談です。最近は Windows フレンドリー(笑)なはずなんですが&mldr;。</p>
 <p>これは、あなたがしなければならないことです（
 <a href=/bgnet/>Cygwin</a>をインストールしない限り！）：まず、ここで私が言及するシステムヘッダーファイルのほとんどを無視してください。あなたがインクルードする必要があるのは、以下のものだけです。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;winsock.h&gt;</span><span style=color:#75715e>
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;winsock.h&gt;</span><span style=color:#719e07>
 </span></code></pre></div><p>待ってください！ソケットライブラリで何かする前に <code>WSAStartup()</code> を呼び出す必要があります。これを行うためのコードは以下のようなものです。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;winsock.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e></span>
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;winsock.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07></span>
 {
-    WSADATA wsaData;   <span style=color:#75715e>// if this doesn&#39;t work
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//WSAData wsaData; // then try this instead
-</span><span style=color:#75715e></span>
-    <span style=color:#75715e>// MAKEWORD(1,1) for Winsock 1.1, MAKEWORD(2,0) for Winsock 2.0:
-</span><span style=color:#75715e></span>
-    <span style=color:#66d9ef>if</span> (WSAStartup(MAKEWORD(<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>1</span>), <span style=color:#f92672>&amp;</span>wsaData) <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>) {
-        fprintf(stderr, <span style=color:#e6db74>&#34;WSAStartup failed.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
-        exit(<span style=color:#ae81ff>1</span>);
+    WSADATA wsaData;   <span style=color:#586e75>// if this doesn&#39;t work
+</span><span style=color:#586e75></span>    <span style=color:#586e75>//WSAData wsaData; // then try this instead
+</span><span style=color:#586e75></span>
+    <span style=color:#586e75>// MAKEWORD(1,1) for Winsock 1.1, MAKEWORD(2,0) for Winsock 2.0:
+</span><span style=color:#586e75></span>
+    <span style=color:#719e07>if</span> (WSAStartup(MAKEWORD(<span style=color:#2aa198>1</span>,<span style=color:#2aa198>1</span>), <span style=color:#719e07>&amp;</span>wsaData) <span style=color:#719e07>!=</span> <span style=color:#2aa198>0</span>) {
+        fprintf(stderr, <span style=color:#2aa198>&#34;WSAStartup failed.</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>);
+        exit(<span style=color:#2aa198>1</span>);
     }
 </code></pre></div><p>また、Winsock ライブラリをリンクするようにコンパイラに指示する必要があります。通常、<code>wsock32.lib</code> または <code>winsock32.lib</code>、Winsock 2.0 の場合は <code>ws2_32.lib</code> と呼ばれます。VC++ では、これは <code>Project</code> メニューの <code>Settings...</code> から行うことができます。<code>Link</code> タブをクリックし、&ldquo;Object/library modules&rdquo; というタイトルのボックスを探します。そのリストに &ldquo;wsock32.lib&rdquo;（または、お好みの lib）を追加してください。</p>
 <p>とか聞いています。</p>

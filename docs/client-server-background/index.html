@@ -18,9 +18,9 @@ $ telnet remotehostname 3490 ここで、remotehostname は実行するマシン
 <title>6 Client-Server Background | Beej's Guide to Network Programming</title>
 <link rel=manifest href=/bgnet/manifest.json>
 <link rel=icon href=/bgnet/favicon.png type=image/x-icon>
-<link rel=stylesheet href=/bgnet/book.min.7d12d4add234c27cb11a219e7b205a38bbfc902fc5f73a3417e46984bbc3fa91.css integrity="sha256-fRLUrdI0wnyxGiGeeyBaOLv8kC/F9zo0F+RphLvD+pE=" crossorigin=anonymous>
+<link rel=stylesheet href=/bgnet/book.min.3fc729a37471ee87e40517478b6ab5936d22fcb6008d40985724e4295d1a74c0.css integrity="sha256-P8cpo3Rx7ofkBRdHi2q1k20i/LYAjUCYVyTkKV0adMA=" crossorigin=anonymous>
 <script defer src=/bgnet/flexsearch.min.js></script>
-<script defer src=/bgnet/en.search.min.548a4e6caf6a8e194a9d65c10784be13c26d31df96427d7fad63fc602088ca06.js integrity="sha256-VIpObK9qjhlKnWXBB4S+E8JtMd+WQn1/rWP8YCCIygY=" crossorigin=anonymous></script>
+<script defer src=/bgnet/en.search.min.8359b7a63bdb43c9177e9d067fc1524c325fcb61e9a3843ed2d7708e4cd5fdbe.js integrity="sha256-g1m3pjvbQ8kXfp0Gf8FSTDJfy2Hpo4Q+0tdwjkzV/b4=" crossorigin=anonymous></script>
 <link rel=alternate type=application/rss+xml href=https://solareenlo.com/bgnet/docs/client-server-background/index.xml title="Beej's Guide to Network Programming">
 </head>
 <body dir=ltr>
@@ -157,10 +157,12 @@ $ telnet remotehostname 3490 ここで、remotehostname は実行するマシン
 <li>
 <a href=/bgnet/docs/slightly-advanced-techniques/#sonofdataencap><strong>7.6</strong> Son of Data Encapsulation</a></li>
 <li>
-<a href=/bgnet/docs/slightly-advanced-techniques/#77-broadcast-packets---hello-world><strong>7.7</strong> Broadcast Packets&mdash;Hello, World!</a>
-<br></li>
+<a href=/bgnet/docs/slightly-advanced-techniques/#77-broadcast-packets---hello-world><strong>7.7</strong> Broadcast Packets&mdash;Hello, World!</a></li>
 </ul>
 </li>
+<li>
+<a href=/bgnet/docs/common-questions><strong>8</strong> Common Questions</a>
+<br></li>
 </ul>
 <ul>
 <li>
@@ -219,138 +221,138 @@ Github
 </code></pre><p>ここで、<code>remotehostname</code> は実行するマシンの名前です。</p>
 <p>
 <a href=https://beej.us/guide/bgnet/examples/server.c>サーバコード</a></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>/*
-</span><span style=color:#75715e>** server.c -- a stream socket server demo
-</span><span style=color:#75715e>*/</span>
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#586e75>/*
+</span><span style=color:#586e75>** server.c -- a stream socket server demo
+</span><span style=color:#586e75>*/</span>
 
-<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;errno.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/socket.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netinet/in.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netdb.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;arpa/inet.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/wait.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;signal.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>#define PORT &#34;3490&#34;  </span><span style=color:#75715e>// the port users will be connecting to
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>#define BACKLOG 10   </span><span style=color:#75715e>// how many pending connections queue will hold
-</span><span style=color:#75715e></span>
-<span style=color:#66d9ef>void</span> <span style=color:#a6e22e>sigchld_handler</span>(<span style=color:#66d9ef>int</span> s)
+<span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;stdio.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;stdlib.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;unistd.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;errno.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;string.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;sys/types.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;sys/socket.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;netinet/in.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;netdb.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;arpa/inet.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;sys/wait.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;signal.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07></span>
+<span style=color:#719e07>#define PORT &#34;3490&#34;  </span><span style=color:#586e75>// the port users will be connecting to
+</span><span style=color:#586e75></span>
+<span style=color:#719e07>#define BACKLOG 10   </span><span style=color:#586e75>// how many pending connections queue will hold
+</span><span style=color:#586e75></span>
+<span style=color:#dc322f>void</span> <span style=color:#268bd2>sigchld_handler</span>(<span style=color:#dc322f>int</span> s)
 {
-    <span style=color:#75715e>// waitpid() might overwrite errno, so we save and restore it:
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> saved_errno <span style=color:#f92672>=</span> errno;
+    <span style=color:#586e75>// waitpid() might overwrite errno, so we save and restore it:
+</span><span style=color:#586e75></span>    <span style=color:#dc322f>int</span> saved_errno <span style=color:#719e07>=</span> errno;
 
-    <span style=color:#66d9ef>while</span>(waitpid(<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>, NULL, WNOHANG) <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>);
+    <span style=color:#719e07>while</span>(waitpid(<span style=color:#719e07>-</span><span style=color:#2aa198>1</span>, <span style=color:#b58900>NULL</span>, WNOHANG) <span style=color:#719e07>&gt;</span> <span style=color:#2aa198>0</span>);
 
-    errno <span style=color:#f92672>=</span> saved_errno;
+    errno <span style=color:#719e07>=</span> saved_errno;
 }
 
 
-<span style=color:#75715e>// get sockaddr, IPv4 or IPv6:
-</span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>get_in_addr</span>(<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>sa)
+<span style=color:#586e75>// get sockaddr, IPv4 or IPv6:
+</span><span style=color:#586e75></span><span style=color:#dc322f>void</span> <span style=color:#719e07>*</span><span style=color:#268bd2>get_in_addr</span>(<span style=color:#719e07>struct</span> sockaddr <span style=color:#719e07>*</span>sa)
 {
-    <span style=color:#66d9ef>if</span> (sa<span style=color:#f92672>-&gt;</span>sa_family <span style=color:#f92672>==</span> AF_INET) {
-        <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin_addr);
+    <span style=color:#719e07>if</span> (sa<span style=color:#719e07>-&gt;</span>sa_family <span style=color:#719e07>==</span> AF_INET) {
+        <span style=color:#719e07>return</span> <span style=color:#719e07>&amp;</span>(((<span style=color:#719e07>struct</span> sockaddr_in<span style=color:#719e07>*</span>)sa)<span style=color:#719e07>-&gt;</span>sin_addr);
     }
 
-    <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in6<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin6_addr);
+    <span style=color:#719e07>return</span> <span style=color:#719e07>&amp;</span>(((<span style=color:#719e07>struct</span> sockaddr_in6<span style=color:#719e07>*</span>)sa)<span style=color:#719e07>-&gt;</span>sin6_addr);
 }
 
-<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+<span style=color:#dc322f>int</span> <span style=color:#268bd2>main</span>(<span style=color:#dc322f>void</span>)
 {
-    <span style=color:#66d9ef>int</span> sockfd, new_fd;  <span style=color:#75715e>// listen on sock_fd, new connection on new_fd
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>struct</span> addrinfo hints, <span style=color:#f92672>*</span>servinfo, <span style=color:#f92672>*</span>p;
-    <span style=color:#66d9ef>struct</span> sockaddr_storage their_addr; <span style=color:#75715e>// connector&#39;s address information
-</span><span style=color:#75715e></span>    socklen_t sin_size;
-    <span style=color:#66d9ef>struct</span> sigaction sa;
-    <span style=color:#66d9ef>int</span> yes<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>;
-    <span style=color:#66d9ef>char</span> s[INET6_ADDRSTRLEN];
-    <span style=color:#66d9ef>int</span> rv;
+    <span style=color:#dc322f>int</span> sockfd, new_fd;  <span style=color:#586e75>// listen on sock_fd, new connection on new_fd
+</span><span style=color:#586e75></span>    <span style=color:#719e07>struct</span> addrinfo hints, <span style=color:#719e07>*</span>servinfo, <span style=color:#719e07>*</span>p;
+    <span style=color:#719e07>struct</span> sockaddr_storage their_addr; <span style=color:#586e75>// connector&#39;s address information
+</span><span style=color:#586e75></span>    socklen_t sin_size;
+    <span style=color:#719e07>struct</span> sigaction sa;
+    <span style=color:#dc322f>int</span> yes<span style=color:#719e07>=</span><span style=color:#2aa198>1</span>;
+    <span style=color:#dc322f>char</span> s[INET6_ADDRSTRLEN];
+    <span style=color:#dc322f>int</span> rv;
 
-    memset(<span style=color:#f92672>&amp;</span>hints, <span style=color:#ae81ff>0</span>, <span style=color:#66d9ef>sizeof</span> hints);
-    hints.ai_family <span style=color:#f92672>=</span> AF_UNSPEC;
-    hints.ai_socktype <span style=color:#f92672>=</span> SOCK_STREAM;
-    hints.ai_flags <span style=color:#f92672>=</span> AI_PASSIVE; <span style=color:#75715e>// use my IP
-</span><span style=color:#75715e></span>
-    <span style=color:#66d9ef>if</span> ((rv <span style=color:#f92672>=</span> getaddrinfo(NULL, PORT, <span style=color:#f92672>&amp;</span>hints, <span style=color:#f92672>&amp;</span>servinfo)) <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>) {
-        fprintf(stderr, <span style=color:#e6db74>&#34;getaddrinfo: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, gai_strerror(rv));
-        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>1</span>;
+    memset(<span style=color:#719e07>&amp;</span>hints, <span style=color:#2aa198>0</span>, <span style=color:#719e07>sizeof</span> hints);
+    hints.ai_family <span style=color:#719e07>=</span> AF_UNSPEC;
+    hints.ai_socktype <span style=color:#719e07>=</span> SOCK_STREAM;
+    hints.ai_flags <span style=color:#719e07>=</span> AI_PASSIVE; <span style=color:#586e75>// use my IP
+</span><span style=color:#586e75></span>
+    <span style=color:#719e07>if</span> ((rv <span style=color:#719e07>=</span> getaddrinfo(<span style=color:#b58900>NULL</span>, PORT, <span style=color:#719e07>&amp;</span>hints, <span style=color:#719e07>&amp;</span>servinfo)) <span style=color:#719e07>!=</span> <span style=color:#2aa198>0</span>) {
+        fprintf(stderr, <span style=color:#2aa198>&#34;getaddrinfo: %s</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>, gai_strerror(rv));
+        <span style=color:#719e07>return</span> <span style=color:#2aa198>1</span>;
     }
 
-    <span style=color:#75715e>// loop through all the results and bind to the first we can
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>for</span>(p <span style=color:#f92672>=</span> servinfo; p <span style=color:#f92672>!=</span> NULL; p <span style=color:#f92672>=</span> p<span style=color:#f92672>-&gt;</span>ai_next) {
-        <span style=color:#66d9ef>if</span> ((sockfd <span style=color:#f92672>=</span> socket(p<span style=color:#f92672>-&gt;</span>ai_family, p<span style=color:#f92672>-&gt;</span>ai_socktype,
-                p<span style=color:#f92672>-&gt;</span>ai_protocol)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
-            perror(<span style=color:#e6db74>&#34;server: socket&#34;</span>);
-            <span style=color:#66d9ef>continue</span>;
+    <span style=color:#586e75>// loop through all the results and bind to the first we can
+</span><span style=color:#586e75></span>    <span style=color:#719e07>for</span>(p <span style=color:#719e07>=</span> servinfo; p <span style=color:#719e07>!=</span> <span style=color:#b58900>NULL</span>; p <span style=color:#719e07>=</span> p<span style=color:#719e07>-&gt;</span>ai_next) {
+        <span style=color:#719e07>if</span> ((sockfd <span style=color:#719e07>=</span> socket(p<span style=color:#719e07>-&gt;</span>ai_family, p<span style=color:#719e07>-&gt;</span>ai_socktype,
+                p<span style=color:#719e07>-&gt;</span>ai_protocol)) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
+            perror(<span style=color:#2aa198>&#34;server: socket&#34;</span>);
+            <span style=color:#719e07>continue</span>;
         }
 
-        <span style=color:#66d9ef>if</span> (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, <span style=color:#f92672>&amp;</span>yes,
-                <span style=color:#66d9ef>sizeof</span>(<span style=color:#66d9ef>int</span>)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
-            perror(<span style=color:#e6db74>&#34;setsockopt&#34;</span>);
-            exit(<span style=color:#ae81ff>1</span>);
+        <span style=color:#719e07>if</span> (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, <span style=color:#719e07>&amp;</span>yes,
+                <span style=color:#719e07>sizeof</span>(<span style=color:#dc322f>int</span>)) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
+            perror(<span style=color:#2aa198>&#34;setsockopt&#34;</span>);
+            exit(<span style=color:#2aa198>1</span>);
         }
 
-        <span style=color:#66d9ef>if</span> (bind(sockfd, p<span style=color:#f92672>-&gt;</span>ai_addr, p<span style=color:#f92672>-&gt;</span>ai_addrlen) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+        <span style=color:#719e07>if</span> (bind(sockfd, p<span style=color:#719e07>-&gt;</span>ai_addr, p<span style=color:#719e07>-&gt;</span>ai_addrlen) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
             close(sockfd);
-            perror(<span style=color:#e6db74>&#34;server: bind&#34;</span>);
-            <span style=color:#66d9ef>continue</span>;
+            perror(<span style=color:#2aa198>&#34;server: bind&#34;</span>);
+            <span style=color:#719e07>continue</span>;
         }
 
-        <span style=color:#66d9ef>break</span>;
+        <span style=color:#719e07>break</span>;
     }
 
-    freeaddrinfo(servinfo); <span style=color:#75715e>// all done with this structure
-</span><span style=color:#75715e></span>
-    <span style=color:#66d9ef>if</span> (p <span style=color:#f92672>==</span> NULL)  {
-        fprintf(stderr, <span style=color:#e6db74>&#34;server: failed to bind</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
-        exit(<span style=color:#ae81ff>1</span>);
+    freeaddrinfo(servinfo); <span style=color:#586e75>// all done with this structure
+</span><span style=color:#586e75></span>
+    <span style=color:#719e07>if</span> (p <span style=color:#719e07>==</span> <span style=color:#b58900>NULL</span>)  {
+        fprintf(stderr, <span style=color:#2aa198>&#34;server: failed to bind</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>);
+        exit(<span style=color:#2aa198>1</span>);
     }
 
-    <span style=color:#66d9ef>if</span> (listen(sockfd, BACKLOG) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
-        perror(<span style=color:#e6db74>&#34;listen&#34;</span>);
-        exit(<span style=color:#ae81ff>1</span>);
+    <span style=color:#719e07>if</span> (listen(sockfd, BACKLOG) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
+        perror(<span style=color:#2aa198>&#34;listen&#34;</span>);
+        exit(<span style=color:#2aa198>1</span>);
     }
 
-    sa.sa_handler <span style=color:#f92672>=</span> sigchld_handler; <span style=color:#75715e>// reap all dead processes
-</span><span style=color:#75715e></span>    sigemptyset(<span style=color:#f92672>&amp;</span>sa.sa_mask);
-    sa.sa_flags <span style=color:#f92672>=</span> SA_RESTART;
-    <span style=color:#66d9ef>if</span> (sigaction(SIGCHLD, <span style=color:#f92672>&amp;</span>sa, NULL) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
-        perror(<span style=color:#e6db74>&#34;sigaction&#34;</span>);
-        exit(<span style=color:#ae81ff>1</span>);
+    sa.sa_handler <span style=color:#719e07>=</span> sigchld_handler; <span style=color:#586e75>// reap all dead processes
+</span><span style=color:#586e75></span>    sigemptyset(<span style=color:#719e07>&amp;</span>sa.sa_mask);
+    sa.sa_flags <span style=color:#719e07>=</span> SA_RESTART;
+    <span style=color:#719e07>if</span> (sigaction(SIGCHLD, <span style=color:#719e07>&amp;</span>sa, <span style=color:#b58900>NULL</span>) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
+        perror(<span style=color:#2aa198>&#34;sigaction&#34;</span>);
+        exit(<span style=color:#2aa198>1</span>);
     }
 
-    printf(<span style=color:#e6db74>&#34;server: waiting for connections...</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+    printf(<span style=color:#2aa198>&#34;server: waiting for connections...</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>);
 
-    <span style=color:#66d9ef>while</span>(<span style=color:#ae81ff>1</span>) {  <span style=color:#75715e>// main accept() loop
-</span><span style=color:#75715e></span>        sin_size <span style=color:#f92672>=</span> <span style=color:#66d9ef>sizeof</span> their_addr;
-        new_fd <span style=color:#f92672>=</span> accept(sockfd, (<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>their_addr, <span style=color:#f92672>&amp;</span>sin_size);
-        <span style=color:#66d9ef>if</span> (new_fd <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
-            perror(<span style=color:#e6db74>&#34;accept&#34;</span>);
-            <span style=color:#66d9ef>continue</span>;
+    <span style=color:#719e07>while</span>(<span style=color:#2aa198>1</span>) {  <span style=color:#586e75>// main accept() loop
+</span><span style=color:#586e75></span>        sin_size <span style=color:#719e07>=</span> <span style=color:#719e07>sizeof</span> their_addr;
+        new_fd <span style=color:#719e07>=</span> accept(sockfd, (<span style=color:#719e07>struct</span> sockaddr <span style=color:#719e07>*</span>)<span style=color:#719e07>&amp;</span>their_addr, <span style=color:#719e07>&amp;</span>sin_size);
+        <span style=color:#719e07>if</span> (new_fd <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
+            perror(<span style=color:#2aa198>&#34;accept&#34;</span>);
+            <span style=color:#719e07>continue</span>;
         }
 
         inet_ntop(their_addr.ss_family,
-            get_in_addr((<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>their_addr),
-            s, <span style=color:#66d9ef>sizeof</span> s);
-        printf(<span style=color:#e6db74>&#34;server: got connection from %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, s);
+            get_in_addr((<span style=color:#719e07>struct</span> sockaddr <span style=color:#719e07>*</span>)<span style=color:#719e07>&amp;</span>their_addr),
+            s, <span style=color:#719e07>sizeof</span> s);
+        printf(<span style=color:#2aa198>&#34;server: got connection from %s</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>, s);
 
-        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>fork()) { <span style=color:#75715e>// this is the child process
-</span><span style=color:#75715e></span>            close(sockfd); <span style=color:#75715e>// child doesn&#39;t need the listener
-</span><span style=color:#75715e></span>            <span style=color:#66d9ef>if</span> (send(new_fd, <span style=color:#e6db74>&#34;Hello, world!&#34;</span>, <span style=color:#ae81ff>13</span>, <span style=color:#ae81ff>0</span>) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
-                perror(<span style=color:#e6db74>&#34;send&#34;</span>);
+        <span style=color:#719e07>if</span> (<span style=color:#719e07>!</span>fork()) { <span style=color:#586e75>// this is the child process
+</span><span style=color:#586e75></span>            close(sockfd); <span style=color:#586e75>// child doesn&#39;t need the listener
+</span><span style=color:#586e75></span>            <span style=color:#719e07>if</span> (send(new_fd, <span style=color:#2aa198>&#34;Hello, world!&#34;</span>, <span style=color:#2aa198>13</span>, <span style=color:#2aa198>0</span>) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>)
+                perror(<span style=color:#2aa198>&#34;send&#34;</span>);
             close(new_fd);
-            exit(<span style=color:#ae81ff>0</span>);
+            exit(<span style=color:#2aa198>0</span>);
         }
-        close(new_fd);  <span style=color:#75715e>// parent doesn&#39;t need this
-</span><span style=color:#75715e></span>    }
+        close(new_fd);  <span style=color:#586e75>// parent doesn&#39;t need this
+</span><span style=color:#586e75></span>    }
 
-    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#719e07>return</span> <span style=color:#2aa198>0</span>;
 }
 </code></pre></div><p>一応、構文的にわかりやすいように、1つの大きな <code>main()</code> 関数にまとめてあります。もし、その方が良いと思われるなら、自由に小さな関数に分割してください。</p>
 <p>（また、この <code>sigaction()</code> 全体は、あなたにとって新しいものかもしれません&mdash;それは大丈夫です。このコードは、<code>fork()</code> された子プロセスが終了するときに現れるゾンビプロセスを刈り取る役割を担っているのです。ゾンビをたくさん作ってそれを刈り取らないと、システム管理者が怒りますよ。）</p>
@@ -362,98 +364,98 @@ Github
 <p>こいつはサーバよりもっと簡単です。このクライアントがすることはコマンドラインで指定したホスト、ポート 3490 に接続するだけです。サーバが送信する文字列を取得します。</p>
 <p>
 <a href=https://beej.us/guide/bgnet/examples/client.c>クライアントソース</a>。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>/*
-</span><span style=color:#75715e>** client.c -- a stream socket client demo
-</span><span style=color:#75715e>*/</span>
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#586e75>/*
+</span><span style=color:#586e75>** client.c -- a stream socket client demo
+</span><span style=color:#586e75>*/</span>
 
-<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;errno.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netdb.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netinet/in.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/socket.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;arpa/inet.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>#define PORT &#34;3490&#34; </span><span style=color:#75715e>// the port client will be connecting to
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>#define MAXDATASIZE 100 </span><span style=color:#75715e>// max number of bytes we can get at once
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>// get sockaddr, IPv4 or IPv6:
-</span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>get_in_addr</span>(<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>sa)
+<span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;stdio.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;stdlib.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;unistd.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;errno.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;string.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;netdb.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;sys/types.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;netinet/in.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;sys/socket.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07></span>
+<span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;arpa/inet.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07></span>
+<span style=color:#719e07>#define PORT &#34;3490&#34; </span><span style=color:#586e75>// the port client will be connecting to
+</span><span style=color:#586e75></span>
+<span style=color:#719e07>#define MAXDATASIZE 100 </span><span style=color:#586e75>// max number of bytes we can get at once
+</span><span style=color:#586e75></span>
+<span style=color:#586e75>// get sockaddr, IPv4 or IPv6:
+</span><span style=color:#586e75></span><span style=color:#dc322f>void</span> <span style=color:#719e07>*</span><span style=color:#268bd2>get_in_addr</span>(<span style=color:#719e07>struct</span> sockaddr <span style=color:#719e07>*</span>sa)
 {
-    <span style=color:#66d9ef>if</span> (sa<span style=color:#f92672>-&gt;</span>sa_family <span style=color:#f92672>==</span> AF_INET) {
-        <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin_addr);
+    <span style=color:#719e07>if</span> (sa<span style=color:#719e07>-&gt;</span>sa_family <span style=color:#719e07>==</span> AF_INET) {
+        <span style=color:#719e07>return</span> <span style=color:#719e07>&amp;</span>(((<span style=color:#719e07>struct</span> sockaddr_in<span style=color:#719e07>*</span>)sa)<span style=color:#719e07>-&gt;</span>sin_addr);
     }
 
-    <span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in6<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin6_addr);
+    <span style=color:#719e07>return</span> <span style=color:#719e07>&amp;</span>(((<span style=color:#719e07>struct</span> sockaddr_in6<span style=color:#719e07>*</span>)sa)<span style=color:#719e07>-&gt;</span>sin6_addr);
 }
 
-<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>int</span> argc, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>argv[])
+<span style=color:#dc322f>int</span> <span style=color:#268bd2>main</span>(<span style=color:#dc322f>int</span> argc, <span style=color:#dc322f>char</span> <span style=color:#719e07>*</span>argv[])
 {
-    <span style=color:#66d9ef>int</span> sockfd, numbytes;
-    <span style=color:#66d9ef>char</span> buf[MAXDATASIZE];
-    <span style=color:#66d9ef>struct</span> addrinfo hints, <span style=color:#f92672>*</span>servinfo, <span style=color:#f92672>*</span>p;
-    <span style=color:#66d9ef>int</span> rv;
-    <span style=color:#66d9ef>char</span> s[INET6_ADDRSTRLEN];
+    <span style=color:#dc322f>int</span> sockfd, numbytes;
+    <span style=color:#dc322f>char</span> buf[MAXDATASIZE];
+    <span style=color:#719e07>struct</span> addrinfo hints, <span style=color:#719e07>*</span>servinfo, <span style=color:#719e07>*</span>p;
+    <span style=color:#dc322f>int</span> rv;
+    <span style=color:#dc322f>char</span> s[INET6_ADDRSTRLEN];
 
-    <span style=color:#66d9ef>if</span> (argc <span style=color:#f92672>!=</span> <span style=color:#ae81ff>2</span>) {
-        fprintf(stderr,<span style=color:#e6db74>&#34;usage: client hostname</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
-        exit(<span style=color:#ae81ff>1</span>);
+    <span style=color:#719e07>if</span> (argc <span style=color:#719e07>!=</span> <span style=color:#2aa198>2</span>) {
+        fprintf(stderr,<span style=color:#2aa198>&#34;usage: client hostname</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>);
+        exit(<span style=color:#2aa198>1</span>);
     }
 
-    memset(<span style=color:#f92672>&amp;</span>hints, <span style=color:#ae81ff>0</span>, <span style=color:#66d9ef>sizeof</span> hints);
-    hints.ai_family <span style=color:#f92672>=</span> AF_UNSPEC;
-    hints.ai_socktype <span style=color:#f92672>=</span> SOCK_STREAM;
+    memset(<span style=color:#719e07>&amp;</span>hints, <span style=color:#2aa198>0</span>, <span style=color:#719e07>sizeof</span> hints);
+    hints.ai_family <span style=color:#719e07>=</span> AF_UNSPEC;
+    hints.ai_socktype <span style=color:#719e07>=</span> SOCK_STREAM;
 
-    <span style=color:#66d9ef>if</span> ((rv <span style=color:#f92672>=</span> getaddrinfo(argv[<span style=color:#ae81ff>1</span>], PORT, <span style=color:#f92672>&amp;</span>hints, <span style=color:#f92672>&amp;</span>servinfo)) <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>) {
-        fprintf(stderr, <span style=color:#e6db74>&#34;getaddrinfo: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, gai_strerror(rv));
-        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>1</span>;
+    <span style=color:#719e07>if</span> ((rv <span style=color:#719e07>=</span> getaddrinfo(argv[<span style=color:#2aa198>1</span>], PORT, <span style=color:#719e07>&amp;</span>hints, <span style=color:#719e07>&amp;</span>servinfo)) <span style=color:#719e07>!=</span> <span style=color:#2aa198>0</span>) {
+        fprintf(stderr, <span style=color:#2aa198>&#34;getaddrinfo: %s</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>, gai_strerror(rv));
+        <span style=color:#719e07>return</span> <span style=color:#2aa198>1</span>;
     }
 
-    <span style=color:#75715e>// loop through all the results and connect to the first we can
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>for</span>(p <span style=color:#f92672>=</span> servinfo; p <span style=color:#f92672>!=</span> NULL; p <span style=color:#f92672>=</span> p<span style=color:#f92672>-&gt;</span>ai_next) {
-        <span style=color:#66d9ef>if</span> ((sockfd <span style=color:#f92672>=</span> socket(p<span style=color:#f92672>-&gt;</span>ai_family, p<span style=color:#f92672>-&gt;</span>ai_socktype,
-                p<span style=color:#f92672>-&gt;</span>ai_protocol)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
-            perror(<span style=color:#e6db74>&#34;client: socket&#34;</span>);
-            <span style=color:#66d9ef>continue</span>;
+    <span style=color:#586e75>// loop through all the results and connect to the first we can
+</span><span style=color:#586e75></span>    <span style=color:#719e07>for</span>(p <span style=color:#719e07>=</span> servinfo; p <span style=color:#719e07>!=</span> <span style=color:#b58900>NULL</span>; p <span style=color:#719e07>=</span> p<span style=color:#719e07>-&gt;</span>ai_next) {
+        <span style=color:#719e07>if</span> ((sockfd <span style=color:#719e07>=</span> socket(p<span style=color:#719e07>-&gt;</span>ai_family, p<span style=color:#719e07>-&gt;</span>ai_socktype,
+                p<span style=color:#719e07>-&gt;</span>ai_protocol)) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
+            perror(<span style=color:#2aa198>&#34;client: socket&#34;</span>);
+            <span style=color:#719e07>continue</span>;
         }
 
-        <span style=color:#66d9ef>if</span> (connect(sockfd, p<span style=color:#f92672>-&gt;</span>ai_addr, p<span style=color:#f92672>-&gt;</span>ai_addrlen) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+        <span style=color:#719e07>if</span> (connect(sockfd, p<span style=color:#719e07>-&gt;</span>ai_addr, p<span style=color:#719e07>-&gt;</span>ai_addrlen) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
             close(sockfd);
-            perror(<span style=color:#e6db74>&#34;client: connect&#34;</span>);
-            <span style=color:#66d9ef>continue</span>;
+            perror(<span style=color:#2aa198>&#34;client: connect&#34;</span>);
+            <span style=color:#719e07>continue</span>;
         }
 
-        <span style=color:#66d9ef>break</span>;
+        <span style=color:#719e07>break</span>;
     }
 
-    <span style=color:#66d9ef>if</span> (p <span style=color:#f92672>==</span> NULL) {
-        fprintf(stderr, <span style=color:#e6db74>&#34;client: failed to connect</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
-        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>2</span>;
+    <span style=color:#719e07>if</span> (p <span style=color:#719e07>==</span> <span style=color:#b58900>NULL</span>) {
+        fprintf(stderr, <span style=color:#2aa198>&#34;client: failed to connect</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>);
+        <span style=color:#719e07>return</span> <span style=color:#2aa198>2</span>;
     }
 
-    inet_ntop(p<span style=color:#f92672>-&gt;</span>ai_family, get_in_addr((<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)p<span style=color:#f92672>-&gt;</span>ai_addr),
-            s, <span style=color:#66d9ef>sizeof</span> s);
-    printf(<span style=color:#e6db74>&#34;client: connecting to %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, s);
+    inet_ntop(p<span style=color:#719e07>-&gt;</span>ai_family, get_in_addr((<span style=color:#719e07>struct</span> sockaddr <span style=color:#719e07>*</span>)p<span style=color:#719e07>-&gt;</span>ai_addr),
+            s, <span style=color:#719e07>sizeof</span> s);
+    printf(<span style=color:#2aa198>&#34;client: connecting to %s</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>, s);
 
-    freeaddrinfo(servinfo); <span style=color:#75715e>// all done with this structure
-</span><span style=color:#75715e></span>
-    <span style=color:#66d9ef>if</span> ((numbytes <span style=color:#f92672>=</span> recv(sockfd, buf, MAXDATASIZE<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>0</span>)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
-        perror(<span style=color:#e6db74>&#34;recv&#34;</span>);
-        exit(<span style=color:#ae81ff>1</span>);
+    freeaddrinfo(servinfo); <span style=color:#586e75>// all done with this structure
+</span><span style=color:#586e75></span>
+    <span style=color:#719e07>if</span> ((numbytes <span style=color:#719e07>=</span> recv(sockfd, buf, MAXDATASIZE<span style=color:#719e07>-</span><span style=color:#2aa198>1</span>, <span style=color:#2aa198>0</span>)) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
+        perror(<span style=color:#2aa198>&#34;recv&#34;</span>);
+        exit(<span style=color:#2aa198>1</span>);
     }
 
-    buf[numbytes] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;\0&#39;</span>;
+    buf[numbytes] <span style=color:#719e07>=</span> <span style=color:#2aa198>&#39;\0&#39;</span>;
 
-    printf(<span style=color:#e6db74>&#34;client: received &#39;%s&#39;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>,buf);
+    printf(<span style=color:#2aa198>&#34;client: received &#39;%s&#39;</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>,buf);
 
     close(sockfd);
 
-    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#719e07>return</span> <span style=color:#2aa198>0</span>;
 }
 </code></pre></div><p>クライアントを実行する前にサーバを実行しない場合、<code>connect()</code> は &ldquo;Connection refused&rdquo; を返すことに注意してください。非常に便利です。</p>
 <h2 id=datagram>
@@ -466,170 +468,170 @@ Github
 <p>データグラムソケットはコネクションレス型であり、パケットを無慈悲に発射するだけなので、クライアントとサーバには IPv6 を使用するように指示することにしています。こうすることで、サーバが IPv6 でリッスンしていて、クライアントが IPv4 で送信するような状況を避けることができます。（接続された TCP ストリームソケットの世界では、まだ不一致があるかもしれませんが、一方のアドレスファミリーの <code>connect()</code> でエラーが発生すると、他方のアドレスファミリーの再試行が行われます。）</p>
 <p>
 <a href=https://beej.us/guide/bgnet/examples/listener.c>listener ソースコード</a></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>/*
-</span><span style=color:#75715e>** listener.c -- a datagram sockets &#34;server&#34; demo
-</span><span style=color:#75715e>*/</span>
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#586e75>/*
+</span><span style=color:#586e75>** listener.c -- a datagram sockets &#34;server&#34; demo
+</span><span style=color:#586e75>*/</span>
 
-<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;errno.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/socket.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netinet/in.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;arpa/inet.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netdb.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>#define MYPORT &#34;4950&#34;	</span><span style=color:#75715e>// the port users will be connecting to
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>#define MAXBUFLEN 100
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>// get sockaddr, IPv4 or IPv6:
-</span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>get_in_addr</span>(<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>sa)
+<span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;stdio.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;stdlib.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;unistd.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;errno.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;string.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;sys/types.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;sys/socket.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;netinet/in.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;arpa/inet.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;netdb.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07></span>
+<span style=color:#719e07>#define MYPORT &#34;4950&#34;	</span><span style=color:#586e75>// the port users will be connecting to
+</span><span style=color:#586e75></span>
+<span style=color:#719e07>#define MAXBUFLEN 100
+</span><span style=color:#719e07></span>
+<span style=color:#586e75>// get sockaddr, IPv4 or IPv6:
+</span><span style=color:#586e75></span><span style=color:#dc322f>void</span> <span style=color:#719e07>*</span><span style=color:#268bd2>get_in_addr</span>(<span style=color:#719e07>struct</span> sockaddr <span style=color:#719e07>*</span>sa)
 {
-	<span style=color:#66d9ef>if</span> (sa<span style=color:#f92672>-&gt;</span>sa_family <span style=color:#f92672>==</span> AF_INET) {
-		<span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin_addr);
+	<span style=color:#719e07>if</span> (sa<span style=color:#719e07>-&gt;</span>sa_family <span style=color:#719e07>==</span> AF_INET) {
+		<span style=color:#719e07>return</span> <span style=color:#719e07>&amp;</span>(((<span style=color:#719e07>struct</span> sockaddr_in<span style=color:#719e07>*</span>)sa)<span style=color:#719e07>-&gt;</span>sin_addr);
 	}
 
-	<span style=color:#66d9ef>return</span> <span style=color:#f92672>&amp;</span>(((<span style=color:#66d9ef>struct</span> sockaddr_in6<span style=color:#f92672>*</span>)sa)<span style=color:#f92672>-&gt;</span>sin6_addr);
+	<span style=color:#719e07>return</span> <span style=color:#719e07>&amp;</span>(((<span style=color:#719e07>struct</span> sockaddr_in6<span style=color:#719e07>*</span>)sa)<span style=color:#719e07>-&gt;</span>sin6_addr);
 }
 
-<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+<span style=color:#dc322f>int</span> <span style=color:#268bd2>main</span>(<span style=color:#dc322f>void</span>)
 {
-	<span style=color:#66d9ef>int</span> sockfd;
-	<span style=color:#66d9ef>struct</span> addrinfo hints, <span style=color:#f92672>*</span>servinfo, <span style=color:#f92672>*</span>p;
-	<span style=color:#66d9ef>int</span> rv;
-	<span style=color:#66d9ef>int</span> numbytes;
-	<span style=color:#66d9ef>struct</span> sockaddr_storage their_addr;
-	<span style=color:#66d9ef>char</span> buf[MAXBUFLEN];
+	<span style=color:#dc322f>int</span> sockfd;
+	<span style=color:#719e07>struct</span> addrinfo hints, <span style=color:#719e07>*</span>servinfo, <span style=color:#719e07>*</span>p;
+	<span style=color:#dc322f>int</span> rv;
+	<span style=color:#dc322f>int</span> numbytes;
+	<span style=color:#719e07>struct</span> sockaddr_storage their_addr;
+	<span style=color:#dc322f>char</span> buf[MAXBUFLEN];
 	socklen_t addr_len;
-	<span style=color:#66d9ef>char</span> s[INET6_ADDRSTRLEN];
+	<span style=color:#dc322f>char</span> s[INET6_ADDRSTRLEN];
 
-	memset(<span style=color:#f92672>&amp;</span>hints, <span style=color:#ae81ff>0</span>, <span style=color:#66d9ef>sizeof</span> hints);
-	hints.ai_family <span style=color:#f92672>=</span> AF_INET6; <span style=color:#75715e>// set to AF_INET to use IPv4
-</span><span style=color:#75715e></span>	hints.ai_socktype <span style=color:#f92672>=</span> SOCK_DGRAM;
-	hints.ai_flags <span style=color:#f92672>=</span> AI_PASSIVE; <span style=color:#75715e>// use my IP
-</span><span style=color:#75715e></span>
-	<span style=color:#66d9ef>if</span> ((rv <span style=color:#f92672>=</span> getaddrinfo(NULL, MYPORT, <span style=color:#f92672>&amp;</span>hints, <span style=color:#f92672>&amp;</span>servinfo)) <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>) {
-		fprintf(stderr, <span style=color:#e6db74>&#34;getaddrinfo: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, gai_strerror(rv));
-		<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>1</span>;
+	memset(<span style=color:#719e07>&amp;</span>hints, <span style=color:#2aa198>0</span>, <span style=color:#719e07>sizeof</span> hints);
+	hints.ai_family <span style=color:#719e07>=</span> AF_INET6; <span style=color:#586e75>// set to AF_INET to use IPv4
+</span><span style=color:#586e75></span>	hints.ai_socktype <span style=color:#719e07>=</span> SOCK_DGRAM;
+	hints.ai_flags <span style=color:#719e07>=</span> AI_PASSIVE; <span style=color:#586e75>// use my IP
+</span><span style=color:#586e75></span>
+	<span style=color:#719e07>if</span> ((rv <span style=color:#719e07>=</span> getaddrinfo(<span style=color:#b58900>NULL</span>, MYPORT, <span style=color:#719e07>&amp;</span>hints, <span style=color:#719e07>&amp;</span>servinfo)) <span style=color:#719e07>!=</span> <span style=color:#2aa198>0</span>) {
+		fprintf(stderr, <span style=color:#2aa198>&#34;getaddrinfo: %s</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>, gai_strerror(rv));
+		<span style=color:#719e07>return</span> <span style=color:#2aa198>1</span>;
 	}
 
-	<span style=color:#75715e>// loop through all the results and bind to the first we can
-</span><span style=color:#75715e></span>	<span style=color:#66d9ef>for</span>(p <span style=color:#f92672>=</span> servinfo; p <span style=color:#f92672>!=</span> NULL; p <span style=color:#f92672>=</span> p<span style=color:#f92672>-&gt;</span>ai_next) {
-		<span style=color:#66d9ef>if</span> ((sockfd <span style=color:#f92672>=</span> socket(p<span style=color:#f92672>-&gt;</span>ai_family, p<span style=color:#f92672>-&gt;</span>ai_socktype,
-				p<span style=color:#f92672>-&gt;</span>ai_protocol)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
-			perror(<span style=color:#e6db74>&#34;listener: socket&#34;</span>);
-			<span style=color:#66d9ef>continue</span>;
+	<span style=color:#586e75>// loop through all the results and bind to the first we can
+</span><span style=color:#586e75></span>	<span style=color:#719e07>for</span>(p <span style=color:#719e07>=</span> servinfo; p <span style=color:#719e07>!=</span> <span style=color:#b58900>NULL</span>; p <span style=color:#719e07>=</span> p<span style=color:#719e07>-&gt;</span>ai_next) {
+		<span style=color:#719e07>if</span> ((sockfd <span style=color:#719e07>=</span> socket(p<span style=color:#719e07>-&gt;</span>ai_family, p<span style=color:#719e07>-&gt;</span>ai_socktype,
+				p<span style=color:#719e07>-&gt;</span>ai_protocol)) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
+			perror(<span style=color:#2aa198>&#34;listener: socket&#34;</span>);
+			<span style=color:#719e07>continue</span>;
 		}
 
-		<span style=color:#66d9ef>if</span> (bind(sockfd, p<span style=color:#f92672>-&gt;</span>ai_addr, p<span style=color:#f92672>-&gt;</span>ai_addrlen) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+		<span style=color:#719e07>if</span> (bind(sockfd, p<span style=color:#719e07>-&gt;</span>ai_addr, p<span style=color:#719e07>-&gt;</span>ai_addrlen) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
 			close(sockfd);
-			perror(<span style=color:#e6db74>&#34;listener: bind&#34;</span>);
-			<span style=color:#66d9ef>continue</span>;
+			perror(<span style=color:#2aa198>&#34;listener: bind&#34;</span>);
+			<span style=color:#719e07>continue</span>;
 		}
 
-		<span style=color:#66d9ef>break</span>;
+		<span style=color:#719e07>break</span>;
 	}
 
-	<span style=color:#66d9ef>if</span> (p <span style=color:#f92672>==</span> NULL) {
-		fprintf(stderr, <span style=color:#e6db74>&#34;listener: failed to bind socket</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
-		<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>2</span>;
+	<span style=color:#719e07>if</span> (p <span style=color:#719e07>==</span> <span style=color:#b58900>NULL</span>) {
+		fprintf(stderr, <span style=color:#2aa198>&#34;listener: failed to bind socket</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>);
+		<span style=color:#719e07>return</span> <span style=color:#2aa198>2</span>;
 	}
 
 	freeaddrinfo(servinfo);
 
-	printf(<span style=color:#e6db74>&#34;listener: waiting to recvfrom...</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+	printf(<span style=color:#2aa198>&#34;listener: waiting to recvfrom...</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>);
 
-	addr_len <span style=color:#f92672>=</span> <span style=color:#66d9ef>sizeof</span> their_addr;
-	<span style=color:#66d9ef>if</span> ((numbytes <span style=color:#f92672>=</span> recvfrom(sockfd, buf, MAXBUFLEN<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span> , <span style=color:#ae81ff>0</span>,
-		(<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>their_addr, <span style=color:#f92672>&amp;</span>addr_len)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
-		perror(<span style=color:#e6db74>&#34;recvfrom&#34;</span>);
-		exit(<span style=color:#ae81ff>1</span>);
+	addr_len <span style=color:#719e07>=</span> <span style=color:#719e07>sizeof</span> their_addr;
+	<span style=color:#719e07>if</span> ((numbytes <span style=color:#719e07>=</span> recvfrom(sockfd, buf, MAXBUFLEN<span style=color:#719e07>-</span><span style=color:#2aa198>1</span> , <span style=color:#2aa198>0</span>,
+		(<span style=color:#719e07>struct</span> sockaddr <span style=color:#719e07>*</span>)<span style=color:#719e07>&amp;</span>their_addr, <span style=color:#719e07>&amp;</span>addr_len)) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
+		perror(<span style=color:#2aa198>&#34;recvfrom&#34;</span>);
+		exit(<span style=color:#2aa198>1</span>);
 	}
 
-	printf(<span style=color:#e6db74>&#34;listener: got packet from %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>,
+	printf(<span style=color:#2aa198>&#34;listener: got packet from %s</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>,
 		inet_ntop(their_addr.ss_family,
-			get_in_addr((<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>their_addr),
-			s, <span style=color:#66d9ef>sizeof</span> s));
-	printf(<span style=color:#e6db74>&#34;listener: packet is %d bytes long</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, numbytes);
-	buf[numbytes] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;\0&#39;</span>;
-	printf(<span style=color:#e6db74>&#34;listener: packet contains </span><span style=color:#ae81ff>\&#34;</span><span style=color:#e6db74>%s</span><span style=color:#ae81ff>\&#34;\n</span><span style=color:#e6db74>&#34;</span>, buf);
+			get_in_addr((<span style=color:#719e07>struct</span> sockaddr <span style=color:#719e07>*</span>)<span style=color:#719e07>&amp;</span>their_addr),
+			s, <span style=color:#719e07>sizeof</span> s));
+	printf(<span style=color:#2aa198>&#34;listener: packet is %d bytes long</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>, numbytes);
+	buf[numbytes] <span style=color:#719e07>=</span> <span style=color:#2aa198>&#39;\0&#39;</span>;
+	printf(<span style=color:#2aa198>&#34;listener: packet contains </span><span style=color:#cb4b16>\&#34;</span><span style=color:#2aa198>%s</span><span style=color:#cb4b16>\&#34;\n</span><span style=color:#2aa198>&#34;</span>, buf);
 
 	close(sockfd);
 
-	<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+	<span style=color:#719e07>return</span> <span style=color:#2aa198>0</span>;
 }
 </code></pre></div><p><code>getaddrinfo()</code> の呼び出しで、最終的に <code>SOCK_DGRAM</code> を使用していることに注意してください。また、<code>listen()</code> や <code>accept()</code> は必要ないことに注意してください。これは非接続型データグラムソケットを使用する利点の1つです！</p>
 <p>
 <a href=https://beej.us/guide/bgnet/examples/talker.c>talker.c ソースコード</a></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>/*
-</span><span style=color:#75715e>** talker.c -- a datagram &#34;client&#34; demo
-</span><span style=color:#75715e>*/</span>
+<div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#586e75>/*
+</span><span style=color:#586e75>** talker.c -- a datagram &#34;client&#34; demo
+</span><span style=color:#586e75>*/</span>
 
-<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;errno.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/socket.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netinet/in.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;arpa/inet.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netdb.h&gt;</span><span style=color:#75715e>
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>#define SERVERPORT &#34;4950&#34;	</span><span style=color:#75715e>// the port users will be connecting to
-</span><span style=color:#75715e></span>
-<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>int</span> argc, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>argv[])
+<span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;stdio.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;stdlib.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;unistd.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;errno.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;string.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;sys/types.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;sys/socket.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;netinet/in.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;arpa/inet.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07>#include</span> <span style=color:#719e07>&lt;netdb.h&gt;</span><span style=color:#719e07>
+</span><span style=color:#719e07></span>
+<span style=color:#719e07>#define SERVERPORT &#34;4950&#34;	</span><span style=color:#586e75>// the port users will be connecting to
+</span><span style=color:#586e75></span>
+<span style=color:#dc322f>int</span> <span style=color:#268bd2>main</span>(<span style=color:#dc322f>int</span> argc, <span style=color:#dc322f>char</span> <span style=color:#719e07>*</span>argv[])
 {
-	<span style=color:#66d9ef>int</span> sockfd;
-	<span style=color:#66d9ef>struct</span> addrinfo hints, <span style=color:#f92672>*</span>servinfo, <span style=color:#f92672>*</span>p;
-	<span style=color:#66d9ef>int</span> rv;
-	<span style=color:#66d9ef>int</span> numbytes;
+	<span style=color:#dc322f>int</span> sockfd;
+	<span style=color:#719e07>struct</span> addrinfo hints, <span style=color:#719e07>*</span>servinfo, <span style=color:#719e07>*</span>p;
+	<span style=color:#dc322f>int</span> rv;
+	<span style=color:#dc322f>int</span> numbytes;
 
-	<span style=color:#66d9ef>if</span> (argc <span style=color:#f92672>!=</span> <span style=color:#ae81ff>3</span>) {
-		fprintf(stderr,<span style=color:#e6db74>&#34;usage: talker hostname message</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
-		exit(<span style=color:#ae81ff>1</span>);
+	<span style=color:#719e07>if</span> (argc <span style=color:#719e07>!=</span> <span style=color:#2aa198>3</span>) {
+		fprintf(stderr,<span style=color:#2aa198>&#34;usage: talker hostname message</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>);
+		exit(<span style=color:#2aa198>1</span>);
 	}
 
-	memset(<span style=color:#f92672>&amp;</span>hints, <span style=color:#ae81ff>0</span>, <span style=color:#66d9ef>sizeof</span> hints);
-	hints.ai_family <span style=color:#f92672>=</span> AF_INET6; <span style=color:#75715e>// set to AF_INET to use IPv4
-</span><span style=color:#75715e></span>	hints.ai_socktype <span style=color:#f92672>=</span> SOCK_DGRAM;
+	memset(<span style=color:#719e07>&amp;</span>hints, <span style=color:#2aa198>0</span>, <span style=color:#719e07>sizeof</span> hints);
+	hints.ai_family <span style=color:#719e07>=</span> AF_INET6; <span style=color:#586e75>// set to AF_INET to use IPv4
+</span><span style=color:#586e75></span>	hints.ai_socktype <span style=color:#719e07>=</span> SOCK_DGRAM;
 
-	<span style=color:#66d9ef>if</span> ((rv <span style=color:#f92672>=</span> getaddrinfo(argv[<span style=color:#ae81ff>1</span>], SERVERPORT, <span style=color:#f92672>&amp;</span>hints, <span style=color:#f92672>&amp;</span>servinfo)) <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>) {
-		fprintf(stderr, <span style=color:#e6db74>&#34;getaddrinfo: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, gai_strerror(rv));
-		<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>1</span>;
+	<span style=color:#719e07>if</span> ((rv <span style=color:#719e07>=</span> getaddrinfo(argv[<span style=color:#2aa198>1</span>], SERVERPORT, <span style=color:#719e07>&amp;</span>hints, <span style=color:#719e07>&amp;</span>servinfo)) <span style=color:#719e07>!=</span> <span style=color:#2aa198>0</span>) {
+		fprintf(stderr, <span style=color:#2aa198>&#34;getaddrinfo: %s</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>, gai_strerror(rv));
+		<span style=color:#719e07>return</span> <span style=color:#2aa198>1</span>;
 	}
 
-	<span style=color:#75715e>// loop through all the results and make a socket
-</span><span style=color:#75715e></span>	<span style=color:#66d9ef>for</span>(p <span style=color:#f92672>=</span> servinfo; p <span style=color:#f92672>!=</span> NULL; p <span style=color:#f92672>=</span> p<span style=color:#f92672>-&gt;</span>ai_next) {
-		<span style=color:#66d9ef>if</span> ((sockfd <span style=color:#f92672>=</span> socket(p<span style=color:#f92672>-&gt;</span>ai_family, p<span style=color:#f92672>-&gt;</span>ai_socktype,
-				p<span style=color:#f92672>-&gt;</span>ai_protocol)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
-			perror(<span style=color:#e6db74>&#34;talker: socket&#34;</span>);
-			<span style=color:#66d9ef>continue</span>;
+	<span style=color:#586e75>// loop through all the results and make a socket
+</span><span style=color:#586e75></span>	<span style=color:#719e07>for</span>(p <span style=color:#719e07>=</span> servinfo; p <span style=color:#719e07>!=</span> <span style=color:#b58900>NULL</span>; p <span style=color:#719e07>=</span> p<span style=color:#719e07>-&gt;</span>ai_next) {
+		<span style=color:#719e07>if</span> ((sockfd <span style=color:#719e07>=</span> socket(p<span style=color:#719e07>-&gt;</span>ai_family, p<span style=color:#719e07>-&gt;</span>ai_socktype,
+				p<span style=color:#719e07>-&gt;</span>ai_protocol)) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
+			perror(<span style=color:#2aa198>&#34;talker: socket&#34;</span>);
+			<span style=color:#719e07>continue</span>;
 		}
 
-		<span style=color:#66d9ef>break</span>;
+		<span style=color:#719e07>break</span>;
 	}
 
-	<span style=color:#66d9ef>if</span> (p <span style=color:#f92672>==</span> NULL) {
-		fprintf(stderr, <span style=color:#e6db74>&#34;talker: failed to create socket</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
-		<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>2</span>;
+	<span style=color:#719e07>if</span> (p <span style=color:#719e07>==</span> <span style=color:#b58900>NULL</span>) {
+		fprintf(stderr, <span style=color:#2aa198>&#34;talker: failed to create socket</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>);
+		<span style=color:#719e07>return</span> <span style=color:#2aa198>2</span>;
 	}
 
-	<span style=color:#66d9ef>if</span> ((numbytes <span style=color:#f92672>=</span> sendto(sockfd, argv[<span style=color:#ae81ff>2</span>], strlen(argv[<span style=color:#ae81ff>2</span>]), <span style=color:#ae81ff>0</span>,
-			 p<span style=color:#f92672>-&gt;</span>ai_addr, p<span style=color:#f92672>-&gt;</span>ai_addrlen)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
-		perror(<span style=color:#e6db74>&#34;talker: sendto&#34;</span>);
-		exit(<span style=color:#ae81ff>1</span>);
+	<span style=color:#719e07>if</span> ((numbytes <span style=color:#719e07>=</span> sendto(sockfd, argv[<span style=color:#2aa198>2</span>], strlen(argv[<span style=color:#2aa198>2</span>]), <span style=color:#2aa198>0</span>,
+			 p<span style=color:#719e07>-&gt;</span>ai_addr, p<span style=color:#719e07>-&gt;</span>ai_addrlen)) <span style=color:#719e07>==</span> <span style=color:#719e07>-</span><span style=color:#2aa198>1</span>) {
+		perror(<span style=color:#2aa198>&#34;talker: sendto&#34;</span>);
+		exit(<span style=color:#2aa198>1</span>);
 	}
 
 	freeaddrinfo(servinfo);
 
-	printf(<span style=color:#e6db74>&#34;talker: sent %d bytes to %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, numbytes, argv[<span style=color:#ae81ff>1</span>]);
+	printf(<span style=color:#2aa198>&#34;talker: sent %d bytes to %s</span><span style=color:#cb4b16>\n</span><span style=color:#2aa198>&#34;</span>, numbytes, argv[<span style=color:#2aa198>1</span>]);
 	close(sockfd);
 
-	<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+	<span style=color:#719e07>return</span> <span style=color:#2aa198>0</span>;
 }
 </code></pre></div><p>と、これだけです！<code>listener</code> をあるマシンで実行し、次に <code>takler</code> を別のマシンで実行します。それらのコミュニケーションをご覧ください！核家族で楽しめるG級興奮体験です！</p>
 <p>今回はサーバを動かす必要もありません。<code>talker</code> はただ楽しくパケットをエーテルに発射し、相手側に <code>recvfrom()</code> の準備が出来ていなければ消えてしまうのです。UDP データグラムソケットを使用して送信されたデータは、到着が保証されていないことを思い出してください！</p>
