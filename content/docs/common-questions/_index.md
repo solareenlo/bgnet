@@ -201,7 +201,7 @@ else if (n == -2) {
 
 そこで、賢明にも、`foobar` ユーティリティのような、安全だとわかっているいくつかのユーティリティを除いて、クライアントが何も使えないようにするのです。
 
-```{.c}
+```c
 if (!strncmp(str, "foobar", 6)) {
     sprintf(sysstr, "%s > /tmp/server.out", str);
     system(sysstr);
