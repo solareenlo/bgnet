@@ -21,7 +21,7 @@ markup:
     startLevel: 1
 
 # Code highlight
-# pygmentsStyle: solarized-dark
+pygmentsStyle: solarized-dark
 # pygmentsStyle: solarized-dark256
 # pygmentsStyle: solarized-light
 # pygmentsStyle: molekai
@@ -37,7 +37,7 @@ menu:
 params:
   # (Optional, default light) Sets color theme: light, dark or auto.
   # Theme 'auto' switches between dark and light modes based on browser/os preferences
-  BookTheme: "light"
+  BookTheme: "auto"
   # (Optional, default 6) Set how many table of contents levels to be showed on page.
   # Use false to hide ToC, note that 0 will default to 6 (https://gohugo.io/functions/default/)
   # You can also specify this parameter per page in front matter

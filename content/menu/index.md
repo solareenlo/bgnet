@@ -50,4 +50,5 @@ headless: true
   - [**7.5** Serialization---How to Pack Data](docs/slightly-advanced-techniques/#serialization)
   - [**7.6** Son of Data Encapsulation](docs/slightly-advanced-techniques/#sonofdataencap)
   - [**7.7** Broadcast Packets---Hello, World!](docs/slightly-advanced-techniques/#77-broadcast-packets---hello-world)
+- [**8** Common Questions](/bgnet/docs/common-questions)
 <br />
