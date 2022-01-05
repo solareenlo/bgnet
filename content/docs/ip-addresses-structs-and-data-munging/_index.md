@@ -149,7 +149,7 @@ IP アドレスはホテルの番地、ポート番号は部屋番号だと思�
 
 まず、簡単なものからです。ソケットディスクリプタです。ソケットディスクリプタは以下のような型です。
 
-```{.c}
+```c
 int
 ```
 
@@ -159,7 +159,7 @@ int
 
 My First Struct™---`struct addrinfo`。この構造体は最近開発されたもので、ソケットアドレス構造体を後で使用するために準備するために使用されます。また、ホスト名のルックアップやサービス名のルックアップにも使用されます。これは、後で実際の使い方を説明するときに、より意味をなすと思いますが、今は、接続を行うときに最初に呼び出されるものの1つであることを知っておいてください。
 
-```{.c}
+```c
 struct addrinfo {
     int              ai_flags;     // AI_PASSIVE, AI_CANONNAME, etc.
     int              ai_family;    // AF_INET, AF_INET6, AF_UNSPEC
@@ -189,7 +189,7 @@ struct addrinfo {
 
 とにかく、構造体 `sockaddr` は、多くの種類のソケットのためのソケットアドレス情報を保持します。
 
-```{.c}
+```c
 struct sockaddr {
     unsigned short    sa_family;    // address family, AF_xxx
     char              sa_data[14];  // 14 bytes of protocol address
@@ -202,7 +202,7 @@ struct sockaddr {
 
 `sockaddr_in` 構造体へのポインタは `sockaddr` 構造体へのポインタにキャストすることができ、その逆も可能です。つまり、`connect()` が `struct sockaddr*` を要求しても、`struct sockaddr_in` を使用して、最後の最後でキャストすることができるのです！
 
-```{.c}
+```c
 // (IPv4 only--see struct sockaddr_in6 for IPv6)
 
 struct sockaddr_in {
@@ -217,7 +217,7 @@ struct sockaddr_in {
 
 もっと掘り下げましょう！`sin_addr` フィールドは `in_addr` 構造体であることがわかりますね。あれは何なんだ？まあ、大げさではなく、史上最も恐ろしい組合せの1つです。
 
-```{.c}
+```c
 // (IPv4 only--see struct in6_addr for IPv6)
 
 // Internet address (a structure for historical reasons)
@@ -230,7 +230,7 @@ struct in_addr {
 
 IPv6 ではどうでしょうか。これについても同様の構造体が存在します。
 
-```{.c}
+```c
 // (IPv6 only--see struct sockaddr_in and struct in_addr for IPv4)
 
 struct sockaddr_in6 {
@@ -252,7 +252,7 @@ IPv4 が IPv4 アドレスとポート番号を持つように、IPv6 も IPv6 �
 
 最後になりますが、こちらもシンプルな構造体である `struct sockaddr_storage` は、IPv4 と IPv6 の両方の構造体を保持できるように十分な大きさに設計されています。コールによっては、`struct sockaddr` に IPv4 と IPv6 のどちらのアドレスが記入されるのか事前にわからないことがありますよね。そこで、この並列構造体を渡しますが、サイズが大きい以外は `struct sockaddr` とよく似ており、必要な型にキャストします。
 
-```{.c}
+```c
 struct sockaddr_storage {
     sa_family_t  ss_family;     // address family
 
@@ -272,7 +272,7 @@ struct sockaddr_storage {
 
 まず、`struct sockaddr_in ina` があり、そこに格納したい IP アドレスが `10.12.110.57` または `2001:db8:63b3:1::3490` だとしましょう。`inet_pton()` という関数は、数字とドットで表記された IP アドレスを、`AF_INET` か `AF_INET6` の指定によって、`in_addr` 構造体か `in6_addr` 構造体に変換する関数です。("`pton`" は "presentation to network" の略で、覚えやすければ "printable to network" と呼んでも構いません)。変換は次のように行うことができます。
 
-```{.c}
+```c
 struct sockaddr_in sa; // IPv4
 struct sockaddr_in6 sa6; // IPv6
 

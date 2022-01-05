@@ -12,7 +12,7 @@ Ok! Ok!
 
 ここに書かれていることはほとんどすべて、私が上で説明したことですが、せっかちな人のためのショートバージョンです。(もちろん、これ以外にもありますが、このガイドに該当するのはこれです)。
 
-1. まず、構造体を手で詰めるのではなく、[`getaddrinfo()`](#structs) を使ってすべての `sockaddr` 構造体の情報を取得するようにしてください。こうすることで、IP のバージョンに左右されず、また、その後の多くのステップを省くことができます。
+1. まず、構造体を手で詰めるのではなく、[`getaddrinfo()`](docs/ip-addresses-structs-and-data-munging/#structs) を使ってすべての `sockaddr` 構造体の情報を取得するようにしてください。こうすることで、IP のバージョンに左右されず、また、その後の多くのステップを省くことができます。
 
 1. IP バージョンに関連する何かをハードコーディングしていることが分かったら、ヘルパー関数でラップするようにします。
 
@@ -22,7 +22,7 @@ Ok! Ok!
 
 1. `INADDR_ANY` の割り当てを `in6addr_any` の割り当てに変更し、若干の差異が生じます。
 
-   ```{.c}
+   ```c
    struct sockaddr_in sa;
    struct sockaddr_in6 sa6;
 
@@ -33,7 +33,7 @@ Ok! Ok!
    Also, the value `IN6ADDR_ANY_INIT` can be used as an initializer when
    the `struct in6_addr` is declared, like so:
 
-   ```{.c}
+   ```c
    struct in6_addr ia6 = IN6ADDR_ANY_INIT;
    ```
 
