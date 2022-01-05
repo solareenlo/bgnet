@@ -21,7 +21,7 @@
 <link rel=icon href=/bgnet/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/bgnet/book.min.7d12d4add234c27cb11a219e7b205a38bbfc902fc5f73a3417e46984bbc3fa91.css integrity="sha256-fRLUrdI0wnyxGiGeeyBaOLv8kC/F9zo0F+RphLvD+pE=" crossorigin=anonymous>
 <script defer src=/bgnet/flexsearch.min.js></script>
-<script defer src=/bgnet/en.search.min.8dae42eea6c990411c9826e44dff73b66d7575c531c49ac6b1e73d8a8ecf4e6f.js integrity="sha256-ja5C7qbJkEEcmCbkTf9ztm11dcUxxJrGsec9io7PTm8=" crossorigin=anonymous></script>
+<script defer src=/bgnet/en.search.min.548a4e6caf6a8e194a9d65c10784be13c26d31df96427d7fad63fc602088ca06.js integrity="sha256-VIpObK9qjhlKnWXBB4S+E8JtMd+WQn1/rWP8YCCIygY=" crossorigin=anonymous></script>
 <link rel=alternate type=application/rss+xml href=https://solareenlo.com/bgnet/docs/slightly-advanced-techniques/index.xml title="Beej's Guide to Network Programming">
 </head>
 <body dir=ltr>
@@ -150,7 +150,15 @@
 <li>
 <a href=/bgnet/docs/slightly-advanced-techniques/#poll><strong>7.2</strong> poll()—Synchronous I/O Multiplexing</a></li>
 <li>
-<a href=/bgnet/docs/slightly-advanced-techniques/#select><strong>7.3</strong> select()—Synchronous I/O Multiplexing, Old School</a>
+<a href=/bgnet/docs/slightly-advanced-techniques/#select><strong>7.3</strong> select()—Synchronous I/O Multiplexing, Old School</a></li>
+<li>
+<a href=/bgnet/docs/slightly-advanced-techniques/#sendall><strong>7.4</strong> Handling Partial <code>send()</code>s</a></li>
+<li>
+<a href=/bgnet/docs/slightly-advanced-techniques/#serialization><strong>7.5</strong> Serialization&mdash;How to Pack Data</a></li>
+<li>
+<a href=/bgnet/docs/slightly-advanced-techniques/#sonofdataencap><strong>7.6</strong> Son of Data Encapsulation</a></li>
+<li>
+<a href=/bgnet/docs/slightly-advanced-techniques/#77-broadcast-packets---hello-world><strong>7.7</strong> Broadcast Packets&mdash;Hello, World!</a>
 <br></li>
 </ul>
 </li>
@@ -185,6 +193,10 @@ Github
 <li><a href=#blocking>7.1 Blocking</a></li>
 <li><a href=#poll>7.2 <code>poll()</code>&mdash;Synchronous I/O Multiplexing</a></li>
 <li><a href=#select>7.3 <code>select()</code>&mdash;Synchronous I/O Multiplexing, Old School</a></li>
+<li><a href=#sendall>7.4 Handling Partial <code>send()</code>s</a></li>
+<li><a href=#serialization>7.5 Serialization&mdash;How to Pack Data</a></li>
+<li><a href=#sonofdataencap>7.6 Son of Data Encapsulation</a></li>
+<li><a href=#77-broadcast-packets---hello-world>7.7 Broadcast Packets&mdash;Hello, World!</a></li>
 </ul>
 </li>
 </ul>
@@ -619,7 +631,7 @@ fcntl(sockfd, F_SETFL, O_NONBLOCK);
 <p>以上、全能の関数 <code>select()</code> の概要を簡単に説明しました。</p>
 <p>しかし、ご要望の多かった、より詳細な例をご紹介します。残念ながら、上記のごく簡単な例と、こちらの例では、大きな違いがあります。しかし、ご覧になってから、その後に続く説明をお読みください。</p>
 <p>
-<a href=https://beej.us/guide/bgnet/examples/selectserver.c>このプログラム</a>は、簡単なマルチユーザチャットサーバーのように動作します。一つのウィンドウで起動し、他の複数のウィンドウから <code>telnet</code> ("<code>telnet hostname 9034</code>") で接続してください。ある <code>telnet</code> セッションで何かを入力すると、他のすべてのウィンドウに表示されるはずです。</p>
+<a href=https://beej.us/guide/bgnet/examples/selectserver.c>このプログラム</a>は、簡単なマルチユーザチャットサーバのように動作します。一つのウィンドウで起動し、他の複数のウィンドウから <code>telnet</code> ("<code>telnet hostname 9034</code>") で接続してください。ある <code>telnet</code> セッションで何かを入力すると、他のすべてのウィンドウに表示されるはずです。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>/*
 </span><span style=color:#75715e>** selectserver.c -- a cheezy multiperson chat server
 </span><span style=color:#75715e>*/</span>
@@ -792,10 +804,833 @@ fcntl(sockfd, F_SETFL, O_NONBLOCK);
 <a href=/bgnet/#fcntlman><code>fcntl()</code> リファレンスページ</a>を参照してください。</p>
 <p>さらに、ここでボーナス的な余談ですが、<code>poll()</code> という別の関数があります。これは <code>select()</code> とほぼ同じ動作をしますが、ファイルディスクリプタ集合を管理するシステムが異なります。
 <a href=/bgnet/#pollman>チェックしてみてください！</a></p>
+<h2 id=sendall>
+7.4 Handling Partial <code>send()</code>s
+<a class=anchor href=#sendall>#</a>
+</h2>
+<p>上の
+<a href=/bgnet/docs/system-calls-or-bust/#sendrecv><code>send()</code> の節</a>で、<code>send()</code> はあなたが頼んだバイトをすべて送らないかもしれない、と言ったのを覚えていますか？つまり、512バイト送って欲しいのに、412バイトが返ってきたとします。残りの100バイトはどうなったのでしょうか?</p>
+<p>さて、それらはまだあなたの小さなバッファの中で送信されるのを待っています。あなたがコントロールできない状況のために、カーネルはすべてのデータを1つのチャンクで送信しないことを決定しました、そして今、私の友人は、データを外に出すのはあなた次第です。</p>
+<p>このような関数を書いてやってもいいんじゃないでしょうか。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/socket.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>sendall</span>(<span style=color:#66d9ef>int</span> s, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>buf, <span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>len)
+{
+    <span style=color:#66d9ef>int</span> total <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;        <span style=color:#75715e>// how many bytes we&#39;ve sent
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> bytesleft <span style=color:#f92672>=</span> <span style=color:#f92672>*</span>len; <span style=color:#75715e>// how many we have left to send
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> n;
+
+    <span style=color:#66d9ef>while</span>(total <span style=color:#f92672>&lt;</span> <span style=color:#f92672>*</span>len) {
+        n <span style=color:#f92672>=</span> send(s, buf<span style=color:#f92672>+</span>total, bytesleft, <span style=color:#ae81ff>0</span>);
+        <span style=color:#66d9ef>if</span> (n <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) { <span style=color:#66d9ef>break</span>; }
+        total <span style=color:#f92672>+=</span> n;
+        bytesleft <span style=color:#f92672>-=</span> n;
+    }
+
+    <span style=color:#f92672>*</span>len <span style=color:#f92672>=</span> total; <span style=color:#75715e>// return number actually sent here
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>return</span> n<span style=color:#f92672>==-</span><span style=color:#ae81ff>1</span><span style=color:#f92672>?-</span><span style=color:#ae81ff>1</span><span style=color:#f92672>:</span><span style=color:#ae81ff>0</span>; <span style=color:#75715e>// return -1 on failure, 0 on success
+</span><span style=color:#75715e></span>}
+</code></pre></div><p>この例では、<code>s</code> がデータを送信するソケット、<code>buf</code> がデータを格納するバッファ、<code>len</code> がバッファのバイト数を格納する <code>int</code> へのポインタです。</p>
+<p>この関数は、エラーが発生すると <code>-1</code> を返します（また、<code>send()</code> の呼び出しによって <code>errno</code> が設定されたままです）。また、実際に送信されたバイト数は <code>len</code> として返されます。これは、エラーがない限り、あなたが送信するように頼んだバイト数と同じになります。<code>sendall()</code> はデータを送信するために最善を尽くし、ハァハァ言っていますが、もしエラーがあればすぐに返されます。</p>
+<p>念のため、この関数の呼び出しのサンプルを示します。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#66d9ef>char</span> buf[<span style=color:#ae81ff>10</span>] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Beej!&#34;</span>;
+<span style=color:#66d9ef>int</span> len;
+
+len <span style=color:#f92672>=</span> strlen(buf);
+<span style=color:#66d9ef>if</span> (sendall(s, buf, <span style=color:#f92672>&amp;</span>len) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+    perror(<span style=color:#e6db74>&#34;sendall&#34;</span>);
+    printf(<span style=color:#e6db74>&#34;We only sent %d bytes because of the error!</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, len);
+}
+</code></pre></div><p>パケットの一部が到着した場合、受信側ではどのようなことが起こるのでしょうか？パケットの長さがまちまちな場合、あるパケットが終わり、別のパケットが始まるのを受信側はどうやって知るのでしょうか？そう、現実のシナリオはロバの王道なのです。あなたはおそらくカプセル化しなければならないでしょう（冒頭の
+<a href=/bgnet/docs/what-is-a-socket/#lowlevel>データのカプセル化のセクション</a>を覚えていますか？）詳細はこちらをご覧ください。</p>
+<h2 id=serialization>
+7.5 Serialization&mdash;How to Pack Data
+<a class=anchor href=#serialization>#</a>
+</h2>
+<p>ネットワーク上でテキストデータを送るのは簡単ですが、<code>int</code> や <code>float</code> のような"バイナリ"データを送りたい場合はどうしたらよいでしょうか？その結果、いくつかの選択肢があることがわかりました。</p>
+<ol>
+<li>
+<p>数字を <code>sprintf()</code> などの関数でテキストに変換し、送信します。受信側は <code>strtol()</code> などの関数を使ってテキストを解析し、数値に戻します。</p>
+</li>
+<li>
+<p><code>send()</code> にデータへのポインタを渡して、データをそのまま送信します。</p>
+</li>
+<li>
+<p>数値を携帯可能な2進数にエンコードします。受信側はそれをデコードします。</p>
+</li>
+</ol>
+<p>スニークプレビュー！今夜だけ！</p>
+<p>[<em>カーテン上昇</em>]</p>
+<p>Beejは、&ldquo;私は、上の方法3を好みます！&ldquo;と言っています。</p>
+<p>[<em>終</em>]</p>
+<p>（このセクションを本格的に始める前に、これを行うためのライブラリは世の中に存在し、自分でローリングして移植性とエラーのない状態を維持することはかなり困難であることをお伝えしておきます。ですから、自分で実装することを決める前に、いろいろと調べて下調べをしてください。私は、このようなことがどのように機能するのかに興味がある人のために、ここに情報を記載します。）</p>
+<p>実は、上記の方法はどれも欠点と利点があるのですが、一般的には、先ほど言ったように、私は3番目の方法を好みます。しかし、まず、他の2つの方法の欠点と利点について説明しましょう。</p>
+<p>最初の方法は、数字をテキストとしてエンコードしてから送信するもので、電線を伝わってくるデータを簡単に印刷して読むことができるという利点があります。
+<a href=https://en.wikipedia.org/wiki/Internet_Relay_Chat>インターネットリレーチャット（IRC）</a>のように、帯域幅を必要としない状況で使用するには、人間が読めるプロトコルが優れている場合もあります。しかし、変換に時間がかかるという欠点があり、その結果はほとんど常に元の数値よりも多くのスペースを取ってしまいます。</p>
+<p>方法2：生データを渡します。これは非常に簡単です（しかし危険です！）。送信するデータへのポインタを取り、それを使って send を呼び出すだけです。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>double</span> d <span style=color:#f92672>=</span> <span style=color:#ae81ff>3490.15926535</span>;
+
+send(s, <span style=color:#f92672>&amp;</span>d, <span style=color:#66d9ef>sizeof</span> d, <span style=color:#ae81ff>0</span>);  <span style=color:#75715e>/* DANGER--non-portable! */</span>
+</code></pre></div><p>受け手はこのように受け取ります。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=color:#66d9ef>double</span> d;
+
+recv(s, <span style=color:#f92672>&amp;</span>d, <span style=color:#66d9ef>sizeof</span> d, <span style=color:#ae81ff>0</span>);  <span style=color:#75715e>/* DANGER--non-portable! */</span>
+</code></pre></div><p>速くて、シンプルで、いいことずくめじゃないですか。しかし、すべてのアーキテクチャが <code>double</code>（あるいは <code>int</code>）を同じビット表現で、あるいは同じバイト順序で表現しているわけではないことがわかりました！このコードは明らかに非移植的です。（おいおい&mdash;もしかしたら移植性は必要ないかもしれない。その場合は、これはいいし、速い。）</p>
+<p>整数型をパッキングするとき、<code>htons()</code> クラスの関数が、数値をネットワークバイトオーダーに変換することによって、いかに移植性を保つのに役立つか、そして、それがいかに正しい行為であるかをすでに見てきました。残念ながら、<code>float</code> 型に対する同様の関数はありません。希望は失われてしまったのでしょうか？</p>
+<p>恐るべし！（一瞬、怖くなったか？いいえ？少しも？）私たちにできることがあります。データを既知のバイナリ形式にパックし（または"マーシャル&rdquo;、&ldquo;シリアライズ&rdquo;、あるいは他の1億の名前のうちの1つ）、受信者がリモート側で解凍できるようにすることができるのです。</p>
+<p>&ldquo;既知のバイナリ形式"とはどういう意味でしょうか？さて、<code>htons()</code> の例はもう見ましたね？これは、ホスト側のフォーマットが何であれ、数値をネットワークバイトオーダーに変更（あるいは"エンコード&rdquo;）します。数字を逆変換（アンエンコード）するために、受信側は <code>ntohs()</code> を呼び出します。</p>
+<p>でも、他の非整数型にはそんな関数はないって、さっき言い終わったばかりじゃないですか。そうです。そうなんだ。そして、C 言語にはこれを行う標準的な方法がないので、ちょっと困ったことになります（Python ファンにとってはありがたいダジャレですね）。</p>
+<p>そのためには、データを既知の形式にパックし、それを電送してデコードする必要があります。例えば、<code>float</code> をパックするために、以下は
+<a href=https://beej.us/guide/bgnet/examples/pack.c>迅速で汚い方法ですが、改善の余地はたくさんあります</a>。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdint.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>uint32_t</span> <span style=color:#a6e22e>htonf</span>(<span style=color:#66d9ef>float</span> f)
+{
+    <span style=color:#66d9ef>uint32_t</span> p;
+    <span style=color:#66d9ef>uint32_t</span> sign;
+
+    <span style=color:#66d9ef>if</span> (f <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>) { sign <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>; f <span style=color:#f92672>=</span> <span style=color:#f92672>-</span>f; }
+    <span style=color:#66d9ef>else</span> { sign <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; }
+
+    p <span style=color:#f92672>=</span> ((((<span style=color:#66d9ef>uint32_t</span>)f)<span style=color:#f92672>&amp;</span><span style=color:#ae81ff>0x7fff</span>)<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>16</span>) <span style=color:#f92672>|</span> (sign<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>31</span>); <span style=color:#75715e>// whole part and sign
+</span><span style=color:#75715e></span>    p <span style=color:#f92672>|=</span> (<span style=color:#66d9ef>uint32_t</span>)(((f <span style=color:#f92672>-</span> (<span style=color:#66d9ef>int</span>)f) <span style=color:#f92672>*</span> <span style=color:#ae81ff>65536.0f</span>))<span style=color:#f92672>&amp;</span><span style=color:#ae81ff>0xffff</span>; <span style=color:#75715e>// fraction
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>return</span> p;
+}
+
+<span style=color:#66d9ef>float</span> <span style=color:#a6e22e>ntohf</span>(<span style=color:#66d9ef>uint32_t</span> p)
+{
+    <span style=color:#66d9ef>float</span> f <span style=color:#f92672>=</span> ((p<span style=color:#f92672>&gt;&gt;</span><span style=color:#ae81ff>16</span>)<span style=color:#f92672>&amp;</span><span style=color:#ae81ff>0x7fff</span>); <span style=color:#75715e>// whole part
+</span><span style=color:#75715e></span>    f <span style=color:#f92672>+=</span> (p<span style=color:#f92672>&amp;</span><span style=color:#ae81ff>0xffff</span>) <span style=color:#f92672>/</span> <span style=color:#ae81ff>65536.0f</span>; <span style=color:#75715e>// fraction
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>if</span> (((p<span style=color:#f92672>&gt;&gt;</span><span style=color:#ae81ff>31</span>)<span style=color:#f92672>&amp;</span><span style=color:#ae81ff>0x1</span>) <span style=color:#f92672>==</span> <span style=color:#ae81ff>0x1</span>) { f <span style=color:#f92672>=</span> <span style=color:#f92672>-</span>f; } <span style=color:#75715e>// sign bit set
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>return</span> f;
+}
+</code></pre></div><p>上記のコードは、32 ビットの数値に <code>float</code> を格納する素朴な実装のようなものです。上位ビット（31）は数値の符号（&ldquo;1"は負を意味します）を格納するために使用され、次の7ビット（30-16）は <code>float</code> の整数部を格納するために使用されます。最後に残りのビット（15-0）は、数値の小数部分を格納するために使用されます。</p>
+<p>使い方はいたって簡単です。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+{
+    <span style=color:#66d9ef>float</span> f <span style=color:#f92672>=</span> <span style=color:#ae81ff>3.1415926</span>, f2;
+    <span style=color:#66d9ef>uint32_t</span> netf;
+
+    netf <span style=color:#f92672>=</span> htonf(f);  <span style=color:#75715e>// convert to &#34;network&#34; form
+</span><span style=color:#75715e></span>    f2 <span style=color:#f92672>=</span> ntohf(netf); <span style=color:#75715e>// convert back to test
+</span><span style=color:#75715e></span>
+    printf(<span style=color:#e6db74>&#34;Original: %f</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, f);        <span style=color:#75715e>// 3.141593
+</span><span style=color:#75715e></span>    printf(<span style=color:#e6db74>&#34; Network: 0x%08X</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, netf); <span style=color:#75715e>// 0x0003243F
+</span><span style=color:#75715e></span>    printf(<span style=color:#e6db74>&#34;Unpacked: %f</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, f2);       <span style=color:#75715e>// 3.141586
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div><p>プラス面は、小さくてシンプル、そして速いことです。32767 より大きい数を格納しようとすると、とても満足できるものではありません！マイナス面は、スペースを有効活用できないことと、範囲が大きく制限されることです。上の例では、小数点以下の桁数が正しく保存されていないこともおわかりいただけると思います。</p>
+<p>代わりに何ができるのか？浮動小数点数を保存するための標準規格は
+<a href=https://en.wikipedia.org/wiki/IEEE_754>IEEE-754</a> として知られています。ほとんどのコンピュータは内部でこのフォーマットを使って浮動小数点演算を行っているので、厳密に言えば変換する必要はないのです。しかし、ソースコードの移植性を重視するのであれば、必ずしもそのような前提は成り立ちません。（一方、高速に動作させたいのであれば、変換を行う必要のないプラットフォームでは最適化すべきです！それが <code>htons()</code> やその類いの処理です。）</p>
+<p>以下は、浮動小数点と倍数を IEEE-754 フォーマットにエンコードするコードです。（ほとんど&mdash; NaN や Infinity はエンコードしませんが、そのように修正することができます。）</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>#define pack754_32(f) (pack754((f), 32, 8))
+</span><span style=color:#75715e>#define pack754_64(f) (pack754((f), 64, 11))
+</span><span style=color:#75715e>#define unpack754_32(i) (unpack754((i), 32, 8))
+</span><span style=color:#75715e>#define unpack754_64(i) (unpack754((i), 64, 11))
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>uint64_t</span> <span style=color:#a6e22e>pack754</span>(<span style=color:#66d9ef>long</span> <span style=color:#66d9ef>double</span> f, <span style=color:#66d9ef>unsigned</span> bits, <span style=color:#66d9ef>unsigned</span> expbits)
+{
+    <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>double</span> fnorm;
+    <span style=color:#66d9ef>int</span> shift;
+    <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> sign, exp, significand;
+    <span style=color:#66d9ef>unsigned</span> significandbits <span style=color:#f92672>=</span> bits <span style=color:#f92672>-</span> expbits <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>; <span style=color:#75715e>// -1 for sign bit
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>if</span> (f <span style=color:#f92672>==</span> <span style=color:#ae81ff>0.0</span>) <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>; <span style=color:#75715e>// get this special case out of the way
+</span><span style=color:#75715e></span>
+    <span style=color:#75715e>// check sign and begin normalization
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> (f <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>) { sign <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>; fnorm <span style=color:#f92672>=</span> <span style=color:#f92672>-</span>f; }
+    <span style=color:#66d9ef>else</span> { sign <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; fnorm <span style=color:#f92672>=</span> f; }
+
+    <span style=color:#75715e>// get the normalized form of f and track the exponent
+</span><span style=color:#75715e></span>    shift <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>while</span>(fnorm <span style=color:#f92672>&gt;=</span> <span style=color:#ae81ff>2.0</span>) { fnorm <span style=color:#f92672>/=</span> <span style=color:#ae81ff>2.0</span>; shift<span style=color:#f92672>++</span>; }
+    <span style=color:#66d9ef>while</span>(fnorm <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>1.0</span>) { fnorm <span style=color:#f92672>*=</span> <span style=color:#ae81ff>2.0</span>; shift<span style=color:#f92672>--</span>; }
+    fnorm <span style=color:#f92672>=</span> fnorm <span style=color:#f92672>-</span> <span style=color:#ae81ff>1.0</span>;
+
+    <span style=color:#75715e>// calculate the binary form (non-float) of the significand data
+</span><span style=color:#75715e></span>    significand <span style=color:#f92672>=</span> fnorm <span style=color:#f92672>*</span> ((<span style=color:#ae81ff>1LL</span><span style=color:#f92672>&lt;&lt;</span>significandbits) <span style=color:#f92672>+</span> <span style=color:#ae81ff>0.5f</span>);
+
+    <span style=color:#75715e>// get the biased exponent
+</span><span style=color:#75715e></span>    exp <span style=color:#f92672>=</span> shift <span style=color:#f92672>+</span> ((<span style=color:#ae81ff>1</span><span style=color:#f92672>&lt;&lt;</span>(expbits<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)) <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>); <span style=color:#75715e>// shift + bias
+</span><span style=color:#75715e></span>
+    <span style=color:#75715e>// return the final answer
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>return</span> (sign<span style=color:#f92672>&lt;&lt;</span>(bits<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)) <span style=color:#f92672>|</span> (exp<span style=color:#f92672>&lt;&lt;</span>(bits<span style=color:#f92672>-</span>expbits<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)) <span style=color:#f92672>|</span> significand;
+}
+
+<span style=color:#66d9ef>long</span> <span style=color:#66d9ef>double</span> <span style=color:#a6e22e>unpack754</span>(<span style=color:#66d9ef>uint64_t</span> i, <span style=color:#66d9ef>unsigned</span> bits, <span style=color:#66d9ef>unsigned</span> expbits)
+{
+    <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>double</span> result;
+    <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> shift;
+    <span style=color:#66d9ef>unsigned</span> bias;
+    <span style=color:#66d9ef>unsigned</span> significandbits <span style=color:#f92672>=</span> bits <span style=color:#f92672>-</span> expbits <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>; <span style=color:#75715e>// -1 for sign bit
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>if</span> (i <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>) <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0.0</span>;
+
+    <span style=color:#75715e>// pull the significand
+</span><span style=color:#75715e></span>    result <span style=color:#f92672>=</span> (i<span style=color:#f92672>&amp;</span>((<span style=color:#ae81ff>1LL</span><span style=color:#f92672>&lt;&lt;</span>significandbits)<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)); <span style=color:#75715e>// mask
+</span><span style=color:#75715e></span>    result <span style=color:#f92672>/=</span> (<span style=color:#ae81ff>1LL</span><span style=color:#f92672>&lt;&lt;</span>significandbits); <span style=color:#75715e>// convert back to float
+</span><span style=color:#75715e></span>    result <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1.0f</span>; <span style=color:#75715e>// add the one back on
+</span><span style=color:#75715e></span>
+    <span style=color:#75715e>// deal with the exponent
+</span><span style=color:#75715e></span>    bias <span style=color:#f92672>=</span> (<span style=color:#ae81ff>1</span><span style=color:#f92672>&lt;&lt;</span>(expbits<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)) <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>;
+    shift <span style=color:#f92672>=</span> ((i<span style=color:#f92672>&gt;&gt;</span>significandbits)<span style=color:#f92672>&amp;</span>((<span style=color:#ae81ff>1LL</span><span style=color:#f92672>&lt;&lt;</span>expbits)<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)) <span style=color:#f92672>-</span> bias;
+    <span style=color:#66d9ef>while</span>(shift <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>) { result <span style=color:#f92672>*=</span> <span style=color:#ae81ff>2.0</span>; shift<span style=color:#f92672>--</span>; }
+    <span style=color:#66d9ef>while</span>(shift <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>) { result <span style=color:#f92672>/=</span> <span style=color:#ae81ff>2.0</span>; shift<span style=color:#f92672>++</span>; }
+
+    <span style=color:#75715e>// sign it
+</span><span style=color:#75715e></span>    result <span style=color:#f92672>*=</span> (i<span style=color:#f92672>&gt;&gt;</span>(bits<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>))<span style=color:#f92672>&amp;</span><span style=color:#ae81ff>1</span><span style=color:#f92672>?</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1.0</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>1.0</span>;
+
+    <span style=color:#66d9ef>return</span> result;
+}
+</code></pre></div><p>32 ビット（おそらく <code>float</code>）と 64 ビット（おそらく <code>double</code>）の数値のパッキングとアンパッキングのための便利なマクロをトップに置きましたが、<code>pack754()</code> 関数を直接呼んで <code>bits</code> 分のデータ（<code>expbits</code> は正規化した数値の指数用に予約されています）をエンコードするように指示することができます。</p>
+<p>以下は使用例です。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c>
+<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdint.h&gt; // defines uintN_t types</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;inttypes.h&gt; // defines PRIx macros</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+{
+    <span style=color:#66d9ef>float</span> f <span style=color:#f92672>=</span> <span style=color:#ae81ff>3.1415926</span>, f2;
+    <span style=color:#66d9ef>double</span> d <span style=color:#f92672>=</span> <span style=color:#ae81ff>3.14159265358979323</span>, d2;
+    <span style=color:#66d9ef>uint32_t</span> fi;
+    <span style=color:#66d9ef>uint64_t</span> di;
+
+    fi <span style=color:#f92672>=</span> pack754_32(f);
+    f2 <span style=color:#f92672>=</span> unpack754_32(fi);
+
+    di <span style=color:#f92672>=</span> pack754_64(d);
+    d2 <span style=color:#f92672>=</span> unpack754_64(di);
+
+    printf(<span style=color:#e6db74>&#34;float before : %.7f</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, f);
+    printf(<span style=color:#e6db74>&#34;float encoded: 0x%08&#34;</span> PRIx32 <span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, fi);
+    printf(<span style=color:#e6db74>&#34;float after  : %.7f</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>&#34;</span>, f2);
+
+    printf(<span style=color:#e6db74>&#34;double before : %.20lf</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, d);
+    printf(<span style=color:#e6db74>&#34;double encoded: 0x%016&#34;</span> PRIx64 <span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, di);
+    printf(<span style=color:#e6db74>&#34;double after  : %.20lf</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, d2);
+
+    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div><p>上記のコードでは、このように出力されます。</p>
+<pre tabindex=0><code>float before : 3.1415925
+float encoded: 0x40490FDA
+float after  : 3.1415925
+
+double before : 3.14159265358979311600
+double encoded: 0x400921FB54442D18
+double after  : 3.14159265358979311600
+</code></pre><p>もう一つの疑問は、<code>struct</code> をどのようにパックするかということです。残念ながら、コンパイラは <code>struct</code> の中に自由にパディングを入れることができるので、全体を1つのチャンクでポータブルに送信することはできません。（&ldquo;これができない&rdquo;、&ldquo;あれができない"というのはもう聞き飽きた？すみません。友人の言葉を借りれば、&ldquo;何か問題が起きると、いつもマイクロソフトのせいにする &ldquo;ということです。これは確かにマイクロソフトのせいではないかもしれませんが、友人の発言は完全に事実です。）</p>
+<p>話を戻すと、<code>struct</code> を電線で送るには、各フィールドを独立してパックし、反対側に到着したらそれらを <code>struct</code> にアンパックするのが一番良い方法です。</p>
+<p>それは大変なことだ、とお考えでしょう。そうなんです。ひとつは、データをパックするのを手伝ってくれるヘルパー関数を書くことです。これは楽しいぞ。本当に！？</p>
+<p>Kernighan と Pike の
+<a href="https://www.amazon.com/gp/product/020161586X/ref=as_li_tl?ie=UTF8&tag=beejus0c-20&camp=1789&creative=9325&linkCode=as2&creativeASIN=020161586X&linkId=b3ac9370d2df122adcce0316aed99924">The Practice of Programming</a> という本の中で、彼らは <code>printf()</code> に似た関数である <code>pack()</code> と <code>unpack()</code> を実装し、まさにこのようなことをやっています。リンクしたいのですが、どうやらこれらの関数はこの本の他のソースと一緒にオンラインにないようです。</p>
+<p>（The Practice of Programming は素晴らしい読み物です。ゼウスは私が勧めるたびに子猫を救ってくれます。）</p>
+<p>この時点で、私は使ったことはありませんが、完全に立派に見える
+<a href=https://github.com/protobuf-c/protobuf-c>Protocol Buffers implementation in C</a> へのポインタを落とすつもりです。Python や Perl のプログラマは、同じことを実現するために、それぞれの言語の <code>pack()</code> と <code>unpack()</code> 関数をチェックアウトしたいと思うでしょう。また、Java には大きな Serializable インターフェースがあり、同じような方法で使用することができます。</p>
+<p>しかし、C言語で独自のパッキングユーティリティを書きたい場合、K&P のトリックは、変数の引数リストを使って <code>printf()</code> 風の関数を作り、パケットを構築することです。 以下は、それを元に[
+<a href=https://beej.us/guide/bgnet/examples/pack2.c>私が自作したバージョン</a>ですが、うまくいけば、このようなものがどのように動作するかのアイデアを与えるのに十分なものです。</p>
+<p>（このコードは、上記の <code>pack754()</code> 関数を参照しています。<code>packi*()</code> 関数はおなじみの <code>htons()</code> ファミリーと同じように動作しますが、別の整数の代わりに <code>char</code> 配列にパックする点が異なります。）</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;ctype.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdarg.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>/*
+</span><span style=color:#75715e>** packi16() -- store a 16-bit int into a char buffer (like htons())
+</span><span style=color:#75715e>*/</span>
+<span style=color:#66d9ef>void</span> <span style=color:#a6e22e>packi16</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>buf, <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> i)
+{
+    <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i<span style=color:#f92672>&gt;&gt;</span><span style=color:#ae81ff>8</span>; <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i;
+}
+
+<span style=color:#75715e>/*
+</span><span style=color:#75715e>** packi32() -- store a 32-bit int into a char buffer (like htonl())
+</span><span style=color:#75715e>*/</span>
+<span style=color:#66d9ef>void</span> <span style=color:#a6e22e>packi32</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>buf, <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> i)
+{
+    <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i<span style=color:#f92672>&gt;&gt;</span><span style=color:#ae81ff>24</span>; <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i<span style=color:#f92672>&gt;&gt;</span><span style=color:#ae81ff>16</span>;
+    <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i<span style=color:#f92672>&gt;&gt;</span><span style=color:#ae81ff>8</span>;  <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i;
+}
+
+<span style=color:#75715e>/*
+</span><span style=color:#75715e>** packi64() -- store a 64-bit int into a char buffer (like htonl())
+</span><span style=color:#75715e>*/</span>
+<span style=color:#66d9ef>void</span> <span style=color:#a6e22e>packi64</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>buf, <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> i)
+{
+    <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i<span style=color:#f92672>&gt;&gt;</span><span style=color:#ae81ff>56</span>; <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i<span style=color:#f92672>&gt;&gt;</span><span style=color:#ae81ff>48</span>;
+    <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i<span style=color:#f92672>&gt;&gt;</span><span style=color:#ae81ff>40</span>; <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i<span style=color:#f92672>&gt;&gt;</span><span style=color:#ae81ff>32</span>;
+    <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i<span style=color:#f92672>&gt;&gt;</span><span style=color:#ae81ff>24</span>; <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i<span style=color:#f92672>&gt;&gt;</span><span style=color:#ae81ff>16</span>;
+    <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i<span style=color:#f92672>&gt;&gt;</span><span style=color:#ae81ff>8</span>;  <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> i;
+}
+
+<span style=color:#75715e>/*
+</span><span style=color:#75715e>** unpacki16() -- unpack a 16-bit int from a char buffer (like ntohs())
+</span><span style=color:#75715e>*/</span>
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>unpacki16</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>buf)
+{
+    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> i2 <span style=color:#f92672>=</span> ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>8</span>) <span style=color:#f92672>|</span> buf[<span style=color:#ae81ff>1</span>];
+    <span style=color:#66d9ef>int</span> i;
+
+    <span style=color:#75715e>// change unsigned numbers to signed
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> (i2 <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0x7fffu</span>) { i <span style=color:#f92672>=</span> i2; }
+    <span style=color:#66d9ef>else</span> { i <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span> <span style=color:#f92672>-</span> (<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span>)(<span style=color:#ae81ff>0xffffu</span> <span style=color:#f92672>-</span> i2); }
+
+    <span style=color:#66d9ef>return</span> i;
+}
+
+<span style=color:#75715e>/*
+</span><span style=color:#75715e>** unpacku16() -- unpack a 16-bit unsigned from a char buffer (like ntohs())
+</span><span style=color:#75715e>*/</span>
+<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>unpacku16</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>buf)
+{
+    <span style=color:#66d9ef>return</span> ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>8</span>) <span style=color:#f92672>|</span> buf[<span style=color:#ae81ff>1</span>];
+}
+
+<span style=color:#75715e>/*
+</span><span style=color:#75715e>** unpacki32() -- unpack a 32-bit int from a char buffer (like ntohl())
+</span><span style=color:#75715e>*/</span>
+<span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>unpacki32</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>buf)
+{
+    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> i2 <span style=color:#f92672>=</span> ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>24</span>) <span style=color:#f92672>|</span>
+                           ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>1</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>16</span>) <span style=color:#f92672>|</span>
+                           ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>2</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>8</span>)  <span style=color:#f92672>|</span>
+                           buf[<span style=color:#ae81ff>3</span>];
+    <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> i;
+
+    <span style=color:#75715e>// change unsigned numbers to signed
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> (i2 <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0x7fffffffu</span>) { i <span style=color:#f92672>=</span> i2; }
+    <span style=color:#66d9ef>else</span> { i <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span> <span style=color:#f92672>-</span> (<span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)(<span style=color:#ae81ff>0xffffffffu</span> <span style=color:#f92672>-</span> i2); }
+
+    <span style=color:#66d9ef>return</span> i;
+}
+
+<span style=color:#75715e>/*
+</span><span style=color:#75715e>** unpacku32() -- unpack a 32-bit unsigned from a char buffer (like ntohl())
+</span><span style=color:#75715e>*/</span>
+<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>unpacku32</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>buf)
+{
+    <span style=color:#66d9ef>return</span> ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>24</span>) <span style=color:#f92672>|</span>
+           ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>1</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>16</span>) <span style=color:#f92672>|</span>
+           ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>2</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>8</span>)  <span style=color:#f92672>|</span>
+           buf[<span style=color:#ae81ff>3</span>];
+}
+
+<span style=color:#75715e>/*
+</span><span style=color:#75715e>** unpacki64() -- unpack a 64-bit int from a char buffer (like ntohl())
+</span><span style=color:#75715e>*/</span>
+<span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>unpacki64</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>buf)
+{
+    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> i2 <span style=color:#f92672>=</span> ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>56</span>) <span style=color:#f92672>|</span>
+                                ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>1</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>48</span>) <span style=color:#f92672>|</span>
+                                ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>2</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>40</span>) <span style=color:#f92672>|</span>
+                                ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>3</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>32</span>) <span style=color:#f92672>|</span>
+                                ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>4</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>24</span>) <span style=color:#f92672>|</span>
+                                ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>5</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>16</span>) <span style=color:#f92672>|</span>
+                                ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>6</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>8</span>)  <span style=color:#f92672>|</span>
+                                buf[<span style=color:#ae81ff>7</span>];
+    <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> i;
+
+    <span style=color:#75715e>// change unsigned numbers to signed
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> (i2 <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0x7fffffffffffffffu</span>) { i <span style=color:#f92672>=</span> i2; }
+    <span style=color:#66d9ef>else</span> { i <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span> <span style=color:#f92672>-</span>(<span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)(<span style=color:#ae81ff>0xffffffffffffffffu</span> <span style=color:#f92672>-</span> i2); }
+
+    <span style=color:#66d9ef>return</span> i;
+}
+
+<span style=color:#75715e>/*
+</span><span style=color:#75715e>** unpacku64() -- unpack a 64-bit unsigned from a char buffer (like ntohl())
+</span><span style=color:#75715e>*/</span>
+<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>unpacku64</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>buf)
+{
+    <span style=color:#66d9ef>return</span> ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>56</span>) <span style=color:#f92672>|</span>
+           ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>1</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>48</span>) <span style=color:#f92672>|</span>
+           ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>2</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>40</span>) <span style=color:#f92672>|</span>
+           ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>3</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>32</span>) <span style=color:#f92672>|</span>
+           ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>4</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>24</span>) <span style=color:#f92672>|</span>
+           ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>5</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>16</span>) <span style=color:#f92672>|</span>
+           ((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>)buf[<span style=color:#ae81ff>6</span>]<span style=color:#f92672>&lt;&lt;</span><span style=color:#ae81ff>8</span>)  <span style=color:#f92672>|</span>
+           buf[<span style=color:#ae81ff>7</span>];
+}
+
+<span style=color:#75715e>/*
+</span><span style=color:#75715e>** pack() -- store data dictated by the format string in the buffer
+</span><span style=color:#75715e>**
+</span><span style=color:#75715e>**   bits |signed   unsigned   float   string
+</span><span style=color:#75715e>**   -----+----------------------------------
+</span><span style=color:#75715e>**      8 |   c        C
+</span><span style=color:#75715e>**     16 |   h        H         f
+</span><span style=color:#75715e>**     32 |   l        L         d
+</span><span style=color:#75715e>**     64 |   q        Q         g
+</span><span style=color:#75715e>**      - |                               s
+</span><span style=color:#75715e>**
+</span><span style=color:#75715e>**  (16-bit unsigned length is automatically prepended to strings)
+</span><span style=color:#75715e>*/</span>
+
+<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>pack</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>buf, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>format, ...)
+{
+    va_list ap;
+
+    <span style=color:#66d9ef>signed</span> <span style=color:#66d9ef>char</span> c;              <span style=color:#75715e>// 8-bit
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> C;
+
+    <span style=color:#66d9ef>int</span> h;                      <span style=color:#75715e>// 16-bit
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> H;
+
+    <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> l;                 <span style=color:#75715e>// 32-bit
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> L;
+
+    <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> q;            <span style=color:#75715e>// 64-bit
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> Q;
+
+    <span style=color:#66d9ef>float</span> f;                    <span style=color:#75715e>// floats
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>double</span> d;
+    <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>double</span> g;
+    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> fhold;
+
+    <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>s;                    <span style=color:#75715e>// strings
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> len;
+
+    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> size <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+
+    va_start(ap, format);
+
+    <span style=color:#66d9ef>for</span>(; <span style=color:#f92672>*</span>format <span style=color:#f92672>!=</span> <span style=color:#e6db74>&#39;\0&#39;</span>; format<span style=color:#f92672>++</span>) {
+        <span style=color:#66d9ef>switch</span>(<span style=color:#f92672>*</span>format) {
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;c&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 8-bit
+</span><span style=color:#75715e></span>            size <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>;
+            c <span style=color:#f92672>=</span> (<span style=color:#66d9ef>signed</span> <span style=color:#66d9ef>char</span>)va_arg(ap, <span style=color:#66d9ef>int</span>); <span style=color:#75715e>// promoted
+</span><span style=color:#75715e></span>            <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> c;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;C&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 8-bit unsigned
+</span><span style=color:#75715e></span>            size <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>;
+            C <span style=color:#f92672>=</span> (<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span>)va_arg(ap, <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span>); <span style=color:#75715e>// promoted
+</span><span style=color:#75715e></span>            <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span> <span style=color:#f92672>=</span> C;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;h&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 16-bit
+</span><span style=color:#75715e></span>            size <span style=color:#f92672>+=</span> <span style=color:#ae81ff>2</span>;
+            h <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>int</span>);
+            packi16(buf, h);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>2</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;H&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 16-bit unsigned
+</span><span style=color:#75715e></span>            size <span style=color:#f92672>+=</span> <span style=color:#ae81ff>2</span>;
+            H <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span>);
+            packi16(buf, H);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>2</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;l&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 32-bit
+</span><span style=color:#75715e></span>            size <span style=color:#f92672>+=</span> <span style=color:#ae81ff>4</span>;
+            l <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>);
+            packi32(buf, l);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>4</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;L&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 32-bit unsigned
+</span><span style=color:#75715e></span>            size <span style=color:#f92672>+=</span> <span style=color:#ae81ff>4</span>;
+            L <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>);
+            packi32(buf, L);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>4</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;q&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 64-bit
+</span><span style=color:#75715e></span>            size <span style=color:#f92672>+=</span> <span style=color:#ae81ff>8</span>;
+            q <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>);
+            packi64(buf, q);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>8</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;Q&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 64-bit unsigned
+</span><span style=color:#75715e></span>            size <span style=color:#f92672>+=</span> <span style=color:#ae81ff>8</span>;
+            Q <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span>);
+            packi64(buf, Q);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>8</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;f&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// float-16
+</span><span style=color:#75715e></span>            size <span style=color:#f92672>+=</span> <span style=color:#ae81ff>2</span>;
+            f <span style=color:#f92672>=</span> (<span style=color:#66d9ef>float</span>)va_arg(ap, <span style=color:#66d9ef>double</span>); <span style=color:#75715e>// promoted
+</span><span style=color:#75715e></span>            fhold <span style=color:#f92672>=</span> pack754_16(f); <span style=color:#75715e>// convert to IEEE 754
+</span><span style=color:#75715e></span>            packi16(buf, fhold);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>2</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;d&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// float-32
+</span><span style=color:#75715e></span>            size <span style=color:#f92672>+=</span> <span style=color:#ae81ff>4</span>;
+            d <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>double</span>);
+            fhold <span style=color:#f92672>=</span> pack754_32(d); <span style=color:#75715e>// convert to IEEE 754
+</span><span style=color:#75715e></span>            packi32(buf, fhold);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>4</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;g&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// float-64
+</span><span style=color:#75715e></span>            size <span style=color:#f92672>+=</span> <span style=color:#ae81ff>8</span>;
+            g <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>double</span>);
+            fhold <span style=color:#f92672>=</span> pack754_64(g); <span style=color:#75715e>// convert to IEEE 754
+</span><span style=color:#75715e></span>            packi64(buf, fhold);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>8</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;s&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// string
+</span><span style=color:#75715e></span>            s <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>char</span><span style=color:#f92672>*</span>);
+            len <span style=color:#f92672>=</span> strlen(s);
+            size <span style=color:#f92672>+=</span> len <span style=color:#f92672>+</span> <span style=color:#ae81ff>2</span>;
+            packi16(buf, len);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>2</span>;
+            memcpy(buf, s, len);
+            buf <span style=color:#f92672>+=</span> len;
+            <span style=color:#66d9ef>break</span>;
+        }
+    }
+
+    va_end(ap);
+
+    <span style=color:#66d9ef>return</span> size;
+}
+
+<span style=color:#75715e>/*
+</span><span style=color:#75715e>** unpack() -- unpack data dictated by the format string into the buffer
+</span><span style=color:#75715e>**
+</span><span style=color:#75715e>**   bits |signed   unsigned   float   string
+</span><span style=color:#75715e>**   -----+----------------------------------
+</span><span style=color:#75715e>**      8 |   c        C
+</span><span style=color:#75715e>**     16 |   h        H         f
+</span><span style=color:#75715e>**     32 |   l        L         d
+</span><span style=color:#75715e>**     64 |   q        Q         g
+</span><span style=color:#75715e>**      - |                               s
+</span><span style=color:#75715e>**
+</span><span style=color:#75715e>**  (string is extracted based on its stored length, but &#39;s&#39; can be
+</span><span style=color:#75715e>**  prepended with a max length)
+</span><span style=color:#75715e>*/</span>
+<span style=color:#66d9ef>void</span> <span style=color:#a6e22e>unpack</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>buf, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>format, ...)
+{
+    va_list ap;
+
+    <span style=color:#66d9ef>signed</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>c;              <span style=color:#75715e>// 8-bit
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>C;
+
+    <span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>h;                      <span style=color:#75715e>// 16-bit
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>H;
+
+    <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>l;                 <span style=color:#75715e>// 32-bit
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>L;
+
+    <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>q;            <span style=color:#75715e>// 64-bit
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>Q;
+
+    <span style=color:#66d9ef>float</span> <span style=color:#f92672>*</span>f;                    <span style=color:#75715e>// floats
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>double</span> <span style=color:#f92672>*</span>d;
+    <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>double</span> <span style=color:#f92672>*</span>g;
+    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span> fhold;
+
+    <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>s;
+    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> len, maxstrlen<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>, count;
+
+    va_start(ap, format);
+
+    <span style=color:#66d9ef>for</span>(; <span style=color:#f92672>*</span>format <span style=color:#f92672>!=</span> <span style=color:#e6db74>&#39;\0&#39;</span>; format<span style=color:#f92672>++</span>) {
+        <span style=color:#66d9ef>switch</span>(<span style=color:#f92672>*</span>format) {
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;c&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 8-bit
+</span><span style=color:#75715e></span>            c <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>signed</span> <span style=color:#66d9ef>char</span><span style=color:#f92672>*</span>);
+            <span style=color:#66d9ef>if</span> (<span style=color:#f92672>*</span>buf <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0x7f</span>) { <span style=color:#f92672>*</span>c <span style=color:#f92672>=</span> <span style=color:#f92672>*</span>buf;} <span style=color:#75715e>// re-sign
+</span><span style=color:#75715e></span>            <span style=color:#66d9ef>else</span> { <span style=color:#f92672>*</span>c <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span> <span style=color:#f92672>-</span> (<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span>)(<span style=color:#ae81ff>0xffu</span> <span style=color:#f92672>-</span> <span style=color:#f92672>*</span>buf); }
+            buf<span style=color:#f92672>++</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;C&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 8-bit unsigned
+</span><span style=color:#75715e></span>            C <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span><span style=color:#f92672>*</span>);
+            <span style=color:#f92672>*</span>C <span style=color:#f92672>=</span> <span style=color:#f92672>*</span>buf<span style=color:#f92672>++</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;h&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 16-bit
+</span><span style=color:#75715e></span>            h <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>int</span><span style=color:#f92672>*</span>);
+            <span style=color:#f92672>*</span>h <span style=color:#f92672>=</span> unpacki16(buf);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>2</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;H&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 16-bit unsigned
+</span><span style=color:#75715e></span>            H <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span><span style=color:#f92672>*</span>);
+            <span style=color:#f92672>*</span>H <span style=color:#f92672>=</span> unpacku16(buf);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>2</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;l&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 32-bit
+</span><span style=color:#75715e></span>            l <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span><span style=color:#f92672>*</span>);
+            <span style=color:#f92672>*</span>l <span style=color:#f92672>=</span> unpacki32(buf);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>4</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;L&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 32-bit unsigned
+</span><span style=color:#75715e></span>            L <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span><span style=color:#f92672>*</span>);
+            <span style=color:#f92672>*</span>L <span style=color:#f92672>=</span> unpacku32(buf);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>4</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;q&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 64-bit
+</span><span style=color:#75715e></span>            q <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span><span style=color:#f92672>*</span>);
+            <span style=color:#f92672>*</span>q <span style=color:#f92672>=</span> unpacki64(buf);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>8</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;Q&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// 64-bit unsigned
+</span><span style=color:#75715e></span>            Q <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>int</span><span style=color:#f92672>*</span>);
+            <span style=color:#f92672>*</span>Q <span style=color:#f92672>=</span> unpacku64(buf);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>8</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;f&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// float
+</span><span style=color:#75715e></span>            f <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>float</span><span style=color:#f92672>*</span>);
+            fhold <span style=color:#f92672>=</span> unpacku16(buf);
+            <span style=color:#f92672>*</span>f <span style=color:#f92672>=</span> unpack754_16(fhold);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>2</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;d&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// float-32
+</span><span style=color:#75715e></span>            d <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>double</span><span style=color:#f92672>*</span>);
+            fhold <span style=color:#f92672>=</span> unpacku32(buf);
+            <span style=color:#f92672>*</span>d <span style=color:#f92672>=</span> unpack754_32(fhold);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>4</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;g&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// float-64
+</span><span style=color:#75715e></span>            g <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>double</span><span style=color:#f92672>*</span>);
+            fhold <span style=color:#f92672>=</span> unpacku64(buf);
+            <span style=color:#f92672>*</span>g <span style=color:#f92672>=</span> unpack754_64(fhold);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>8</span>;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;s&#39;</span><span style=color:#f92672>:</span> <span style=color:#75715e>// string
+</span><span style=color:#75715e></span>            s <span style=color:#f92672>=</span> va_arg(ap, <span style=color:#66d9ef>char</span><span style=color:#f92672>*</span>);
+            len <span style=color:#f92672>=</span> unpacku16(buf);
+            buf <span style=color:#f92672>+=</span> <span style=color:#ae81ff>2</span>;
+            <span style=color:#66d9ef>if</span> (maxstrlen <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>&amp;&amp;</span> len <span style=color:#f92672>&gt;=</span> maxstrlen) count <span style=color:#f92672>=</span> maxstrlen <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>;
+            <span style=color:#66d9ef>else</span> count <span style=color:#f92672>=</span> len;
+            memcpy(s, buf, count);
+            s[count] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;\0&#39;</span>;
+            buf <span style=color:#f92672>+=</span> len;
+            <span style=color:#66d9ef>break</span>;
+
+        <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span>
+            <span style=color:#66d9ef>if</span> (isdigit(<span style=color:#f92672>*</span>format)) { <span style=color:#75715e>// track max str len
+</span><span style=color:#75715e></span>                maxstrlen <span style=color:#f92672>=</span> maxstrlen <span style=color:#f92672>*</span> <span style=color:#ae81ff>10</span> <span style=color:#f92672>+</span> (<span style=color:#f92672>*</span>format<span style=color:#f92672>-</span><span style=color:#e6db74>&#39;0&#39;</span>);
+            }
+        }
+
+        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>isdigit(<span style=color:#f92672>*</span>format)) maxstrlen <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    }
+
+    va_end(ap);
+}
+</code></pre></div><p>そして、
+<a href=https://beej.us/guide/bgnet/examples/pack2.c>上記のコード</a>で、あるデータを <code>buf</code> にパックし、それを変数に展開するデモプログラムを以下に示します。なお、文字列の引数（フォーマット指定子 &ldquo;<code>s</code>"）を指定して <code>unpack()</code> を呼び出す場合は、バッファオーバーランを防ぐために最大長を &ldquo;<code>96s</code>&rdquo; のように前に置くことが賢明です。ネットワーク経由で受け取ったデータを解凍するときには注意が必要です。悪意のあるユーザが、あなたのシステムを攻撃するために、うまく構成されたパケットを送るかもしれません！</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>// various bits for floating point types--
+</span><span style=color:#75715e>// varies for different architectures
+</span><span style=color:#75715e></span><span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>float</span> float32_t;
+<span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>double</span> float64_t;
+
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+{
+    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> buf[<span style=color:#ae81ff>1024</span>];
+    <span style=color:#66d9ef>int8_t</span> magic;
+    <span style=color:#66d9ef>int16_t</span> monkeycount;
+    <span style=color:#66d9ef>int32_t</span> altitude;
+    float32_t absurdityfactor;
+    <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>s <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Great unmitigated Zot! You&#39;ve found the Runestaff!&#34;</span>;
+    <span style=color:#66d9ef>char</span> s2[<span style=color:#ae81ff>96</span>];
+    <span style=color:#66d9ef>int16_t</span> packetsize, ps2;
+
+    packetsize <span style=color:#f92672>=</span> pack(buf, <span style=color:#e6db74>&#34;chhlsf&#34;</span>, (<span style=color:#66d9ef>int8_t</span>)<span style=color:#e6db74>&#39;B&#39;</span>, (<span style=color:#66d9ef>int16_t</span>)<span style=color:#ae81ff>0</span>, (<span style=color:#66d9ef>int16_t</span>)<span style=color:#ae81ff>37</span>, 
+            (<span style=color:#66d9ef>int32_t</span>)<span style=color:#f92672>-</span><span style=color:#ae81ff>5</span>, s, (float32_t)<span style=color:#f92672>-</span><span style=color:#ae81ff>3490.6677</span>);
+    packi16(buf<span style=color:#f92672>+</span><span style=color:#ae81ff>1</span>, packetsize); <span style=color:#75715e>// store packet size in packet for kicks
+</span><span style=color:#75715e></span>
+    printf(<span style=color:#e6db74>&#34;packet is %&#34;</span> PRId32 <span style=color:#e6db74>&#34; bytes</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, packetsize);
+
+    unpack(buf, <span style=color:#e6db74>&#34;chhl96sf&#34;</span>, <span style=color:#f92672>&amp;</span>magic, <span style=color:#f92672>&amp;</span>ps2, <span style=color:#f92672>&amp;</span>monkeycount, <span style=color:#f92672>&amp;</span>altitude, s2,
+        <span style=color:#f92672>&amp;</span>absurdityfactor);
+
+    printf(<span style=color:#e6db74>&#34;&#39;%c&#39; %&#34;</span> PRId32<span style=color:#e6db74>&#34; %&#34;</span> PRId16 <span style=color:#e6db74>&#34; %&#34;</span> PRId32
+            <span style=color:#e6db74>&#34; </span><span style=color:#ae81ff>\&#34;</span><span style=color:#e6db74>%s</span><span style=color:#ae81ff>\&#34;</span><span style=color:#e6db74> %f</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, magic, ps2, monkeycount,
+            altitude, s2, absurdityfactor);
+
+    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div><p>自分でコードをロールアップするにしても、他人のコードを使うにしても、毎回手作業で各ビットをパッキングするのではなく、バグを抑えるために一般的なデータパッキングルーチンのセットを用意するのは良いアイデアだと思います。</p>
+<p>データをパッキングする場合、どのような形式が良いのでしょうか？素晴らしい質問です。幸いなことに、
+<a href=https://datatracker.ietf.org/doc/html/rfc4506>RFC4506</a>（外部データ表現規格）では、浮動小数点型、整数型、配列、生データなど、さまざまな型のバイナリ形式をすでに定義しているんです。もし自分でデータをロールバックするのであれば、それに準拠することをお勧めします。でも、そうする義務はありません。パケット警察は、あなたのドアのすぐ外にいるわけではありません。少なくとも、私は彼らがそうだとは思いません。</p>
+<p>いずれにせよ、データを送信する前に何らかの方法でエンコードするのが正しい方法なのです！</p>
+<h2 id=sonofdataencap>
+7.6 Son of Data Encapsulation
+<a class=anchor href=#sonofdataencap>#</a>
+</h2>
+<p>ところで、データをカプセル化するとはどういうことでしょうか。最も単純なケースでは、識別情報かパケット長のどちらか、あるいは両方を含むヘッダーをそこに貼り付けるということです。</p>
+<p>ヘッダーはどのようなものにすべきでしょうか？まあ、プロジェクトを完成させるために必要だと思うものを表すバイナリデータに過ぎません。</p>
+<p>うわー。漠然としてますね。</p>
+<p>なるほど。例えば、<code>SOCK_STREAM</code> を使用したマルチユーザチャットプログラムがあるとします。ユーザが何かをタイプする (&ldquo;発言する&rdquo;) と、2つの情報がサーバに送信される必要があります: 何を発言したか、誰が発言したかです。</p>
+<p>ここまでは良いですか？&ldquo;では何が問題なのか？&ldquo;とあなたは聞いているのでしょう。</p>
+<p>問題は、メッセージの長さがまちまちであることです。ある人は &ldquo;tom&rdquo; と名乗り、ある人は &ldquo;Benjamin&rdquo; と名乗り、&ldquo;Hey guys what is up?&rdquo; と言うかもしれません。</p>
+<p>そこで、これらのものが入ってきたときに <code>send()</code> でクライアントに送るわけです。送信するデータストリームは次のようになります。</p>
+<pre tabindex=0><code>t o m H i B e n j a m i n H e y g u y s w h a t i s u p ?
+</code></pre><p>といった具合に。あるメッセージが始まり、別のメッセージが止まったとき、クライアントはどうやって知るのでしょうか？もし望むなら、すべてのメッセージを同じ長さにして、
+<a href=/bgnet/docs/slightly-advanced-techniques/#sendall>上で実装</a>した <code>sendall()</code> を呼び出すだけでよいでしょう。しかし、それはバンド幅を浪費します！&ldquo;tom&rdquo; が &ldquo;Hi&rdquo; と言うために 1024 バイトも <code>send()</code> したくはないでしょう。</p>
+<p>そこで、データを小さなヘッダーとパケット構造でカプセル化します。クライアントもサーバも、このデータをどのようにパックしたりアンパックしたりするか（&ldquo;マーシャル"&ldquo;アンマーシャル"と呼ばれることもあります）知っています。今は見ないでください、私たちは、クライアントとサーバがどのように通信するかを記述するプロトコルを定義し始めているのです</p>
+<p>この場合、ユーザ名は固定長で8文字、パディングは <code>'\0'</code> とします。そして、データは最大 128 文字の可変長とします。このような場合に使用するパケット構造の例を見てみましょう。</p>
+<ol>
+<li>
+<p><code>len</code> (1 byte, unsigned)&mdash;8 バイトのユーザ名とチャットデータをカウントしたパケットの総長です。</p>
+</li>
+<li>
+<p><code>name</code> (8 bytes)&mdash;ユーザの名前。必要なら NUL パッドされます。</p>
+</li>
+<li>
+<p><code>chatdata</code> (n-bytes) &mdash; データ自体で、128 バイト以下です。パケットの長さは、このデータの長さに 8（上記の名前フィールドの長さ）を加えたものとします。</p>
+</li>
+</ol>
+<p>なぜ、8 バイトと 128 バイトというフィールドの制限を選んだのか？十分な長さがあると思い、思いつきで選んだのです。しかし、8 バイトでは制約が多すぎる、30 バイトの名前フィールドがあってもいい、などということもあるかもしれません。 選択はあなた次第です。</p>
+<p>上記のパケット定義を用いると、最初のパケットは以下の情報（16 進数、ASCII）で構成されることになります。</p>
+<pre tabindex=0><code>   0A     74 6F 6D 00 00 00 00 00      48 69
+(length)  T  o  m    (padding)         H  i
+</code></pre><p>そして、2つ目も同様です。</p>
+<pre tabindex=0><code>   18     42 65 6E 6A 61 6D 69 6E      48 65 79 20 67 75 79 73 20 77 ...
+(length)  B  e  n  j  a  m  i  n       H  e  y     g  u  y  s     w  ...
+</code></pre><p>（もちろん、長さはネットワークバイトオーダーで格納されます。この場合は 1 バイトだけなので問題ないですが、一般的にはパケット内の 2 進整数はすべてネットワークバイトオーダーで格納されるようにしたいです。）</p>
+<p>このデータを送信するときには、安全策をとって上記の
+<a href=/bgnet/docs/slightly-advanced-techniques/#sendall><code>sendall()</code></a> のようなコマンドを使うべきです。そうすれば、たとえすべてのデータを送信するために <code>send()</code> を複数回呼び出す必要があったとしても、すべてのデータが送信されたことを確認できます。</p>
+<p>同様に、このデータを受信するときにも、少し余分な作業をする必要があります。念のため、部分的なパケットを受け取るかもしれないことを想定しておく必要があります（例えば、上の Benjamin から &ldquo;<code>18 42 65 6E 6A</code>&rdquo; を受け取るかもしれませんが、この <code>recv()</code> のコールではそれがすべてです。）。パケットが完全に受信されるまで、何度も何度も <code>recv()</code> を呼び出す必要があります。</p>
+<p>でも、どうやって？さて、私たちはパケットが完成するために必要な合計バイト数を知っています。その数はパケットの前面に貼られているからです。 また、パケットの最大サイズは 1+8+128、つまり 137 バイトであることも知っています（パケットの定義がそうなっているからです）。</p>
+<p>実は、ここでできることがいくつかあるんです。すべてのパケットが長さで始まることを知っているので、パケットの長さを取得するためだけに <code>recv()</code> を呼び出すことができます。そして、一度それを手に入れたら、パケットの残りの長さを正確に指定して（おそらくすべてのデータを得るために繰り返し）、完全なパケットを手に入れるまで再びそれを呼び出すことができます。この方法の利点は、1つのパケットに対して十分な大きさのバッファが必要なことで、欠点は、すべてのデータを取得するために少なくとも2回 <code>recv()</code> を呼び出す必要があることです。</p>
+<p>もう一つの方法は、単に <code>recv()</code> を呼び出して、受信してもよい量をパケットの最大バイト数として言うことです。そして、受け取ったものはすべてバッファの後ろに貼り付け、最後にパケットが完了したかどうかを確認します。もちろん、次のパケットの一部を受け取るかもしれないので、そのためのスペースが必要です。</p>
+<p>そこで、2つのパケットに十分な大きさの配列を宣言します。これは作業用の配列で、到着したパケットを再構築します。</p>
+<p>データを <code>recv()</code> するたびに、ワークバッファにデータを追加し、パケットが完成したかどうかチェックします。すなわち、バッファ内のバイト数がヘッダで指定された長さ以上であること（ヘッダの長さには長さ自体のバイト数は含まれないので、+1）です。バッファ内のバイト数が1より小さい場合、明らかにパケットは完全ではありません。この場合、特別なケースを作る必要があります。しかし、最初の 1 バイトはゴミなので、正しいパケット長を知るためにそれを当てにすることはできないからです。</p>
+<p>パケットを完成させたら、あとは好きなように使ってください。使って、ワークバッファから削除してください。</p>
+<p>ふぅ〜。もう頭の中でグルグルしてますか？さて、ここでワンツーパンチの2つ目です。1回の <code>recv()</code> 呼び出しで、あるパケットの終わりを越えて次のパケットを読んでしまったかもしれません。つまり、一つの完全なパケットと、次のパケットの不完全な部分を持つワークバッファを持っているのです！なんてこったい。（しかし、このような事態を想定して、ワークバッファを2つのパケットを保持できるような大きさにしたのです！）</p>
+<p>最初のパケットの長さはヘッダからわかっているし、ワークバッファのバイト数も記録しているので、ワークバッファのバイト数のうち何バイトが2番目の（不完全な）パケットに属しているかを差し引いて計算することができるのです。最初のパケットを処理したら、それをワークバッファから取り除き、部分的な2番目のパケットをバッファの先頭に移動させ、次の <code>recv() </code> のためにすべての準備をすることができます。</p>
+<p>（読者の中には、実際に部分的な2番目のパケットをワークバッファの先頭に移動させるのに時間がかかることを指摘する人もいるでしょう。プログラムは、循環バッファを使用することによって、これを必要としないようにコード化することができます。残念ながら、円形バッファに関する議論は、この記事の範囲外です。それでも気になるなら、データ構造の本を読んでみてください。）</p>
+<p>簡単だとは言っていません。なるほど、簡単だとは言いました。練習すれば、すぐに自然にできるようになりますよ。エクスカリバーに誓って！</p>
+<h2 id=77-broadcast-packets---hello-world>
+7.7 Broadcast Packets&mdash;Hello, World!
+<a class=anchor href=#77-broadcast-packets---hello-world>#</a>
+</h2>
+<p>これまで、このガイドでは、1つのホストから他の1つのホストにデータを送信することについて話してきました。しかし、適切な権限があれば、同時に複数のホストにデータを送信することが可能です、と私は主張します！</p>
+<p>UDP（TCP ではなく UDP のみ）と標準的な IPv4 では、これはブロードキャストと呼ばれるメカニズムによって行われます。IPv6 ではブロードキャストはサポートされていないため、マルチキャストという優れた技術を利用する必要があります。しかし、未来に目を向けるのはもう十分です。私たちは 32 ビットの現在に留まっています。</p>
+<p>しかし、ちょっと待ってください！いきなりブロードキャストを始めることはできません。ブロードキャストパケットをネットワークに送信する前に、ソケットオプション <code>SO_BROADCAST</code> をセットしなければなりません。まるでミサイルの発射スイッチの上に被せる小さなプラスチックのカバーのようなものです。そのくらいのパワーを秘めているのです。</p>
+<p>しかし、真面目な話、ブロードキャストパケットを使うには危険性があるのです。ブロードキャストパケットを受信したすべてのシステムは、そのデータの行き先がどのポートか分かるまで、何層にもわたるデータのカプセル化を解かなければならないのです。そして、そのデータを渡すか、廃棄するかしなければなりません。どちらの場合でも、ブロードキャストパケットを受信した各マシンは、ローカルネットワーク上のすべてのマシンで、多くのマシンが不必要な作業をすることになりかねません。ゲーム Doom が発売された当初、これはそのネットワークコードに対する不満でした。</p>
+<p>さて、猫の皮を剥ぐ方法は一つではない&mldr;&mldr;ちょっと待った。本当に猫の皮を剥ぐ方法は1つではないのですか？どんな表現なんだ？それと同じように、ブロードキャストパケットを送る方法も1つではありません。では、本題のブロードキャストメッセージの宛先アドレスはどのように指定するのでしょうか？一般的には2つの方法があります。</p>
+<ol>
+<li>
+<p>特定のサブネットのブロードキャストアドレスにデータを送信します。これは、サブネットのネットワーク番号に、アドレスのホスト部分のすべての 1 ビットを設定したものです。例えば、私の家のネットワークは <code>192.168.1.0</code>、ネットマスクは <code>255.255.255.0</code> で、アドレスの最後のバイトは私のホスト番号です（ネットマスクによると、最初の 3 バイトはネットワーク番号だからです）。つまり、私のブロードキャストアドレスは <code>192.168.1.255</code> です。Unix では、<code>ifconfig</code> コマンドが実際にこのすべてのデータを与えてくれます。（気になる方は、ブロードキャストアドレスを得るためのビット論理は <code>network_number</code> OR (NOT <code>netmask</code>) です。）このタイプのブロードキャストパケットは、自分のローカルネットワークだけでなく、遠隔地のネットワークにも送ることができますが、宛先のルータによってパケットがドロップされる危険性があります。（もしドロップされなかったら、どこかのランダムなスマーフが彼らの LAN にブロードキャストトラフィックを流し始めるかもしれません。）</p>
+</li>
+<li>
+<p>&ldquo;グローバル"ブロードキャストアドレスにデータを送信します。これは <code>255.255.255.255</code> で、別名 <code>INADDR_BROADCAST</code> と呼ばれるものです。多くのマシンはこれをネットワーク番号と自動的にビット演算して、ネットワークブロードキャストアドレスに変換しますが、そうでないものもあります。ルータは、皮肉なことに、この種のブロードキャストパケットをローカルネットワークから転送しません。</p>
+</li>
+</ol>
+<p>では、ソケットオプション <code>SO_BROADCAST</code> を設定せずに、ブロードキャストアドレスでデータを送信しようとするとどうなるでしょうか。それでは、古き良き時代の
+<a href=/bgnet/docs/client-server-background/#datagram><code>talker</code> and <code>listener</code></a> を起動し、何が起こるか見てみましょう。</p>
+<pre tabindex=0><code>$ talker 192.168.1.2 foo
+sent 3 bytes to 192.168.1.2
+$ talker 192.168.1.255 foo
+sendto: Permission denied
+$ talker 255.255.255.255 foo
+sendto: Permission denied
+</code></pre><p>そう、全然嬉しくないんです&mldr;ソケットオプションの <code>SO_BROADCAST</code> を設定していなかったからです。そうすれば、どこでも <code>sendto()</code> ができるようになります！</p>
+<p>実際、これがブロードキャストできる UDP アプリケーションとできない UDP アプリケーションの唯一の違いなのです。そこで、古い <code>talker</code> アプリケーションに <code>SO_BROADCAST</code> ソケットオプションを設定するセクションを一つ追加してみましょう。このプログラムを
+<a href=https://beej.us/guide/bgnet/examples/broadcaster.c><code>broadcaster.c</code></a> と呼ぶことにします。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-{.c data-lang={.c><span style=color:#75715e>/*
+</span><span style=color:#75715e>** broadcaster.c -- a datagram &#34;client&#34; like talker.c, except
+</span><span style=color:#75715e>**                  this one can broadcast
+</span><span style=color:#75715e>*/</span>
+
+<span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;errno.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/socket.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netinet/in.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;arpa/inet.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;netdb.h&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#define SERVERPORT 4950 </span><span style=color:#75715e>// the port users will be connecting to
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>int</span> argc, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>argv[])
+{
+    <span style=color:#66d9ef>int</span> sockfd;
+    <span style=color:#66d9ef>struct</span> sockaddr_in their_addr; <span style=color:#75715e>// connector&#39;s address information
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>struct</span> hostent <span style=color:#f92672>*</span>he;
+    <span style=color:#66d9ef>int</span> numbytes;
+    <span style=color:#66d9ef>int</span> broadcast <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+    <span style=color:#75715e>//char broadcast = &#39;1&#39;; // if that doesn&#39;t work, try this
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>if</span> (argc <span style=color:#f92672>!=</span> <span style=color:#ae81ff>3</span>) {
+        fprintf(stderr,<span style=color:#e6db74>&#34;usage: broadcaster hostname message</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+        exit(<span style=color:#ae81ff>1</span>);
+    }
+
+    <span style=color:#66d9ef>if</span> ((he<span style=color:#f92672>=</span>gethostbyname(argv[<span style=color:#ae81ff>1</span>])) <span style=color:#f92672>==</span> NULL) {  <span style=color:#75715e>// get the host info
+</span><span style=color:#75715e></span>        perror(<span style=color:#e6db74>&#34;gethostbyname&#34;</span>);
+        exit(<span style=color:#ae81ff>1</span>);
+    }
+
+    <span style=color:#66d9ef>if</span> ((sockfd <span style=color:#f92672>=</span> socket(AF_INET, SOCK_DGRAM, <span style=color:#ae81ff>0</span>)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+        perror(<span style=color:#e6db74>&#34;socket&#34;</span>);
+        exit(<span style=color:#ae81ff>1</span>);
+    }
+
+    <span style=color:#75715e>// this call is what allows broadcast packets to be sent:
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> (setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, <span style=color:#f92672>&amp;</span>broadcast,
+        <span style=color:#66d9ef>sizeof</span> broadcast) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+        perror(<span style=color:#e6db74>&#34;setsockopt (SO_BROADCAST)&#34;</span>);
+        exit(<span style=color:#ae81ff>1</span>);
+    }
+
+    their_addr.sin_family <span style=color:#f92672>=</span> AF_INET;     <span style=color:#75715e>// host byte order
+</span><span style=color:#75715e></span>    their_addr.sin_port <span style=color:#f92672>=</span> htons(SERVERPORT); <span style=color:#75715e>// short, network byte order
+</span><span style=color:#75715e></span>    their_addr.sin_addr <span style=color:#f92672>=</span> <span style=color:#f92672>*</span>((<span style=color:#66d9ef>struct</span> in_addr <span style=color:#f92672>*</span>)he<span style=color:#f92672>-&gt;</span>h_addr);
+    memset(their_addr.sin_zero, <span style=color:#e6db74>&#39;\0&#39;</span>, <span style=color:#66d9ef>sizeof</span> their_addr.sin_zero);
+
+    <span style=color:#66d9ef>if</span> ((numbytes<span style=color:#f92672>=</span>sendto(sockfd, argv[<span style=color:#ae81ff>2</span>], strlen(argv[<span style=color:#ae81ff>2</span>]), <span style=color:#ae81ff>0</span>,
+             (<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>their_addr, <span style=color:#66d9ef>sizeof</span> their_addr)) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) {
+        perror(<span style=color:#e6db74>&#34;sendto&#34;</span>);
+        exit(<span style=color:#ae81ff>1</span>);
+    }
+
+    printf(<span style=color:#e6db74>&#34;sent %d bytes to %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, numbytes,
+        inet_ntoa(their_addr.sin_addr));
+
+    close(sockfd);
+
+    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div><p>&ldquo;通常の&rdquo; UDP クライアント/サーバーの状況と何が違うのでしょうか？何もありません。（この場合、クライアントがブロードキャストパケットの送信を許可されていることを除けば。）このように、古い UDP
+<a href=/bgnet/docs/client-server-background/#datagram><code>listener</code></a> プログラムを1つのウィンドウで実行し、<code>broadcaster</code> を別のウィンドウで実行してみてください。これで、上で失敗した送信をすべて行うことができるはずです。</p>
+<pre tabindex=0><code>$ broadcaster 192.168.1.2 foo
+sent 3 bytes to 192.168.1.2
+$ broadcaster 192.168.1.255 foo
+sent 3 bytes to 192.168.1.255
+$ broadcaster 255.255.255.255 foo
+sent 3 bytes to 255.255.255.255
+</code></pre><p>そして、<code>listener</code> がパケットを受け取ったと応答するのが見えるはずです。（もし <code>listener</code> が応答しないなら、それは IPv6 アドレスにバインドされているからかもしれません。<code>listener.c</code> の <code>AF_UNSPEC</code> を <code>AF_INET</code> に変更して、強制的に IPv4 にすることを試してみてください。）</p>
+<p>なるほど、それはちょっと楽しみですね。しかし、今度は同じネットワーク上にある隣のマシンで <code>listener</code> を起動して、それぞれのマシンに2つのコピーを作成し、ブロードキャストアドレスを指定して <code>broadcaster</code> を再度実行してみてください&mldr; おい！両方の <code>listener</code> がパケットを受け取るぞ！<code>sendto()</code> を一度しか呼んでいないのにな。かっこいい！</p>
+<p>もし <code>listener</code> が、あなたが直接送ったデータを受け取って、ブロードキャストアドレスのデータを受け取らないなら、あなたのローカルマシンのファイアウォールがパケットをブロックしている可能性があります。（そうそう、Pat とBapper、これが私のサンプルコードが動作しない理由だと、私より先に気づいてくれてありがとうございます。ガイドの中で紹介すると言っておいたのに、こうして紹介してくれて。というわけで、にゃー。）</p>
+<p>繰り返しになりますが、ブロードキャストパケットには注意が必要です。LAN 上のすべてのマシンが <code>recvfrom()</code> したかどうかに関わらず、そのパケットを処理しなければならないので、計算機ネットワーク全体にかなりの負荷を与える可能性があります。ブロードキャストパケットは控えめに、そして適切に使用されるべきものであることは間違いありません。</p>
 </article>
 <footer class=book-footer>
 <div class="flex flex-wrap justify-between">
-<div><a class="flex align-center" href=https://github.com/solareenlo/bgnet/commit/1085bdd6a4d9198c7792f6b3060012a144866bec title="Last modified by solareenlo | Jan 5, 2022" target=_blank rel=noopener>
+<div><a class="flex align-center" href=https://github.com/solareenlo/bgnet/commit/27d55f5a45fbc82fdc869f9cfbf1cc09d286dd2c title="Last modified by solareenlo | Jan 5, 2022" target=_blank rel=noopener>
 <img src=/bgnet/svg/calendar.svg class=book-icon alt=Calendar>
 <span>Jan 5, 2022</span>
 </a>
@@ -822,6 +1657,10 @@ fcntl(sockfd, F_SETFL, O_NONBLOCK);
 <li><a href=#blocking>7.1 Blocking</a></li>
 <li><a href=#poll>7.2 <code>poll()</code>&mdash;Synchronous I/O Multiplexing</a></li>
 <li><a href=#select>7.3 <code>select()</code>&mdash;Synchronous I/O Multiplexing, Old School</a></li>
+<li><a href=#sendall>7.4 Handling Partial <code>send()</code>s</a></li>
+<li><a href=#serialization>7.5 Serialization&mdash;How to Pack Data</a></li>
+<li><a href=#sonofdataencap>7.6 Son of Data Encapsulation</a></li>
+<li><a href=#77-broadcast-packets---hello-world>7.7 Broadcast Packets&mdash;Hello, World!</a></li>
 </ul>
 </li>
 </ul>
