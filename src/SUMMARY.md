@@ -50,3 +50,4 @@
   - [シリアライゼーション---データの詰め方](./slightly-advanced-techniques/serialization-how-to-pack-data.md)
   - [データカプセル化の子](./slightly-advanced-techniques/son-of-data-encapsulation.md)
   - [ブロードキャストパケット---Hello, World!](./slightly-advanced-techniques/broadcast-packets-hello-world.md)
+- [よくある質問](./common-questions/index.md)

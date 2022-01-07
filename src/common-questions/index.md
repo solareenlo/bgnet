@@ -1,10 +1,4 @@
----
-weight: 1
-bookFlatSection: true
-title: "8 Common Questions"
----
-
-# 8 Common Questions
+# 8 よくある質問
 
 ### 8.1 ヘッダーファイルはどこで入手できますか？
 
