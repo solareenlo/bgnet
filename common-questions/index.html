@@ -1,0 +1,344 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>よくある質問 - Beej のネットワークプログラミング入門</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
+        <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Home</a></li><li class="chapter-item expanded "><a href="../intro/index.html"><strong aria-hidden="true">1.</strong> 序説</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../intro/audience.html"><strong aria-hidden="true">1.1.</strong> 対象読者</a></li><li class="chapter-item expanded "><a href="../intro/platform-and-compiler.html"><strong aria-hidden="true">1.2.</strong> プラットフォームとコンパイラ</a></li><li class="chapter-item expanded "><a href="../intro/official-homepage-and-books-for-sale.html"><strong aria-hidden="true">1.3.</strong> 公式ホームページと販売書籍</a></li><li class="chapter-item expanded "><a href="../intro/note-for-solaris-sunos-programmers.html"><strong aria-hidden="true">1.4.</strong> Solaris/SunOS プログラマへの注意事項</a></li><li class="chapter-item expanded "><a href="../intro/note-for-windows-programmers.html"><strong aria-hidden="true">1.5.</strong> Windows プログラマへの注意事項</a></li><li class="chapter-item expanded "><a href="../intro/email-policy.html"><strong aria-hidden="true">1.6.</strong> メールポリシー</a></li><li class="chapter-item expanded "><a href="../intro/mirroring.html"><strong aria-hidden="true">1.7.</strong> ミラーリング</a></li><li class="chapter-item expanded "><a href="../intro/note-for-translators.html"><strong aria-hidden="true">1.8.</strong> 翻訳者への注意事項</a></li><li class="chapter-item expanded "><a href="../intro/copyright-distribution-and-legal.html"><strong aria-hidden="true">1.9.</strong> 著作権・配布・法的事項</a></li><li class="chapter-item expanded "><a href="../intro/dedication.html"><strong aria-hidden="true">1.10.</strong> 献辞</a></li><li class="chapter-item expanded "><a href="../intro/publishing-information.html"><strong aria-hidden="true">1.11.</strong> 出版情報</a></li></ol></li><li class="chapter-item expanded "><a href="../what-is-a-socket/index.html"><strong aria-hidden="true">2.</strong> ソケットとは？</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../what-is-a-socket/two-types-of-internet-sockets.html"><strong aria-hidden="true">2.1.</strong> 2種類のインターネットソケット</a></li><li class="chapter-item expanded "><a href="../what-is-a-socket/low-level-nonsense-and-network-theory.html"><strong aria-hidden="true">2.2.</strong> 低レベルのナンセンスとネットワーク理論</a></li></ol></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/index.html"><strong aria-hidden="true">3.</strong> IP アドレス, 構造体, データマンジング</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/ip-addresses-versions-4-and-6.html"><strong aria-hidden="true">3.1.</strong> IP アドレス、バージョン4と6</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/subnets.html"><strong aria-hidden="true">3.1.1.</strong> サブネット</a></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/port-munbers.html"><strong aria-hidden="true">3.1.2.</strong> ポート番号</a></li></ol></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/byte-order.html"><strong aria-hidden="true">3.2.</strong> バイトオーダー</a></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/structs.html"><strong aria-hidden="true">3.3.</strong> 構造体</a></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/ip-addresses-part-deux.html"><strong aria-hidden="true">3.4.</strong> IP アドレス、パート2</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/private-or-disconnected-networks.html"><strong aria-hidden="true">3.4.1.</strong> プライベート（またはディスコネクト）ネットワーク</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../jumping-from-ipv4-to-ipv6/index.html"><strong aria-hidden="true">4.</strong> IPv4 から IPv6 へのジャンプ</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/index.html"><strong aria-hidden="true">5.</strong> システムコールかバスト</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../system-calls-or-bust/getaddrinfo-prepare-to-launch.html"><strong aria-hidden="true">5.1.</strong> getaddrinfo()---起動の準備をしよう！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/socket-get-the-file-descriptor.html"><strong aria-hidden="true">5.2.</strong> socket()---ファイルディスクリプターを取得しよう！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/bind-what-port-am-i-on.html"><strong aria-hidden="true">5.3.</strong> bind()---私はどのポートにいるのでしょうか？</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/connect-hey-you.html"><strong aria-hidden="true">5.4.</strong> connect()---やあ、こんにちは！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/listen-will-somebody-please-call-me.html"><strong aria-hidden="true">5.5.</strong> listen()---誰か電話してくれない？</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/accept-thank-you-for-calling-port-3490.html"><strong aria-hidden="true">5.6.</strong> accept()---&quot;3490番ポートにコールいただきありがとうございます。&quot;</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/send-and-recv-talk-to-me-baby.html"><strong aria-hidden="true">5.7.</strong> send() and recv()---話せよ、ベイビー！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/sendto-and-recvfrom-talk-to-me-GDRAM-style.html"><strong aria-hidden="true">5.8.</strong> sendto() and recvfrom()---DGRAM スタイルで話して。</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/close-shutdown-get-outta-my-face.html"><strong aria-hidden="true">5.9.</strong> close() and shutdown()---私の前から失せな！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/getpeername-who-are-you.html"><strong aria-hidden="true">5.10.</strong> getpeername()---あなたは誰ですか？</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/gethostname-who-am-i.html"><strong aria-hidden="true">5.11.</strong> gethostname()---私は誰なのか？</a></li></ol></li><li class="chapter-item expanded "><a href="../client-server-background/index.html"><strong aria-hidden="true">6.</strong> クライアント-サーバの背景</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../client-server-background/a-simple-stream-server.html"><strong aria-hidden="true">6.1.</strong> シンプルなストリームサーバ</a></li><li class="chapter-item expanded "><a href="../client-server-background/a-simple-stream-client.html"><strong aria-hidden="true">6.2.</strong> シンプルなストリームクライアント</a></li><li class="chapter-item expanded "><a href="../client-server-background/datagram-sockets.html"><strong aria-hidden="true">6.3.</strong> データグラムソケット</a></li></ol></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/index.html"><strong aria-hidden="true">7.</strong> 少し高度なテクニック</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/blocking.html"><strong aria-hidden="true">7.1.</strong> ブロッキング</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/poll-synchronous-io-multiplexing.html"><strong aria-hidden="true">7.2.</strong> poll()---同期式 I/O 多重化</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.html"><strong aria-hidden="true">7.3.</strong> select()---同期式 I/O 多重化、旧式</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/handling-partial-sends.html"><strong aria-hidden="true">7.4.</strong> 部分的な send()s の処理</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/serialization-how-to-pack-data.html"><strong aria-hidden="true">7.5.</strong> シリアライゼーション---データの詰め方</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/son-of-data-encapsulation.html"><strong aria-hidden="true">7.6.</strong> データカプセル化の子</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/broadcast-packets-hello-world.html"><strong aria-hidden="true">7.7.</strong> ブロードキャストパケット---Hello, World!</a></li></ol></li><li class="chapter-item expanded "><a href="../common-questions/index.html" class="active"><strong aria-hidden="true">8.</strong> よくある質問</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="solarized-light">Solarized Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="solarized-dark">Solarized Dark</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Beej のネットワークプログラミング入門</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/solareenlo/bgnet" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/solareenlo/bgnet/edit/main/src/common-questions/index.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="8-よくある質問"><a class="header" href="#8-よくある質問">8 よくある質問</a></h1>
+<h3 id="81-ヘッダーファイルはどこで入手できますか"><a class="header" href="#81-ヘッダーファイルはどこで入手できますか">8.1 ヘッダーファイルはどこで入手できますか？</a></h3>
+<p>もし、あなたのシステムに既にないのであれば、おそらく必要ないでしょう。あなたのプラットフォームのマニュアルを参照してください。Windows 用にビルドする場合は、<code>#include &lt;winsock.h&gt;</code> だけが必要です。</p>
+<h3 id="82-bind-が-address-already-in-use-と報告した場合どうすればよいのでしょうか"><a class="header" href="#82-bind-が-address-already-in-use-と報告した場合どうすればよいのでしょうか">8.2 <code>bind()</code> が &quot;Address already in use&quot; と報告した場合、どうすればよいのでしょうか？</a></h3>
+<p>リスニングしているソケットで <code>SO_REUSEADDR</code> オプションを指定して <code>setsockopt()</code> を使用する必要があります。例として、<a href="docs/system-calls-or-bust/#bind"><code>bind()</code></a> の章と <a href="docs/slightly-advanced-techniques/#select"><code>select()</code></a> の章をチェックしてみてください。</p>
+<h3 id="83-システム上のオープンソケットのリストを取得するにはどうすればよいですか"><a class="header" href="#83-システム上のオープンソケットのリストを取得するにはどうすればよいですか">8.3 システム上のオープンソケットのリストを取得するにはどうすればよいですか？</a></h3>
+<p><code>netstat</code> を使用します。詳しくは <code>man</code> ページをチェックしてください。しかし、タイプするだけで良い出力が得られるはずです。</p>
+<pre><code>$ netstat
+</code></pre>
+<p>唯一のコツは、どのソケットがどのプログラムに関連付けられているかを判断することです。<code>:-)</code></p>
+<h3 id="84-ルーティングテーブルを見るにはどうしたらいいですか"><a class="header" href="#84-ルーティングテーブルを見るにはどうしたらいいですか">8.4 ルーティングテーブルを見るにはどうしたらいいですか？</a></h3>
+<p><code>route</code> コマンド（ほとんどの Linux では <code>/sbin</code> にあります）または <code>netstat -r</code> コマンドを実行します。</p>
+<h3 id="85-クライアントとサーバのプログラムが1台しかない場合どのように実行すればよいのでしょうかネットワークプログラムを書くのにネットワークは必要ないのですか"><a class="header" href="#85-クライアントとサーバのプログラムが1台しかない場合どのように実行すればよいのでしょうかネットワークプログラムを書くのにネットワークは必要ないのですか">8.5 クライアントとサーバのプログラムが1台しかない場合、どのように実行すればよいのでしょうか？ネットワークプログラムを書くのにネットワークは必要ないのですか？</a></h3>
+<p>幸いなことに、事実上すべてのマシンは、カーネル内に配置され、ネットワークカードのふりをするループバックネットワーク&quot;デバイス&quot;を実装しています。（これはルーティングテーブルで &quot;<code>lo</code>&quot; としてリストされるインターフェースです。）</p>
+<p>あなたが &quot;<code>goat</code>&quot; という名前のマシンにログインしていると仮定します。あるウィンドウでクライアントを、別のウィンドウでサーバを実行します。あるいは、サーバをバックグラウンドで起動し（&quot;<code>server &amp;</code>&quot;）、同じウィンドウでクライアントを実行します。ループバックデバイスの利点は、<code>client goat</code> か <code>client localhost</code>（<code>localhost</code> は <code>/etc/hosts</code> ファイルで定義されていると思われるので）を使えば、ネットワークなしでクライアントがサーバと通信できるようになることです！</p>
+<p>つまり、ネットワークに接続されていない1台のマシンで動作させるために、コードの変更は一切必要ないのです！ハッザー！</p>
+<h3 id="86-リモート側が接続を閉じたかどうかを判断するにはどうすればよいですか"><a class="header" href="#86-リモート側が接続を閉じたかどうかを判断するにはどうすればよいですか">8.6 リモート側が接続を閉じたかどうかを判断するにはどうすればよいですか？</a></h3>
+<p><code>recv()</code> が <code>0</code> を返すのでわかります。</p>
+<h3 id="87-ping-ユーティリティを実装するにはicmp-とは何ですか生ソケットと-sock_raw-についてもっと詳しく知りたいのですがどこに行けばよいですか"><a class="header" href="#87-ping-ユーティリティを実装するにはicmp-とは何ですか生ソケットと-sock_raw-についてもっと詳しく知りたいのですがどこに行けばよいですか">8.7 &quot;ping&quot; ユーティリティを実装するには？ICMP とは何ですか？生ソケットと <code>SOCK_RAW</code> についてもっと詳しく知りたいのですが、どこに行けばよいですか?</a></h3>
+<p>生ソケットに関するすべての疑問は、<a href="#books">W. Richard Stevens の UNIX Network Programming books</a> で解決されるでしょう。また、<a href="http://www.unpbook.com/src.html">オンラインの Stevens の UNIX Network Programming</a> のソースコードの <code>ping/</code> サブディレクトリも見てみてください。</p>
+<h3 id="88-connect-の呼び出しのタイムアウトを変更または短縮するにはどうすればよいですか"><a class="header" href="#88-connect-の呼び出しのタイムアウトを変更または短縮するにはどうすればよいですか">8.8 <code>connect()</code> の呼び出しのタイムアウトを変更または短縮するにはどうすればよいですか？</a></h3>
+<p>W. Richard Stevens と全く同じ答えを出すのではなく、<a href="http://www.unpbook.com/src.html">UNIX Network Programming のソースコードにある <code>lib/connect_nonb.c</code></a> を参照することにしましょう。</p>
+<p>その要点は、<code>socket()</code> でソケットディスクリプタを作成し、<a href="docs/slightly-advanced-techniques/#blocking">それをノンブロッキングに設定</a>して <code>connect()</code> を呼び、すべてがうまくいけば <code>connect()</code> は直ちに <code>-1</code> を返して <code>errno</code> は <code>EINPROGRESS</code> に設定されるということです。その後、好きなタイムアウトで <a href="docs/slightly-advanced-techniques/#select"><code>select()</code></a> を呼び出し、ソケットディスクリプタをリードとライトの両方で渡します。タイムアウトしなければ、<code>connect()</code> の呼び出しが完了したことになります。このとき、<code>getsockopt()</code> に <code>SO_ERROR</code> オプションをつけて <code>connect()</code> 呼び出しからの戻り値を取得する必要があります（エラーがなければ <code>0</code> になるはずです）。</p>
+<p>最後に、データ転送を開始する前に、ソケットを再びブロッキングに設定する必要があります。</p>
+<p>この方法には、接続中に何か他のことをすることができるという利点もあることに注意してください。例えば、タイムアウトを 500ms のような低い値に設定し、タイムアウトするたびに画面上のインジケータを更新し、それから再び <code>select() </code> を呼び出すことができます。例えば、<code>select()</code> を20回ほど呼び出してタイムアウトしたら、そろそろ接続をあきらめる時期だとわかるでしょう。</p>
+<p>私が言ったように、スティーブンスのソースに完璧に優れた例があるので、チェックしてみてください。</p>
+<h3 id="89-windows-用にビルドするにはどうしたらいいですか"><a class="header" href="#89-windows-用にビルドするにはどうしたらいいですか">8.9 Windows 用にビルドするにはどうしたらいいですか？</a></h3>
+<p>まず、Windows を削除し、Linux または BSD をインストールします。<code>};-)</code>。いや、実際には、導入部の <a href="docs/intro/#windows">Windows 用のビルドの章</a>を見ればいいんですけどね。</p>
+<h3 id="810-solarissunos-用にビルドするにはどうしたらいいですかコンパイルしようとするとリンカエラーが出ます"><a class="header" href="#810-solarissunos-用にビルドするにはどうしたらいいですかコンパイルしようとするとリンカエラーが出ます">8.10 Solaris/SunOS 用にビルドするにはどうしたらいいですか？コンパイルしようとするとリンカエラーが出ます！</a></h3>
+<p>リンカーエラーは、Sun ボックスがソケットライブラリを自動的にコンパイルしないために起こります。この方法の例については、導入部の <a href="docs/intro/#solaris">Solaris/SunOS 用のビルドに関する章</a> を参照してください。</p>
+<h3 id="811-select-がシグナルで落ち続けるのはなぜか"><a class="header" href="#811-select-がシグナルで落ち続けるのはなぜか">8.11 <code>select()</code> がシグナルで落ち続けるのはなぜか？</a></h3>
+<p>シグナルはブロックされたシステムコールに <code>-1</code> を返し、<code>errno</code> に <code>EINTR</code> をセットする傾向があります。<code>sigaction()</code> でシグナルハンドラをセットアップするときに、フラグ <code>SA_RESTART</code> を設定することができます。これは、システムコールが中断された後に再開することを想定したものです。</p>
+<p>当然ながら、いつもうまくいくわけではありません。</p>
+<p>私のお気に入りの解決策は、<code>goto</code> ステートメントを使うことです。これは教授をイライラさせるだけなので、ぜひやってみてください。</p>
+<pre><code class="language-{.c .numberLines}">select_restart:
+if ((err = select(fdmax+1, &amp;readfds, NULL, NULL, NULL)) == -1) {
+    if (errno == EINTR) {
+        // some signal just interrupted us, so restart
+        goto select_restart;
+    }
+    // handle the real error here:
+    perror(&quot;select&quot;);
+}
+</code></pre>
+<p>もちろん、この場合は <code>goto</code> を使う必要はありません。他の構造体を使用して制御することができます。しかし、私は <code>goto</code> 文の方が実際きれいだと思うんです。</p>
+<h3 id="812-recv-の呼び出しにタイムアウトを実装するにはどうすればよいですか"><a class="header" href="#812-recv-の呼び出しにタイムアウトを実装するにはどうすればよいですか">8.12 <code>recv()</code> の呼び出しにタイムアウトを実装するにはどうすればよいですか？</a></h3>
+<p><a href="docs/slightly-advanced-techniques/#select"><code>select()</code></a>を使いましょう！これは、読み込みたいソケットディスクリプタに対して、タイムアウトパラメータを指定することができます。あるいは、このように関数全体を一つの関数で包むこともできます。</p>
+<pre><code class="language-{.c .numberLines}">#include &lt;unistd.h&gt;
+#include &lt;sys/time.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+
+int recvtimeout(int s, char *buf, int len, int timeout)
+{
+    fd_set fds;
+    int n;
+    struct timeval tv;
+
+    // set up the file descriptor set
+    FD_ZERO(&amp;fds);
+    FD_SET(s, &amp;fds);
+
+    // set up the struct timeval for the timeout
+    tv.tv_sec = timeout;
+    tv.tv_usec = 0;
+
+    // wait until timeout or data received
+    n = select(s+1, &amp;fds, NULL, NULL, &amp;tv);
+    if (n == 0) return -2; // timeout!
+    if (n == -1) return -1; // error
+
+    // data must be here, so do a normal recv()
+    return recv(s, buf, len, 0);
+}
+.
+.
+.
+// Sample call to recvtimeout():
+n = recvtimeout(s, buf, sizeof buf, 10); // 10 second timeout
+
+if (n == -1) {
+    // error occurred
+    perror(&quot;recvtimeout&quot;);
+}
+else if (n == -2) {
+    // timeout occurred
+} else {
+    // got some data in buf
+}
+.
+.
+.
+</code></pre>
+<p><code>recvtimeout()</code> はタイムアウトした場合、<code>-2</code> を返すことに注意してください。なぜ <code>0</code> を返さないのでしょうか？そうですね、思い出してみてください、<code>recv()</code> を呼び出したときに <code>0</code> という値が返ってきたら、リモート側が接続を閉じたことを意味します。そのため、この戻り値はすでに話されており、<code>-1</code> は &quot;error&quot; を意味します。そこで、タイムアウトのインジケータとして <code>-2</code> を選択しました。</p>
+<h3 id="813-ソケットで送信する前にデータを暗号化または圧縮するにはどうすればよいですか"><a class="header" href="#813-ソケットで送信する前にデータを暗号化または圧縮するにはどうすればよいですか">8.13 ソケットで送信する前にデータを暗号化または圧縮するにはどうすればよいですか？</a></h3>
+<p>暗号化を行う簡単な方法として、SSL（セキュア・ソケット・レイヤー）を使用する方法がありますが、このガイドの範囲を超えています。（詳しくは <a href="https://www.openssl.org/">OpenSSL プロジェクト</a>を見てください。）</p>
+<p>しかし、独自のコンプレッサーや暗号化システムを導入する場合は、データが両端間で一連のステップを通過すると考えればよいのです。各ステップは、何らかの形でデータを変更します。</p>
+<ol>
+<li>サーバがファイルやどこからでもデータを読み取ります。</li>
+<li>サーバがデータを暗号化・圧縮します（この部分を追加します）。</li>
+<li>サーバが暗号化されたデータを <code>send()</code> します。</li>
+</ol>
+<p>今度はその逆です。</p>
+<ol>
+<li>クライアントが暗号化されたデータを <code>recv()</code> します。</li>
+<li>クライアントがデータを復号・伸張します（この部分はあなたが追加します）。</li>
+<li>クライアントがデータをファイル（または任意の場所）に書き込みます。</li>
+</ol>
+<p>圧縮して暗号化するなら、最初に圧縮することだけは忘れないでください。<code>:-)</code></p>
+<p>ただ、サーバがやったことをクライアントがきちんと元に戻してくれれば、いくら中間ステップを追加しても、最終的にはデータは大丈夫です。</p>
+<p>つまり、私のコードを使うために必要なことは、データが読み込まれる場所と、ネットワーク上で（<code>send()</code> を使って）データが送信される場所の間にある場所を見つけ、そこに暗号化を行うコードを貼り付けるだけです。</p>
+<h3 id="814-pf_inet-をずっと見ているのですがこれは何ですかaf_inetと関係があるのでしょうか"><a class="header" href="#814-pf_inet-をずっと見ているのですがこれは何ですかaf_inetと関係があるのでしょうか">8.14 &quot;<code>PF_INET</code>&quot; をずっと見ているのですが、これは何ですか？<code>AF_INET</code>と関係があるのでしょうか？</a></h3>
+<p>はい、そうです。詳しくは <a href="docs/system-calls-or-bust/#socket"><code>socket()</code> の項</a>を参照してください。</p>
+<h3 id="815-クライアントからシェルコマンドを受け取って実行するサーバを書くにはどうしたらいいでしょうか"><a class="header" href="#815-クライアントからシェルコマンドを受け取って実行するサーバを書くにはどうしたらいいでしょうか">8.15 クライアントからシェルコマンドを受け取って実行するサーバを書くにはどうしたらいいでしょうか？</a></h3>
+<p>簡単のために、クライアントが <code>connect()</code>s, <code>send()</code>s, <code>close()</code>s で接続したとしましょう（つまり、クライアントが再び接続しない限り、その後のシステムコールはありません）。</p>
+<p>クライアントがたどるプロセスはこうです。</p>
+<ol>
+<li>サーバに <code>connect()</code> します。</li>
+<li><code>send(&quot;/sbin/ls &gt; /tmp/client.out&quot;)</code></li>
+<li>接続を <code>close()</code> します。</li>
+</ol>
+<p>一方、サーバはデータを処理し、実行します。</p>
+<ol>
+<li>クライアントからの接続を <code>accept()</code> します。</li>
+<li>コマンド文字列を <code>recv(str)</code> します。</li>
+<li>接続を <code>close()</code> します。</li>
+<li><code>system(str)</code> を使ってコマンドを実行します。</li>
+</ol>
+<p>ご注意ください！サーバがクライアントの言うことを実行することは、リモートシェルアクセスを与えるようなもので、サーバに接続すると、あなたのアカウントに何かすることができます。例えば、上記の例で、クライアントが &quot;<code>rm -rf ~</code>&quot; と送ったらどうでしょう？それはあなたのアカウント内のすべてを削除してしまいます。</p>
+<p>そこで、賢明にも、<code>foobar</code> ユーティリティのような、安全だとわかっているいくつかのユーティリティを除いて、クライアントが何も使えないようにするのです。</p>
+<pre><code class="language-c">if (!strncmp(str, &quot;foobar&quot;, 6)) {
+    sprintf(sysstr, &quot;%s &gt; /tmp/server.out&quot;, str);
+    system(sysstr);
+}
+</code></pre>
+<p>しかし、残念ながらまだ安全ではありません。クライアントが &quot;<code>foobar; rm -rf ~</code>&quot; と入力したらどうでしょうか。最も安全なのは、コマンドの引数に含まれるすべての非英数字（適切であればスペースを含む）の前にエスケープ文字（&quot;<code>\</code>&quot;）を置く小さなルーチンを書くことです。</p>
+<p>このように、クライアントが送信したものをサーバが実行し始めると、セキュリティはかなり大きな問題になります。</p>
+<h3 id="816-slew-でデータを送っているのですがrecv-すると一度に-536-バイトか-1460-バイトしか受信できませんしかし私のローカルマシンで実行するとすべてのデータを同時に受信することができますどうなっているのでしょうか"><a class="header" href="#816-slew-でデータを送っているのですがrecv-すると一度に-536-バイトか-1460-バイトしか受信できませんしかし私のローカルマシンで実行するとすべてのデータを同時に受信することができますどうなっているのでしょうか">8.16 slew でデータを送っているのですが、<code>recv()</code> すると、一度に 536 バイトか 1460 バイトしか受信できません。しかし、私のローカルマシンで実行すると、すべてのデータを同時に受信することができます。どうなっているのでしょうか？</a></h3>
+<p>物理媒体が処理できる最大サイズであるMTUに当たっています。ローカルマシンでは、8K 以上を問題なく処理できるループバックデバイスを使用しています。しかし、Ethernet では、ヘッダーを含めて 1500 バイトしか扱えないので、その限界にぶつかってしまうのです。モデムでは、576 MTU（これもヘッダ付き）で、さらに低い制限にぶつかります。</p>
+<p>まず、すべてのデータが送信されていることを確認する必要があります。（詳しくは <a href="docs/slightly-advanced-techniques/#sendall"><code>sendall()</code></a> 関数の実装を参照してください。）それが確認できたら、すべてのデータが読み込まれるまで、ループで <code>recv()</code> を呼び出す必要があります。</p>
+<p><code>recv()</code> を複数回呼び出して完全なデータパケットを受信する方法については、<a href="docs/slightly-advanced-techniques/#sonofdataencap">7.6 Son of Data Encapsulation</a> の節を読んでください。</p>
+<h3 id="817-私は-windows-マシンを使っていますがfork-システムコールも-struct-sigaction-のようなものも持っていませんどうしたらいいでしょうか"><a class="header" href="#817-私は-windows-マシンを使っていますがfork-システムコールも-struct-sigaction-のようなものも持っていませんどうしたらいいでしょうか">8.17 私は Windows マシンを使っていますが、<code>fork()</code> システムコールも <code>struct sigaction</code> のようなものも持っていません。どうしたらいいでしょうか？</a></h3>
+<p>もし、どこかにあるとすれば、コンパイラに同梱されているであろう POSIX ライブラリでしょう。私は Windows を持っていないので、答えようがないのですが、Microsoft には POSIX 互換性レイヤーがあり、そこに <code>fork()</code> があるように記憶しています。（そして多分、<code>sigaction</code> も。）</p>
+<p>VC++ 付属のヘルプで &quot;fork&quot; または &quot;POSIX&quot; を検索して、何か手がかりがないか見てみてください。</p>
+<p>もし、それでうまくいかない場合は、<code>fork()</code>/<code>sigaction</code> を捨てて、Win32 の <code>CreateProcess()</code> に置き換えてください。私は <code>CreateProcess()</code> の使い方を知りません。引数をたくさん取りますが、VC++ に付属するドキュメントに記載されているはずです。</p>
+<h3 id="818-ファイアウォールの内側にいるのですがファイアウォールの外側にいる人に私の-ip-アドレスを知らせて私のマシンに接続できるようにするにはどうしたらよいでしょうか"><a class="header" href="#818-ファイアウォールの内側にいるのですがファイアウォールの外側にいる人に私の-ip-アドレスを知らせて私のマシンに接続できるようにするにはどうしたらよいでしょうか">8.18 ファイアウォールの内側にいるのですが、ファイアウォールの外側にいる人に私の IP アドレスを知らせて、私のマシンに接続できるようにするにはどうしたらよいでしょうか？</a></h3>
+<p>残念ながら、ファイアウォールの目的は、ファイアウォール外の人がファイアウォール内のマシンに接続するのを防ぐことなので、それを許可することは基本的にセキュリティ違反とみなされます。</p>
+<p>これは、すべてが失われたということではありません。ひとつには、ファイアウォールがマスカレードやNATのようなことを行っている場合、しばしば <code>connect()</code> を通して接続することができます。自分が常に接続を開始するようにプログラムを設計すれば、うまくいくでしょう。</p>
+<p>もしそれで満足できないなら、システム管理者に頼んでファイアウォールに穴を開けてもらい、人々があなたに接続できるようにすることができます。ファイアウォールは NAT ソフトウェアやプロキシなどを通して、あなたに転送することができます。</p>
+<p>ファイアウォールの穴は、決して軽視できないものであることを認識しておいてください。悪い人が内部ネットワークにアクセスできないようにしなければなりません。初心者の場合、ソフトウェアを安全にするのは想像以上に難しいのです。</p>
+<p>シスアドを怒らせないようにね。<code>;-)</code></p>
+<h3 id="819-パケットスニファーの書き方を教えてくださいイーサネットインタフェースをプロミスキャスモードにするにはどうしたらよいですか"><a class="header" href="#819-パケットスニファーの書き方を教えてくださいイーサネットインタフェースをプロミスキャスモードにするにはどうしたらよいですか">8.19 パケットスニファーの書き方を教えてください。イーサネットインタフェースをプロミスキャスモードにするにはどうしたらよいですか?</a></h3>
+<p>ネットワークカードが&quot;プロミスカスモード&quot;の場合、このマシン宛のパケットだけでなく、すべてのパケットをオペレーティングシステムに転送することをご存じない方のために説明します。（しかし、イーサネットは IP より下位の層なので、すべての IP アドレスは効果的に転送されます。より詳しくは、<a href="docs/what-is-a-socket/#lowlevel">Low Level Nonsense and Network Theory</a> の章をご覧ください)。</p>
+<p>これは、パケットスニファーの仕組みの基本です。インターフェイスをプロミスカスモードにし、OSはワイヤー上を通過するすべてのパケットを取得します。 このデータを読むために、ある種のソケットを持っているはずです。</p>
+<p>残念ながら、その答えはプラットフォームによって異なりますが、例えば &quot;windows promiscuous ioctl&quot; でググれば、おそらくどこかにたどり着けるはずです。Linux の場合は、<a href="https://stackoverflow.com/questions/21323023/sniffing-an-ethernet-interface-on-linux">Stack Overflow のスレッド</a>にも有用そうなものがあります。</p>
+<h3 id="820-tcpudp-ソケットにカスタムタイムアウト値を設定するにはどうすればよいですか"><a class="header" href="#820-tcpudp-ソケットにカスタムタイムアウト値を設定するにはどうすればよいですか">8.20 TCP/UDP ソケットにカスタムタイムアウト値を設定するにはどうすればよいですか？</a></h3>
+<p>お使いのシステムに依存します。ネットで <code>SO_RCVTIMEO</code> や <code>SO_SNDTIMEO</code>（<code>setsockopt()</code> で使用）を検索して、あなたのシステムがその機能をサポートしているかどうかを確認するとよいでしょう。</p>
+<p>Linux のマニュアルでは，<code>alarm()</code> や <code>setitimer()</code> で代用することを勧めています．</p>
+<h3 id="821-どのポートが使用可能かどうすれば分かりますか公式なポート番号の一覧はありますか"><a class="header" href="#821-どのポートが使用可能かどうすれば分かりますか公式なポート番号の一覧はありますか">8.21 どのポートが使用可能か、どうすれば分かりますか？&quot;公式&quot;なポート番号の一覧はありますか？</a></h3>
+<p>通常、これは問題ではありません。もしあなたが、例えばウェブサーバを書いているのであれば、よく知られているポート 80 をあなたのソフトウェアに使用するのは良い考えです。もし、自分専用のサーバを書くのであれば、適当にポートを選んで（ただし 1023 より大きい）試してみてください。</p>
+<p>そのポートがすでに使われている場合、<code>bind()</code> しようとすると &quot;Address already in use&quot; というエラーが表示されます。他のポートを選んでください。（ソフトウェアのユーザが、設定ファイルやコマンドラインスイッチで別のポートを指定できるようにしておくとよいでしょう。）</p>
+<p>IANA（Internet Assigned Numbers Authority）が管理している<a href="https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml">公式ポート番号一覧</a>があります。そのリストにあるもの（1023 以上）があるからといって、そのポートを使ってはいけないというわけではありません。例えば、Id Software 社の DOOM は、それが何であれ、&quot;mdqs&quot; と同じポートを使っています。重要なのは、あなたがそのポートを使いたいときに、同じマシンの他の誰もそのポートを使っていないことです。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../slightly-advanced-techniques/broadcast-packets-hello-world.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../slightly-advanced-techniques/broadcast-packets-hello-world.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../theme/theme-solarized_dark.js"></script>
+        <script type="text/javascript" src="../theme/theme-solarized_light.js"></script>
+    </body>
+</html>
