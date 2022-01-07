@@ -38,3 +38,7 @@
   - [`close()` and `shutdown()`---私の前から失せな！](./system-calls-or-bust/close-shutdown-get-outta-my-face.md)
   - [`getpeername()`---あなたは誰ですか？](./system-calls-or-bust/getpeername-who-are-you.md)
   - [`gethostname()`---私は誰なのか？](./system-calls-or-bust/gethostname-who-am-i.md)
+- [クライアント-サーバの背景](./client-server-background/index.md)
+  - [シンプルなストリームサーバ](./client-server-background/a-simple-stream-server.md)
+  - [シンプルなストリームクライアント](./client-server-background/a-simple-stream-client.md)
+  - [データグラムソケット](./client-server-background/datagram-sockets.md)
