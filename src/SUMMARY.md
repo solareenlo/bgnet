@@ -25,3 +25,4 @@
   - [構造体](./ip-addresses-structs-and-data-munging/structs.md)
   - [IP アドレス、パート2](./ip-addresses-structs-and-data-munging/ip-addresses-part-deux.md)
     - [プライベート（またはディスコネクト）ネットワーク](./ip-addresses-structs-and-data-munging/private-or-disconnected-networks.md)
+- [IPv4 から IPv6 へのジャンプ](./jumping-from-ipv4-to-ipv6/index.md)
