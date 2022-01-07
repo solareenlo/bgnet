@@ -45,6 +45,10 @@
 
     --inline-code-color: var(--yellow); /*var(--base1);*/
 
+    --theme-popup-bg: var(--base3);
+    --theme-popup-border: var(--base00);
+    --theme-hover: var(--base2);
+
     --table-border-color: var(--base2);
     --table-header-bg: var(--base2);
     --table-alternate-bg: var(--base2);
@@ -71,6 +75,10 @@
     --links: var(--cyan);
 
     --inline-code-color: var(--yellow); /*var(--base00);*/
+
+    --theme-popup-bg: var(--body-background);
+    --theme-popup-border: var(--base0);
+    --theme-hover: var(--base02);
 
     --table-border-color: var(--base02);
     --table-header-bg: var(--base02);
