@@ -14,3 +14,6 @@
   - [著作権・配布・法的事項](./intro/copyright-distribution-and-legal.md)
   - [献辞](./intro/dedication.md)
   - [出版情報](./intro/publishing-information.md)
+- [ソケットとは？](./what-is-a-socket/what-is-a-socket.md)
+  - [2種類のインターネットソケット](./what-is-a-socket/two-types-of-internet-sockets.md)
+  - [低レベルのナンセンスとネットワーク理論](./what-is-a-socket/low-level-nonsense-and-network-theory.md)
