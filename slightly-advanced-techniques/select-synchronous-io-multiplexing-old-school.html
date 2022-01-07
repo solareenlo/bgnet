@@ -1,0 +1,435 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>select()---同期式 I/O 多重化、旧式 - Beej のネットワークプログラミング入門</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
+        <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Home</a></li><li class="chapter-item expanded "><a href="../intro/index.html"><strong aria-hidden="true">1.</strong> 序説</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../intro/audience.html"><strong aria-hidden="true">1.1.</strong> 対象読者</a></li><li class="chapter-item expanded "><a href="../intro/platform-and-compiler.html"><strong aria-hidden="true">1.2.</strong> プラットフォームとコンパイラ</a></li><li class="chapter-item expanded "><a href="../intro/official-homepage-and-books-for-sale.html"><strong aria-hidden="true">1.3.</strong> 公式ホームページと販売書籍</a></li><li class="chapter-item expanded "><a href="../intro/note-for-solaris-sunos-programmers.html"><strong aria-hidden="true">1.4.</strong> Solaris/SunOS プログラマへの注意事項</a></li><li class="chapter-item expanded "><a href="../intro/note-for-windows-programmers.html"><strong aria-hidden="true">1.5.</strong> Windows プログラマへの注意事項</a></li><li class="chapter-item expanded "><a href="../intro/email-policy.html"><strong aria-hidden="true">1.6.</strong> メールポリシー</a></li><li class="chapter-item expanded "><a href="../intro/mirroring.html"><strong aria-hidden="true">1.7.</strong> ミラーリング</a></li><li class="chapter-item expanded "><a href="../intro/note-for-translators.html"><strong aria-hidden="true">1.8.</strong> 翻訳者への注意事項</a></li><li class="chapter-item expanded "><a href="../intro/copyright-distribution-and-legal.html"><strong aria-hidden="true">1.9.</strong> 著作権・配布・法的事項</a></li><li class="chapter-item expanded "><a href="../intro/dedication.html"><strong aria-hidden="true">1.10.</strong> 献辞</a></li><li class="chapter-item expanded "><a href="../intro/publishing-information.html"><strong aria-hidden="true">1.11.</strong> 出版情報</a></li></ol></li><li class="chapter-item expanded "><a href="../what-is-a-socket/index.html"><strong aria-hidden="true">2.</strong> ソケットとは？</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../what-is-a-socket/two-types-of-internet-sockets.html"><strong aria-hidden="true">2.1.</strong> 2種類のインターネットソケット</a></li><li class="chapter-item expanded "><a href="../what-is-a-socket/low-level-nonsense-and-network-theory.html"><strong aria-hidden="true">2.2.</strong> 低レベルのナンセンスとネットワーク理論</a></li></ol></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/index.html"><strong aria-hidden="true">3.</strong> IP アドレス, 構造体, データマンジング</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/ip-addresses-versions-4-and-6.html"><strong aria-hidden="true">3.1.</strong> IP アドレス、バージョン4と6</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/subnets.html"><strong aria-hidden="true">3.1.1.</strong> サブネット</a></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/port-munbers.html"><strong aria-hidden="true">3.1.2.</strong> ポート番号</a></li></ol></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/byte-order.html"><strong aria-hidden="true">3.2.</strong> バイトオーダー</a></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/structs.html"><strong aria-hidden="true">3.3.</strong> 構造体</a></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/ip-addresses-part-deux.html"><strong aria-hidden="true">3.4.</strong> IP アドレス、パート2</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/private-or-disconnected-networks.html"><strong aria-hidden="true">3.4.1.</strong> プライベート（またはディスコネクト）ネットワーク</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../jumping-from-ipv4-to-ipv6/index.html"><strong aria-hidden="true">4.</strong> IPv4 から IPv6 へのジャンプ</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/index.html"><strong aria-hidden="true">5.</strong> システムコールかバスト</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../system-calls-or-bust/getaddrinfo-prepare-to-launch.html"><strong aria-hidden="true">5.1.</strong> getaddrinfo()---起動の準備をしよう！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/socket-get-the-file-descriptor.html"><strong aria-hidden="true">5.2.</strong> socket()---ファイルディスクリプターを取得しよう！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/bind-what-port-am-i-on.html"><strong aria-hidden="true">5.3.</strong> bind()---私はどのポートにいるのでしょうか？</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/connect-hey-you.html"><strong aria-hidden="true">5.4.</strong> connect()---やあ、こんにちは！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/listen-will-somebody-please-call-me.html"><strong aria-hidden="true">5.5.</strong> listen()---誰か電話してくれない？</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/accept-thank-you-for-calling-port-3490.html"><strong aria-hidden="true">5.6.</strong> accept()---&quot;3490番ポートにコールいただきありがとうございます。&quot;</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/send-and-recv-talk-to-me-baby.html"><strong aria-hidden="true">5.7.</strong> send() and recv()---話せよ、ベイビー！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/sendto-and-recvfrom-talk-to-me-GDRAM-style.html"><strong aria-hidden="true">5.8.</strong> sendto() and recvfrom()---DGRAM スタイルで話して。</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/close-shutdown-get-outta-my-face.html"><strong aria-hidden="true">5.9.</strong> close() and shutdown()---私の前から失せな！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/getpeername-who-are-you.html"><strong aria-hidden="true">5.10.</strong> getpeername()---あなたは誰ですか？</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/gethostname-who-am-i.html"><strong aria-hidden="true">5.11.</strong> gethostname()---私は誰なのか？</a></li></ol></li><li class="chapter-item expanded "><a href="../client-server-background/index.html"><strong aria-hidden="true">6.</strong> クライアント-サーバの背景</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../client-server-background/a-simple-stream-server.html"><strong aria-hidden="true">6.1.</strong> シンプルなストリームサーバ</a></li><li class="chapter-item expanded "><a href="../client-server-background/a-simple-stream-client.html"><strong aria-hidden="true">6.2.</strong> シンプルなストリームクライアント</a></li><li class="chapter-item expanded "><a href="../client-server-background/datagram-sockets.html"><strong aria-hidden="true">6.3.</strong> データグラムソケット</a></li></ol></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/index.html"><strong aria-hidden="true">7.</strong> 少し高度なテクニック</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/blocking.html"><strong aria-hidden="true">7.1.</strong> ブロッキング</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/poll-synchronous-io-multiplexing.html"><strong aria-hidden="true">7.2.</strong> poll()---同期式 I/O 多重化</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.html" class="active"><strong aria-hidden="true">7.3.</strong> select()---同期式 I/O 多重化、旧式</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/handling-partial-sends.html"><strong aria-hidden="true">7.4.</strong> 部分的な send()s の処理</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/serialization-how-to-pack-data.html"><strong aria-hidden="true">7.5.</strong> シリアライゼーション---データの詰め方</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/son-of-data-encapsulation.html"><strong aria-hidden="true">7.6.</strong> データカプセル化の子</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/broadcast-packets-hello-world.html"><strong aria-hidden="true">7.7.</strong> ブロードキャストパケット---Hello, World!</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="solarized-light">Solarized Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="solarized-dark">Solarized Dark</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Beej のネットワークプログラミング入門</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/solareenlo/bgnet" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/solareenlo/bgnet/edit/main/src/slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="73-select---同期式-io-多重化旧式"><a class="header" href="#73-select---同期式-io-多重化旧式">7.3 <code>select()</code>---同期式 I/O 多重化、旧式</a></h1>
+<p>この関数、ちょっと不思議なんですが、とても便利なんです。次のような状況を考えてみましょう。あなたはサーバで、入ってくるコネクションをリッスンするだけでなく、すでに持っているコネクションを読み続けたいのです。</p>
+<p>問題ありません。<code>accept()</code> と <code>recv()</code> を数回実行するだけです。そうはいかないよ、バスター！もし <code>accept()</code> の呼び出しがブロックされていたらどうでしょう？どうやって <code>recv()</code> を同時に行うんだ？&quot;ノンブロッキングソケットを使いましょう！&quot;まさか！CPU を占有するようなことはしない方がいい。じゃあ、何？</p>
+<p><code>select()</code> は同時に複数のソケットを監視する力を与えてくれます。どのソケットが読み込み可能で、どのソケットが書き込み可能か、そしてどのソケットが例外を発生させたか、本当に知りたければ教えてくれるでしょう。</p>
+<blockquote>
+<p>警告: <code>select()</code> は非常にポータブルですが、巨大な数の接続が発生した場合には恐ろしく遅くなります。そのような状況では、<a href="https://libevent.org/">libevent</a> のようなイベントライブラリの方が、あなたのシステムで利用可能な最も高速なメソッドを使用しようとするため、より良いパフォーマンスを得ることができることでしょう。</p>
+</blockquote>
+<p>さっそくですが、<code>select()</code>の概要を説明します。</p>
+<pre><code class="language-c">#include &lt;sys/time.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+
+int select(int numfds, fd_set *readfds, fd_set *writefds,
+           fd_set *exceptfds, struct timeval *timeout);
+</code></pre>
+<p>この関数は、ファイルディスクリプタの&quot;集合&quot;、特に <code>readfds</code>、<code>writefds</code>、<code>exceptfds</code> を監視します。標準入力とソケットディスクリプタ <code>sockfd</code> から読み込めるかどうかを確認したい場合、ファイルディスクリプタ <code>0</code> と <code>sockfd</code> を <code>readfds</code> の集合に追加するだけでよいです。パラメータ <code>numfds</code> には、最も大きいファイルディスクリプタの値に <code>1</code> を足した値を設定する必要があります。この例では、標準入力 (<code>0</code>) よりも確実に大きいので、<code>sockfd+1</code> に設定する必要があります。</p>
+<p><code>select()</code> が戻ると、<code>readfds</code> は、選択したファイルディスクリプタのうち、どれが読み込める状態にあるかを反映するように変更されます。以下のマクロ <code>FD_ISSET()</code> を用いて、それらをテストすることができます。</p>
+<p>この先に進む前に、これらのセットを操作する方法について説明します。各セットは <code>fd_set</code> 型です。以下のマクロはこの型を操作します。</p>
+<table><thead><tr><th>Function</th><th>説明</th></tr></thead><tbody>
+<tr><td><code>FD_SET(int fd, fd_set *set);</code></td><td><code>set</code> に <code>fd</code> を追加します。</td></tr>
+<tr><td><code>FD_CLR(int fd, fd_set *set);</code></td><td><code>set</code> から <code>fd</code> を削除します。</td></tr>
+<tr><td><code>FD_ISSET(int fd, fd_set *set);</code></td><td><code>fd</code> が <code>set</code> に含まれる場合は true を返します。</td></tr>
+<tr><td><code>FD_ZERO(fd_set *set);</code></td><td><code>set</code> からすべてのエントリをクリアします。</td></tr>
+</tbody></table>
+<p>最後に、この奇妙な <code>struct timeval</code> とは何でしょうか？まあ、誰かがデータを送ってくるのをいつまでも待っていたくない場合もあるでしょう。例えば、96 秒ごとに &quot;Still Going...&quot; とターミナルに表示させたい、でも何も起きていない。この time 構造体では、タイムアウト時間を指定することができます。タイムアウト時間を超えても <code>select()</code> がまだ準備のできたファイルディスクリプタを見つけられなければ、処理を続行できるように返されます。</p>
+<p><code>struct timeval</code> は以下のフィールドを持ちます。</p>
+<pre><code class="language-c">struct timeval {
+    int tv_sec;     // seconds
+    int tv_usec;    // microseconds
+};
+</code></pre>
+<p><code>tv_sec</code> に待ち時間の秒数を、<code>tv_usec</code> に待ち時間のマイクロ秒数を設定するだけです。そう、これはミリ秒ではなくマイクロ秒なのです。ミリ秒の中には 1000 マイクロ秒があり、1 秒の中には 1000 ミリ秒があります。したがって、1 秒の中には 1,000,000 マイクロ秒があることになります。なぜ &quot;usec&quot;なのか？&quot;u&quot;は、私たちが&quot;マイクロ&quot;に使っているギリシャ文字の μ（ミュー）に似ていると思われるからです。また、関数が戻ってきたとき、<code>timeout</code> はまだ残っている時間を表示するように更新されるかもしれません。これは、あなたが使っている Unix のフレーバーに依存します。</p>
+<p>やったー！マイクロ秒の分解能のタイマーを手に入れたぞ！まあ、当てにしない方がいいです。どんなに小さな <code>struct timeval</code> を設定しても、おそらく標準的な Unix のタイムスライスの一部を待つ必要があります。</p>
+<p>その他、気になること。もし <code>struct timeval</code> のフィールドを <code>0</code> に設定すると、<code>select()</code> は直ちにタイムアウトし、セット内のすべてのファイルディスクリプタを効率よくポーリングします。パラメータ <code>timeout</code> を <code>NULL</code> に設定すると、決してタイムアウトせず、最初のファイルディスクリプタが準備できるまで待ちます。最後に、特定のセットを待つことを気にしないのであれば、<code>select()</code> のコールでそれを <code>NULL</code> に設定することができます。</p>
+<p><a href="https://beej.us/guide/bgnet/examples/select.c">次のコード</a>では、標準入力に何か表示されるまで 2.5 秒待ちます。</p>
+<pre><code class="language-c">/*
+** select.c -- a select() demo
+*/
+
+#include &lt;stdio.h&gt;
+#include &lt;sys/time.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+
+#define STDIN 0  // file descriptor for standard input
+
+int main(void)
+{
+    struct timeval tv;
+    fd_set readfds;
+
+    tv.tv_sec = 2;
+    tv.tv_usec = 500000;
+
+    FD_ZERO(&amp;readfds);
+    FD_SET(STDIN, &amp;readfds);
+
+    // don't care about writefds and exceptfds:
+    select(STDIN+1, &amp;readfds, NULL, NULL, &amp;tv);
+
+    if (FD_ISSET(STDIN, &amp;readfds))
+        printf(&quot;A key was pressed!\n&quot;);
+    else
+        printf(&quot;Timed out.\n&quot;);
+
+    return 0;
+}
+</code></pre>
+<p>ラインバッファ端末の場合、押すキーは RETURN でないと、とにかくタイムアウトしてしまいます。</p>
+<p>さて、この方法はデータグラムソケットでデータを待つのに最適な方法だと思う人もいるかもしれませんね。Unice の中にはこの方法で select を使えるものもあれば、使えないものもあります。試してみたいなら、ローカルの man ページに何が書いてあるか見てみるといいです。</p>
+<p>Unices の中には、タイムアウトまでの残り時間を反映して、<code>struct timeval</code> の時間を更新するものがあります。しかし、そうでないものもあります。ポータブルにしたいのであれば、そのようなことが起こることを当てにしないでください。（経過時間を追跡する必要がある場合は、<code>gettimeofday()</code> を使ってください。残念なことですが、それが現実なのです。）</p>
+<p>リードセット内のソケットがコネクションをクローズした場合はどうなるのでしょうか？その場合、<code>select()</code> はそのソケットディスクリプタを &quot;ready to read&quot; に設定して返す。実際にそこから <code>recv()</code> を実行すると、<code>recv()</code> は <code>0</code> を返します。これが、クライアントが接続を閉じたことを知るための方法です。</p>
+<p>もうひとつ <code>select()</code> について書いておくと、<code>listen()</code> しているソケットがある場合、そのソケットのファイルディスクリプタを <code>readfds</code> セットに入れておけば、新しい接続があるかどうかチェックすることができます。</p>
+<p>以上、全能の関数 <code>select()</code> の概要を簡単に説明しました。</p>
+<p>しかし、ご要望の多かった、より詳細な例をご紹介します。残念ながら、上記のごく簡単な例と、こちらの例では、大きな違いがあります。しかし、ご覧になってから、その後に続く説明をお読みください。</p>
+<p><a href="https://beej.us/guide/bgnet/examples/selectserver.c">このプログラム</a>は、簡単なマルチユーザチャットサーバのように動作します。一つのウィンドウで起動し、他の複数のウィンドウから <code>telnet</code> (&quot;<code>telnet hostname 9034</code>&quot;) で接続してください。ある <code>telnet</code> セッションで何かを入力すると、他のすべてのウィンドウに表示されるはずです。</p>
+<pre><code class="language-c">/*
+** selectserver.c -- a cheezy multiperson chat server
+*/
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;netdb.h&gt;
+
+#define PORT &quot;9034&quot;   // port we're listening on
+
+// get sockaddr, IPv4 or IPv6:
+void *get_in_addr(struct sockaddr *sa)
+{
+    if (sa-&gt;sa_family == AF_INET) {
+        return &amp;(((struct sockaddr_in*)sa)-&gt;sin_addr);
+    }
+
+    return &amp;(((struct sockaddr_in6*)sa)-&gt;sin6_addr);
+}
+
+int main(void)
+{
+    fd_set master;    // master file descriptor list
+    fd_set read_fds;  // temp file descriptor list for select()
+    int fdmax;        // maximum file descriptor number
+
+    int listener;     // listening socket descriptor
+    int newfd;        // newly accept()ed socket descriptor
+    struct sockaddr_storage remoteaddr; // client address
+    socklen_t addrlen;
+
+    char buf[256];    // buffer for client data
+    int nbytes;
+
+    char remoteIP[INET6_ADDRSTRLEN];
+
+    int yes=1;        // for setsockopt() SO_REUSEADDR, below
+    int i, j, rv;
+
+    struct addrinfo hints, *ai, *p;
+
+    FD_ZERO(&amp;master);    // clear the master and temp sets
+    FD_ZERO(&amp;read_fds);
+
+    // get us a socket and bind it
+    memset(&amp;hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
+    if ((rv = getaddrinfo(NULL, PORT, &amp;hints, &amp;ai)) != 0) {
+        fprintf(stderr, &quot;selectserver: %s\n&quot;, gai_strerror(rv));
+        exit(1);
+    }
+
+    for(p = ai; p != NULL; p = p-&gt;ai_next) {
+        listener = socket(p-&gt;ai_family, p-&gt;ai_socktype, p-&gt;ai_protocol);
+        if (listener &lt; 0) {
+            continue;
+        }
+
+        // lose the pesky &quot;address already in use&quot; error message
+        setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &amp;yes, sizeof(int));
+
+        if (bind(listener, p-&gt;ai_addr, p-&gt;ai_addrlen) &lt; 0) {
+            close(listener);
+            continue;
+        }
+
+        break;
+    }
+
+    // if we got here, it means we didn't get bound
+    if (p == NULL) {
+        fprintf(stderr, &quot;selectserver: failed to bind\n&quot;);
+        exit(2);
+    }
+
+    freeaddrinfo(ai); // all done with this
+
+    // listen
+    if (listen(listener, 10) == -1) {
+        perror(&quot;listen&quot;);
+        exit(3);
+    }
+
+    // add the listener to the master set
+    FD_SET(listener, &amp;master);
+
+    // keep track of the biggest file descriptor
+    fdmax = listener; // so far, it's this one
+
+    // main loop
+    for(;;) {
+        read_fds = master; // copy it
+        if (select(fdmax+1, &amp;read_fds, NULL, NULL, NULL) == -1) {
+            perror(&quot;select&quot;);
+            exit(4);
+        }
+
+        // run through the existing connections looking for data to read
+        for(i = 0; i &lt;= fdmax; i++) {
+            if (FD_ISSET(i, &amp;read_fds)) { // we got one!!
+                if (i == listener) {
+                    // handle new connections
+                    addrlen = sizeof remoteaddr;
+                    newfd = accept(listener,
+                        (struct sockaddr *)&amp;remoteaddr,
+                        &amp;addrlen);
+
+                    if (newfd == -1) {
+                        perror(&quot;accept&quot;);
+                    } else {
+                        FD_SET(newfd, &amp;master); // add to master set
+                        if (newfd &gt; fdmax) {    // keep track of the max
+                            fdmax = newfd;
+                        }
+                        printf(&quot;selectserver: new connection from %s on &quot;
+                            &quot;socket %d\n&quot;,
+                            inet_ntop(remoteaddr.ss_family,
+                                get_in_addr((struct sockaddr*)&amp;remoteaddr),
+                                remoteIP, INET6_ADDRSTRLEN),
+                            newfd);
+                    }
+                } else {
+                    // handle data from a client
+                    if ((nbytes = recv(i, buf, sizeof buf, 0)) &lt;= 0) {
+                        // got error or connection closed by client
+                        if (nbytes == 0) {
+                            // connection closed
+                            printf(&quot;selectserver: socket %d hung up\n&quot;, i);
+                        } else {
+                            perror(&quot;recv&quot;);
+                        }
+                        close(i); // bye!
+                        FD_CLR(i, &amp;master); // remove from master set
+                    } else {
+                        // we got some data from a client
+                        for(j = 0; j &lt;= fdmax; j++) {
+                            // send to everyone!
+                            if (FD_ISSET(j, &amp;master)) {
+                                // except the listener and ourselves
+                                if (j != listener &amp;&amp; j != i) {
+                                    if (send(j, buf, nbytes, 0) == -1) {
+                                        perror(&quot;send&quot;);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } // END handle data from client
+            } // END got new incoming connection
+        } // END looping through file descriptors
+    } // END for(;;)--and you thought it would never end!
+
+    return 0;
+}
+</code></pre>
+<p>このコードでは、2つのファイル記述子セットを持っていることに注意してください。<code>master</code> と <code>read_fds</code> です。最初の <code>master</code> は、現在接続されているすべてのソケットディスクリプタと、新しい接続を待ち受けているソケットディスクリプタを保持します。</p>
+<p><code>master</code> のセットを持っている理由は、<code>select()</code> が実際に渡すセットを変更して、どのソケットが読み込み可能な状態にあるかを反映させるためです。ある <code>select()</code> から次の <code>select()</code> への呼び出しまでの接続を追跡する必要があるので、これらをどこかに安全に保存しておかなければなりません。最後の最後で、<code>master</code> を <code>read_fds</code> にコピーしてから <code>select()</code> を呼び出します。</p>
+<p>しかし、これでは新しい接続を得るたびに、それを <code>master</code> セットに追加しなければならないのではありませんか？そうです。そして接続が終了するたびに、それを <code>master</code> セットから削除しなければならないのですか？はい、その通りです。</p>
+<p>注目すべきは、<code>listener</code> ソケットが読み込み可能な状態になったかどうかをチェックしていることです。このとき、新しい接続が保留されていることを意味するので、それを <code>accept()</code> して <code>master</code> セットに追加します。同様に、クライアントの接続が読み込み可能な状態になったときに、<code>recv()</code> が <code>0</code> を返したら、クライアントが接続を閉じたことがわかるので、<code>master</code> セットからそれを削除しなければなりません。</p>
+<p>しかし、クライアントの <code>recv()</code> がゼロ以外を返した場合、何らかのデータを受信したことが分かります。そこで私はそれを取得し、<code>master</code> リストを経由して、接続されている残りのすべてのクライアントにそのデータを送信します。</p>
+<p>以上が、全能の関数 <code>select()</code> の簡単でない概要です。</p>
+<p>Linux ファンの皆さんへ：まれに、Linux の <code>select()</code> が &quot;ready-to-read&quot; を返した後、実際には読み込む準備ができていないことがあります！これは、Linux の <code>select()</code> が &quot;ready-to-read&quot; を返した後、実際には読み込む準備ができていないことを意味します。これはつまり、<code>select()</code> が読まないと言っているのに、<code>read()</code> でブロックしてしまうということです！なぜだ、この野郎---！とにかく、回避策は受信側のソケットで <code>O_NONBLOCK</code> フラグをセットして、 <code>EWOULDBLOCK</code> でエラーにすることです（これは発生しても無視しても大丈夫です）。ソケットをノンブロッキングに設定する方法については、<a href="#fcntlman"><code>fcntl()</code> リファレンスページ</a>を参照してください。</p>
+<p>さらに、ここでボーナス的な余談ですが、<code>poll()</code> という別の関数があります。これは <code>select()</code> とほぼ同じ動作をしますが、ファイルディスクリプタ集合を管理するシステムが異なります。<a href="#pollman">チェックしてみてください！</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../slightly-advanced-techniques/poll-synchronous-io-multiplexing.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../slightly-advanced-techniques/handling-partial-sends.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../slightly-advanced-techniques/poll-synchronous-io-multiplexing.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../slightly-advanced-techniques/handling-partial-sends.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../theme/theme-solarized_dark.js"></script>
+        <script type="text/javascript" src="../theme/theme-solarized_light.js"></script>
+    </body>
+</html>

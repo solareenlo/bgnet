@@ -1,0 +1,813 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>シリアライゼーション---データの詰め方 - Beej のネットワークプログラミング入門</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
+        <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Home</a></li><li class="chapter-item expanded "><a href="../intro/index.html"><strong aria-hidden="true">1.</strong> 序説</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../intro/audience.html"><strong aria-hidden="true">1.1.</strong> 対象読者</a></li><li class="chapter-item expanded "><a href="../intro/platform-and-compiler.html"><strong aria-hidden="true">1.2.</strong> プラットフォームとコンパイラ</a></li><li class="chapter-item expanded "><a href="../intro/official-homepage-and-books-for-sale.html"><strong aria-hidden="true">1.3.</strong> 公式ホームページと販売書籍</a></li><li class="chapter-item expanded "><a href="../intro/note-for-solaris-sunos-programmers.html"><strong aria-hidden="true">1.4.</strong> Solaris/SunOS プログラマへの注意事項</a></li><li class="chapter-item expanded "><a href="../intro/note-for-windows-programmers.html"><strong aria-hidden="true">1.5.</strong> Windows プログラマへの注意事項</a></li><li class="chapter-item expanded "><a href="../intro/email-policy.html"><strong aria-hidden="true">1.6.</strong> メールポリシー</a></li><li class="chapter-item expanded "><a href="../intro/mirroring.html"><strong aria-hidden="true">1.7.</strong> ミラーリング</a></li><li class="chapter-item expanded "><a href="../intro/note-for-translators.html"><strong aria-hidden="true">1.8.</strong> 翻訳者への注意事項</a></li><li class="chapter-item expanded "><a href="../intro/copyright-distribution-and-legal.html"><strong aria-hidden="true">1.9.</strong> 著作権・配布・法的事項</a></li><li class="chapter-item expanded "><a href="../intro/dedication.html"><strong aria-hidden="true">1.10.</strong> 献辞</a></li><li class="chapter-item expanded "><a href="../intro/publishing-information.html"><strong aria-hidden="true">1.11.</strong> 出版情報</a></li></ol></li><li class="chapter-item expanded "><a href="../what-is-a-socket/index.html"><strong aria-hidden="true">2.</strong> ソケットとは？</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../what-is-a-socket/two-types-of-internet-sockets.html"><strong aria-hidden="true">2.1.</strong> 2種類のインターネットソケット</a></li><li class="chapter-item expanded "><a href="../what-is-a-socket/low-level-nonsense-and-network-theory.html"><strong aria-hidden="true">2.2.</strong> 低レベルのナンセンスとネットワーク理論</a></li></ol></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/index.html"><strong aria-hidden="true">3.</strong> IP アドレス, 構造体, データマンジング</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/ip-addresses-versions-4-and-6.html"><strong aria-hidden="true">3.1.</strong> IP アドレス、バージョン4と6</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/subnets.html"><strong aria-hidden="true">3.1.1.</strong> サブネット</a></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/port-munbers.html"><strong aria-hidden="true">3.1.2.</strong> ポート番号</a></li></ol></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/byte-order.html"><strong aria-hidden="true">3.2.</strong> バイトオーダー</a></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/structs.html"><strong aria-hidden="true">3.3.</strong> 構造体</a></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/ip-addresses-part-deux.html"><strong aria-hidden="true">3.4.</strong> IP アドレス、パート2</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/private-or-disconnected-networks.html"><strong aria-hidden="true">3.4.1.</strong> プライベート（またはディスコネクト）ネットワーク</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../jumping-from-ipv4-to-ipv6/index.html"><strong aria-hidden="true">4.</strong> IPv4 から IPv6 へのジャンプ</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/index.html"><strong aria-hidden="true">5.</strong> システムコールかバスト</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../system-calls-or-bust/getaddrinfo-prepare-to-launch.html"><strong aria-hidden="true">5.1.</strong> getaddrinfo()---起動の準備をしよう！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/socket-get-the-file-descriptor.html"><strong aria-hidden="true">5.2.</strong> socket()---ファイルディスクリプターを取得しよう！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/bind-what-port-am-i-on.html"><strong aria-hidden="true">5.3.</strong> bind()---私はどのポートにいるのでしょうか？</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/connect-hey-you.html"><strong aria-hidden="true">5.4.</strong> connect()---やあ、こんにちは！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/listen-will-somebody-please-call-me.html"><strong aria-hidden="true">5.5.</strong> listen()---誰か電話してくれない？</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/accept-thank-you-for-calling-port-3490.html"><strong aria-hidden="true">5.6.</strong> accept()---&quot;3490番ポートにコールいただきありがとうございます。&quot;</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/send-and-recv-talk-to-me-baby.html"><strong aria-hidden="true">5.7.</strong> send() and recv()---話せよ、ベイビー！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/sendto-and-recvfrom-talk-to-me-GDRAM-style.html"><strong aria-hidden="true">5.8.</strong> sendto() and recvfrom()---DGRAM スタイルで話して。</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/close-shutdown-get-outta-my-face.html"><strong aria-hidden="true">5.9.</strong> close() and shutdown()---私の前から失せな！</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/getpeername-who-are-you.html"><strong aria-hidden="true">5.10.</strong> getpeername()---あなたは誰ですか？</a></li><li class="chapter-item expanded "><a href="../system-calls-or-bust/gethostname-who-am-i.html"><strong aria-hidden="true">5.11.</strong> gethostname()---私は誰なのか？</a></li></ol></li><li class="chapter-item expanded "><a href="../client-server-background/index.html"><strong aria-hidden="true">6.</strong> クライアント-サーバの背景</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../client-server-background/a-simple-stream-server.html"><strong aria-hidden="true">6.1.</strong> シンプルなストリームサーバ</a></li><li class="chapter-item expanded "><a href="../client-server-background/a-simple-stream-client.html"><strong aria-hidden="true">6.2.</strong> シンプルなストリームクライアント</a></li><li class="chapter-item expanded "><a href="../client-server-background/datagram-sockets.html"><strong aria-hidden="true">6.3.</strong> データグラムソケット</a></li></ol></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/index.html"><strong aria-hidden="true">7.</strong> 少し高度なテクニック</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/blocking.html"><strong aria-hidden="true">7.1.</strong> ブロッキング</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/poll-synchronous-io-multiplexing.html"><strong aria-hidden="true">7.2.</strong> poll()---同期式 I/O 多重化</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.html"><strong aria-hidden="true">7.3.</strong> select()---同期式 I/O 多重化、旧式</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/handling-partial-sends.html"><strong aria-hidden="true">7.4.</strong> 部分的な send()s の処理</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/serialization-how-to-pack-data.html" class="active"><strong aria-hidden="true">7.5.</strong> シリアライゼーション---データの詰め方</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/son-of-data-encapsulation.html"><strong aria-hidden="true">7.6.</strong> データカプセル化の子</a></li><li class="chapter-item expanded "><a href="../slightly-advanced-techniques/broadcast-packets-hello-world.html"><strong aria-hidden="true">7.7.</strong> ブロードキャストパケット---Hello, World!</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="solarized-light">Solarized Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="solarized-dark">Solarized Dark</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Beej のネットワークプログラミング入門</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/solareenlo/bgnet" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/solareenlo/bgnet/edit/main/src/slightly-advanced-techniques/serialization-how-to-pack-data.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="75-シリアライゼーション---データの詰め方"><a class="header" href="#75-シリアライゼーション---データの詰め方">7.5 シリアライゼーション---データの詰め方</a></h1>
+<p>ネットワーク上でテキストデータを送るのは簡単ですが、<code>int</code> や <code>float</code> のような&quot;バイナリ&quot;データを送りたい場合はどうしたらよいでしょうか？その結果、いくつかの選択肢があることがわかりました。</p>
+<ol>
+<li>
+<p>数字を <code>sprintf()</code> などの関数でテキストに変換し、送信します。受信側は <code>strtol()</code> などの関数を使ってテキストを解析し、数値に戻します。</p>
+</li>
+<li>
+<p><code>send()</code> にデータへのポインタを渡して、データをそのまま送信します。</p>
+</li>
+<li>
+<p>数値を携帯可能な2進数にエンコードします。受信側はそれをデコードします。</p>
+</li>
+</ol>
+<p>スニークプレビュー！今夜だけ！</p>
+<p>[<em>カーテン上昇</em>]</p>
+<p>Beejは、&quot;私は、上の方法3を好みます！&quot;と言っています。</p>
+<p>[<em>終</em>]</p>
+<p>（この章を本格的に始める前に、これを行うためのライブラリは世の中に存在し、自分でローリングして移植性とエラーのない状態を維持することはかなり困難であることをお伝えしておきます。ですから、自分で実装することを決める前に、いろいろと調べて下調べをしてください。私は、このようなことがどのように機能するのかに興味がある人のために、ここに情報を記載します。）</p>
+<p>実は、上記の方法はどれも欠点と利点があるのですが、一般的には、先ほど言ったように、私は3番目の方法を好みます。しかし、まず、他の2つの方法の欠点と利点について説明しましょう。</p>
+<p>最初の方法は、数字をテキストとしてエンコードしてから送信するもので、電線を伝わってくるデータを簡単に印刷して読むことができるという利点があります。<a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">インターネットリレーチャット（IRC）</a>のように、帯域幅を必要としない状況で使用するには、人間が読めるプロトコルが優れている場合もあります。しかし、変換に時間がかかるという欠点があり、その結果はほとんど常に元の数値よりも多くのスペースを取ってしまいます。</p>
+<p>方法2：生データを渡します。これは非常に簡単です（しかし危険です！）。送信するデータへのポインタを取り、それを使って send を呼び出すだけです。</p>
+<pre><code class="language-c">double d = 3490.15926535;
+
+send(s, &amp;d, sizeof d, 0);  /* DANGER--non-portable! */
+</code></pre>
+<p>受け手はこのように受け取ります。</p>
+<pre><code class="language-c">double d;
+
+recv(s, &amp;d, sizeof d, 0);  /* DANGER--non-portable! */
+</code></pre>
+<p>速くて、シンプルで、いいことずくめじゃないですか。しかし、すべてのアーキテクチャが <code>double</code>（あるいは <code>int</code>）を同じビット表現で、あるいは同じバイト順序で表現しているわけではないことがわかりました！このコードは明らかに非移植的です。（おいおい---もしかしたら移植性は必要ないかもしれない。その場合は、これはいいし、速い。）</p>
+<p>整数型をパッキングするとき、<code>htons()</code> クラスの関数が、数値をネットワークバイトオーダーに変換することによって、いかに移植性を保つのに役立つか、そして、それがいかに正しい行為であるかをすでに見てきました。残念ながら、<code>float</code> 型に対する同様の関数はありません。希望は失われてしまったのでしょうか？</p>
+<p>恐るべし！（一瞬、怖くなったか？いいえ？少しも？）私たちにできることがあります。データを既知のバイナリ形式にパックし（または&quot;マーシャル&quot;、&quot;シリアライズ&quot;、あるいは他の1億の名前のうちの1つ）、受信者がリモート側で解凍できるようにすることができるのです。</p>
+<p>&quot;既知のバイナリ形式&quot;とはどういう意味でしょうか？さて、<code>htons()</code> の例はもう見ましたね？これは、ホスト側のフォーマットが何であれ、数値をネットワークバイトオーダーに変更（あるいは&quot;エンコード&quot;）します。数字を逆変換（アンエンコード）するために、受信側は <code>ntohs()</code> を呼び出します。</p>
+<p>でも、他の非整数型にはそんな関数はないって、さっき言い終わったばかりじゃないですか。そうです。そうなんだ。そして、C 言語にはこれを行う標準的な方法がないので、ちょっと困ったことになります（Python ファンにとってはありがたいダジャレですね）。</p>
+<p>そのためには、データを既知の形式にパックし、それを電送してデコードする必要があります。例えば、<code>float</code> をパックするために、以下は<a href="https://beej.us/guide/bgnet/examples/pack.c">迅速で汚い方法ですが、改善の余地はたくさんあります</a>。</p>
+<pre><code class="language-c">#include &lt;stdint.h&gt;
+
+uint32_t htonf(float f)
+{
+    uint32_t p;
+    uint32_t sign;
+
+    if (f &lt; 0) { sign = 1; f = -f; }
+    else { sign = 0; }
+
+    p = ((((uint32_t)f)&amp;0x7fff)&lt;&lt;16) | (sign&lt;&lt;31); // whole part and sign
+    p |= (uint32_t)(((f - (int)f) * 65536.0f))&amp;0xffff; // fraction
+
+    return p;
+}
+
+float ntohf(uint32_t p)
+{
+    float f = ((p&gt;&gt;16)&amp;0x7fff); // whole part
+    f += (p&amp;0xffff) / 65536.0f; // fraction
+
+    if (((p&gt;&gt;31)&amp;0x1) == 0x1) { f = -f; } // sign bit set
+
+    return f;
+}
+</code></pre>
+<p>上記のコードは、32 ビットの数値に <code>float</code> を格納する素朴な実装のようなものです。上位ビット（31）は数値の符号（&quot;1&quot;は負を意味します）を格納するために使用され、次の7ビット（30-16）は <code>float</code> の整数部を格納するために使用されます。最後に残りのビット（15-0）は、数値の小数部分を格納するために使用されます。</p>
+<p>使い方はいたって簡単です。</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    float f = 3.1415926, f2;
+    uint32_t netf;
+
+    netf = htonf(f);  // convert to &quot;network&quot; form
+    f2 = ntohf(netf); // convert back to test
+
+    printf(&quot;Original: %f\n&quot;, f);        // 3.141593
+    printf(&quot; Network: 0x%08X\n&quot;, netf); // 0x0003243F
+    printf(&quot;Unpacked: %f\n&quot;, f2);       // 3.141586
+
+    return 0;
+}
+</code></pre>
+<p>プラス面は、小さくてシンプル、そして速いことです。32767 より大きい数を格納しようとすると、とても満足できるものではありません！マイナス面は、スペースを有効活用できないことと、範囲が大きく制限されることです。上の例では、小数点以下の桁数が正しく保存されていないこともおわかりいただけると思います。</p>
+<p>代わりに何ができるのか？浮動小数点数を保存するための標準規格は <a href="https://en.wikipedia.org/wiki/IEEE_754">IEEE-754</a> として知られています。ほとんどのコンピュータは内部でこのフォーマットを使って浮動小数点演算を行っているので、厳密に言えば変換する必要はないのです。しかし、ソースコードの移植性を重視するのであれば、必ずしもそのような前提は成り立ちません。（一方、高速に動作させたいのであれば、変換を行う必要のないプラットフォームでは最適化すべきです！それが <code>htons()</code> やその類いの処理です。）</p>
+<p>以下は、浮動小数点と倍数を IEEE-754 フォーマットにエンコードするコードです。（ほとんど--- NaN や Infinity はエンコードしませんが、そのように修正することができます。）</p>
+<pre><code class="language-c">#define pack754_32(f) (pack754((f), 32, 8))
+#define pack754_64(f) (pack754((f), 64, 11))
+#define unpack754_32(i) (unpack754((i), 32, 8))
+#define unpack754_64(i) (unpack754((i), 64, 11))
+
+uint64_t pack754(long double f, unsigned bits, unsigned expbits)
+{
+    long double fnorm;
+    int shift;
+    long long sign, exp, significand;
+    unsigned significandbits = bits - expbits - 1; // -1 for sign bit
+
+    if (f == 0.0) return 0; // get this special case out of the way
+
+    // check sign and begin normalization
+    if (f &lt; 0) { sign = 1; fnorm = -f; }
+    else { sign = 0; fnorm = f; }
+
+    // get the normalized form of f and track the exponent
+    shift = 0;
+    while(fnorm &gt;= 2.0) { fnorm /= 2.0; shift++; }
+    while(fnorm &lt; 1.0) { fnorm *= 2.0; shift--; }
+    fnorm = fnorm - 1.0;
+
+    // calculate the binary form (non-float) of the significand data
+    significand = fnorm * ((1LL&lt;&lt;significandbits) + 0.5f);
+
+    // get the biased exponent
+    exp = shift + ((1&lt;&lt;(expbits-1)) - 1); // shift + bias
+
+    // return the final answer
+    return (sign&lt;&lt;(bits-1)) | (exp&lt;&lt;(bits-expbits-1)) | significand;
+}
+
+long double unpack754(uint64_t i, unsigned bits, unsigned expbits)
+{
+    long double result;
+    long long shift;
+    unsigned bias;
+    unsigned significandbits = bits - expbits - 1; // -1 for sign bit
+
+    if (i == 0) return 0.0;
+
+    // pull the significand
+    result = (i&amp;((1LL&lt;&lt;significandbits)-1)); // mask
+    result /= (1LL&lt;&lt;significandbits); // convert back to float
+    result += 1.0f; // add the one back on
+
+    // deal with the exponent
+    bias = (1&lt;&lt;(expbits-1)) - 1;
+    shift = ((i&gt;&gt;significandbits)&amp;((1LL&lt;&lt;expbits)-1)) - bias;
+    while(shift &gt; 0) { result *= 2.0; shift--; }
+    while(shift &lt; 0) { result /= 2.0; shift++; }
+
+    // sign it
+    result *= (i&gt;&gt;(bits-1))&amp;1? -1.0: 1.0;
+
+    return result;
+}
+</code></pre>
+<p>32 ビット（おそらく <code>float</code>）と 64 ビット（おそらく <code>double</code>）の数値のパッキングとアンパッキングのための便利なマクロをトップに置きましたが、<code>pack754()</code> 関数を直接呼んで <code>bits</code> 分のデータ（<code>expbits</code> は正規化した数値の指数用に予約されています）をエンコードするように指示することができます。</p>
+<p>以下は使用例です。</p>
+<pre><code class="language-c">
+#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt; // defines uintN_t types
+#include &lt;inttypes.h&gt; // defines PRIx macros
+
+int main(void)
+{
+    float f = 3.1415926, f2;
+    double d = 3.14159265358979323, d2;
+    uint32_t fi;
+    uint64_t di;
+
+    fi = pack754_32(f);
+    f2 = unpack754_32(fi);
+
+    di = pack754_64(d);
+    d2 = unpack754_64(di);
+
+    printf(&quot;float before : %.7f\n&quot;, f);
+    printf(&quot;float encoded: 0x%08&quot; PRIx32 &quot;\n&quot;, fi);
+    printf(&quot;float after  : %.7f\n\n&quot;, f2);
+
+    printf(&quot;double before : %.20lf\n&quot;, d);
+    printf(&quot;double encoded: 0x%016&quot; PRIx64 &quot;\n&quot;, di);
+    printf(&quot;double after  : %.20lf\n&quot;, d2);
+
+    return 0;
+}
+</code></pre>
+<p>上記のコードでは、このように出力されます。</p>
+<pre><code>float before : 3.1415925
+float encoded: 0x40490FDA
+float after  : 3.1415925
+
+double before : 3.14159265358979311600
+double encoded: 0x400921FB54442D18
+double after  : 3.14159265358979311600
+</code></pre>
+<p>もう一つの疑問は、<code>struct</code> をどのようにパックするかということです。残念ながら、コンパイラは <code>struct</code> の中に自由にパディングを入れることができるので、全体を1つのチャンクでポータブルに送信することはできません。（&quot;これができない&quot;、&quot;あれができない&quot;というのはもう聞き飽きた？すみません。友人の言葉を借りれば、&quot;何か問題が起きると、いつもマイクロソフトのせいにする &quot;ということです。これは確かにマイクロソフトのせいではないかもしれませんが、友人の発言は完全に事実です。）</p>
+<p>話を戻すと、<code>struct</code> を電線で送るには、各フィールドを独立してパックし、反対側に到着したらそれらを <code>struct</code> にアンパックするのが一番良い方法です。</p>
+<p>それは大変なことだ、とお考えでしょう。そうなんです。ひとつは、データをパックするのを手伝ってくれるヘルパー関数を書くことです。これは楽しいぞ。本当に！？</p>
+<p>Kernighan と Pike の <a href="https://www.amazon.com/gp/product/020161586X/ref=as_li_tl?ie=UTF8&amp;tag=beejus0c-20&amp;camp=1789&amp;creative=9325&amp;linkCode=as2&amp;creativeASIN=020161586X&amp;linkId=b3ac9370d2df122adcce0316aed99924">The Practice of Programming</a> という本の中で、彼らは <code>printf()</code> に似た関数である <code>pack()</code> と <code>unpack()</code> を実装し、まさにこのようなことをやっています。リンクしたいのですが、どうやらこれらの関数はこの本の他のソースと一緒にオンラインにないようです。</p>
+<p>（The Practice of Programming は素晴らしい読み物です。ゼウスは私が勧めるたびに子猫を救ってくれます。）</p>
+<p>この時点で、私は使ったことはありませんが、完全に立派に見える <a href="https://github.com/protobuf-c/protobuf-c">Protocol Buffers implementation in C</a> へのポインタを落とすつもりです。Python や Perl のプログラマは、同じことを実現するために、それぞれの言語の <code>pack()</code> と <code>unpack()</code> 関数をチェックアウトしたいと思うでしょう。また、Java には大きな Serializable インターフェースがあり、同じような方法で使用することができます。</p>
+<p>しかし、C言語で独自のパッキングユーティリティを書きたい場合、K&amp;P のトリックは、変数の引数リストを使って <code>printf()</code> 風の関数を作り、パケットを構築することです。 以下は、それを元に[<a href="https://beej.us/guide/bgnet/examples/pack2.c">私が自作したバージョン</a>ですが、うまくいけば、このようなものがどのように動作するかのアイデアを与えるのに十分なものです。</p>
+<p>（このコードは、上記の <code>pack754()</code> 関数を参照しています。<code>packi*()</code> 関数はおなじみの <code>htons()</code> ファミリーと同じように動作しますが、別の整数の代わりに <code>char</code> 配列にパックする点が異なります。）</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;ctype.h&gt;
+#include &lt;stdarg.h&gt;
+#include &lt;string.h&gt;
+
+/*
+** packi16() -- store a 16-bit int into a char buffer (like htons())
+*/
+void packi16(unsigned char *buf, unsigned int i)
+{
+    *buf++ = i&gt;&gt;8; *buf++ = i;
+}
+
+/*
+** packi32() -- store a 32-bit int into a char buffer (like htonl())
+*/
+void packi32(unsigned char *buf, unsigned long int i)
+{
+    *buf++ = i&gt;&gt;24; *buf++ = i&gt;&gt;16;
+    *buf++ = i&gt;&gt;8;  *buf++ = i;
+}
+
+/*
+** packi64() -- store a 64-bit int into a char buffer (like htonl())
+*/
+void packi64(unsigned char *buf, unsigned long long int i)
+{
+    *buf++ = i&gt;&gt;56; *buf++ = i&gt;&gt;48;
+    *buf++ = i&gt;&gt;40; *buf++ = i&gt;&gt;32;
+    *buf++ = i&gt;&gt;24; *buf++ = i&gt;&gt;16;
+    *buf++ = i&gt;&gt;8;  *buf++ = i;
+}
+
+/*
+** unpacki16() -- unpack a 16-bit int from a char buffer (like ntohs())
+*/
+int unpacki16(unsigned char *buf)
+{
+    unsigned int i2 = ((unsigned int)buf[0]&lt;&lt;8) | buf[1];
+    int i;
+
+    // change unsigned numbers to signed
+    if (i2 &lt;= 0x7fffu) { i = i2; }
+    else { i = -1 - (unsigned int)(0xffffu - i2); }
+
+    return i;
+}
+
+/*
+** unpacku16() -- unpack a 16-bit unsigned from a char buffer (like ntohs())
+*/
+unsigned int unpacku16(unsigned char *buf)
+{
+    return ((unsigned int)buf[0]&lt;&lt;8) | buf[1];
+}
+
+/*
+** unpacki32() -- unpack a 32-bit int from a char buffer (like ntohl())
+*/
+long int unpacki32(unsigned char *buf)
+{
+    unsigned long int i2 = ((unsigned long int)buf[0]&lt;&lt;24) |
+                           ((unsigned long int)buf[1]&lt;&lt;16) |
+                           ((unsigned long int)buf[2]&lt;&lt;8)  |
+                           buf[3];
+    long int i;
+
+    // change unsigned numbers to signed
+    if (i2 &lt;= 0x7fffffffu) { i = i2; }
+    else { i = -1 - (long int)(0xffffffffu - i2); }
+
+    return i;
+}
+
+/*
+** unpacku32() -- unpack a 32-bit unsigned from a char buffer (like ntohl())
+*/
+unsigned long int unpacku32(unsigned char *buf)
+{
+    return ((unsigned long int)buf[0]&lt;&lt;24) |
+           ((unsigned long int)buf[1]&lt;&lt;16) |
+           ((unsigned long int)buf[2]&lt;&lt;8)  |
+           buf[3];
+}
+
+/*
+** unpacki64() -- unpack a 64-bit int from a char buffer (like ntohl())
+*/
+long long int unpacki64(unsigned char *buf)
+{
+    unsigned long long int i2 = ((unsigned long long int)buf[0]&lt;&lt;56) |
+                                ((unsigned long long int)buf[1]&lt;&lt;48) |
+                                ((unsigned long long int)buf[2]&lt;&lt;40) |
+                                ((unsigned long long int)buf[3]&lt;&lt;32) |
+                                ((unsigned long long int)buf[4]&lt;&lt;24) |
+                                ((unsigned long long int)buf[5]&lt;&lt;16) |
+                                ((unsigned long long int)buf[6]&lt;&lt;8)  |
+                                buf[7];
+    long long int i;
+
+    // change unsigned numbers to signed
+    if (i2 &lt;= 0x7fffffffffffffffu) { i = i2; }
+    else { i = -1 -(long long int)(0xffffffffffffffffu - i2); }
+
+    return i;
+}
+
+/*
+** unpacku64() -- unpack a 64-bit unsigned from a char buffer (like ntohl())
+*/
+unsigned long long int unpacku64(unsigned char *buf)
+{
+    return ((unsigned long long int)buf[0]&lt;&lt;56) |
+           ((unsigned long long int)buf[1]&lt;&lt;48) |
+           ((unsigned long long int)buf[2]&lt;&lt;40) |
+           ((unsigned long long int)buf[3]&lt;&lt;32) |
+           ((unsigned long long int)buf[4]&lt;&lt;24) |
+           ((unsigned long long int)buf[5]&lt;&lt;16) |
+           ((unsigned long long int)buf[6]&lt;&lt;8)  |
+           buf[7];
+}
+
+/*
+** pack() -- store data dictated by the format string in the buffer
+**
+**   bits |signed   unsigned   float   string
+**   -----+----------------------------------
+**      8 |   c        C
+**     16 |   h        H         f
+**     32 |   l        L         d
+**     64 |   q        Q         g
+**      - |                               s
+**
+**  (16-bit unsigned length is automatically prepended to strings)
+*/
+
+unsigned int pack(unsigned char *buf, char *format, ...)
+{
+    va_list ap;
+
+    signed char c;              // 8-bit
+    unsigned char C;
+
+    int h;                      // 16-bit
+    unsigned int H;
+
+    long int l;                 // 32-bit
+    unsigned long int L;
+
+    long long int q;            // 64-bit
+    unsigned long long int Q;
+
+    float f;                    // floats
+    double d;
+    long double g;
+    unsigned long long int fhold;
+
+    char *s;                    // strings
+    unsigned int len;
+
+    unsigned int size = 0;
+
+    va_start(ap, format);
+
+    for(; *format != '\0'; format++) {
+        switch(*format) {
+        case 'c': // 8-bit
+            size += 1;
+            c = (signed char)va_arg(ap, int); // promoted
+            *buf++ = c;
+            break;
+
+        case 'C': // 8-bit unsigned
+            size += 1;
+            C = (unsigned char)va_arg(ap, unsigned int); // promoted
+            *buf++ = C;
+            break;
+
+        case 'h': // 16-bit
+            size += 2;
+            h = va_arg(ap, int);
+            packi16(buf, h);
+            buf += 2;
+            break;
+
+        case 'H': // 16-bit unsigned
+            size += 2;
+            H = va_arg(ap, unsigned int);
+            packi16(buf, H);
+            buf += 2;
+            break;
+
+        case 'l': // 32-bit
+            size += 4;
+            l = va_arg(ap, long int);
+            packi32(buf, l);
+            buf += 4;
+            break;
+
+        case 'L': // 32-bit unsigned
+            size += 4;
+            L = va_arg(ap, unsigned long int);
+            packi32(buf, L);
+            buf += 4;
+            break;
+
+        case 'q': // 64-bit
+            size += 8;
+            q = va_arg(ap, long long int);
+            packi64(buf, q);
+            buf += 8;
+            break;
+
+        case 'Q': // 64-bit unsigned
+            size += 8;
+            Q = va_arg(ap, unsigned long long int);
+            packi64(buf, Q);
+            buf += 8;
+            break;
+
+        case 'f': // float-16
+            size += 2;
+            f = (float)va_arg(ap, double); // promoted
+            fhold = pack754_16(f); // convert to IEEE 754
+            packi16(buf, fhold);
+            buf += 2;
+            break;
+
+        case 'd': // float-32
+            size += 4;
+            d = va_arg(ap, double);
+            fhold = pack754_32(d); // convert to IEEE 754
+            packi32(buf, fhold);
+            buf += 4;
+            break;
+
+        case 'g': // float-64
+            size += 8;
+            g = va_arg(ap, long double);
+            fhold = pack754_64(g); // convert to IEEE 754
+            packi64(buf, fhold);
+            buf += 8;
+            break;
+
+        case 's': // string
+            s = va_arg(ap, char*);
+            len = strlen(s);
+            size += len + 2;
+            packi16(buf, len);
+            buf += 2;
+            memcpy(buf, s, len);
+            buf += len;
+            break;
+        }
+    }
+
+    va_end(ap);
+
+    return size;
+}
+
+/*
+** unpack() -- unpack data dictated by the format string into the buffer
+**
+**   bits |signed   unsigned   float   string
+**   -----+----------------------------------
+**      8 |   c        C
+**     16 |   h        H         f
+**     32 |   l        L         d
+**     64 |   q        Q         g
+**      - |                               s
+**
+**  (string is extracted based on its stored length, but 's' can be
+**  prepended with a max length)
+*/
+void unpack(unsigned char *buf, char *format, ...)
+{
+    va_list ap;
+
+    signed char *c;              // 8-bit
+    unsigned char *C;
+
+    int *h;                      // 16-bit
+    unsigned int *H;
+
+    long int *l;                 // 32-bit
+    unsigned long int *L;
+
+    long long int *q;            // 64-bit
+    unsigned long long int *Q;
+
+    float *f;                    // floats
+    double *d;
+    long double *g;
+    unsigned long long int fhold;
+
+    char *s;
+    unsigned int len, maxstrlen=0, count;
+
+    va_start(ap, format);
+
+    for(; *format != '\0'; format++) {
+        switch(*format) {
+        case 'c': // 8-bit
+            c = va_arg(ap, signed char*);
+            if (*buf &lt;= 0x7f) { *c = *buf;} // re-sign
+            else { *c = -1 - (unsigned char)(0xffu - *buf); }
+            buf++;
+            break;
+
+        case 'C': // 8-bit unsigned
+            C = va_arg(ap, unsigned char*);
+            *C = *buf++;
+            break;
+
+        case 'h': // 16-bit
+            h = va_arg(ap, int*);
+            *h = unpacki16(buf);
+            buf += 2;
+            break;
+
+        case 'H': // 16-bit unsigned
+            H = va_arg(ap, unsigned int*);
+            *H = unpacku16(buf);
+            buf += 2;
+            break;
+
+        case 'l': // 32-bit
+            l = va_arg(ap, long int*);
+            *l = unpacki32(buf);
+            buf += 4;
+            break;
+
+        case 'L': // 32-bit unsigned
+            L = va_arg(ap, unsigned long int*);
+            *L = unpacku32(buf);
+            buf += 4;
+            break;
+
+        case 'q': // 64-bit
+            q = va_arg(ap, long long int*);
+            *q = unpacki64(buf);
+            buf += 8;
+            break;
+
+        case 'Q': // 64-bit unsigned
+            Q = va_arg(ap, unsigned long long int*);
+            *Q = unpacku64(buf);
+            buf += 8;
+            break;
+
+        case 'f': // float
+            f = va_arg(ap, float*);
+            fhold = unpacku16(buf);
+            *f = unpack754_16(fhold);
+            buf += 2;
+            break;
+
+        case 'd': // float-32
+            d = va_arg(ap, double*);
+            fhold = unpacku32(buf);
+            *d = unpack754_32(fhold);
+            buf += 4;
+            break;
+
+        case 'g': // float-64
+            g = va_arg(ap, long double*);
+            fhold = unpacku64(buf);
+            *g = unpack754_64(fhold);
+            buf += 8;
+            break;
+
+        case 's': // string
+            s = va_arg(ap, char*);
+            len = unpacku16(buf);
+            buf += 2;
+            if (maxstrlen &gt; 0 &amp;&amp; len &gt;= maxstrlen) count = maxstrlen - 1;
+            else count = len;
+            memcpy(s, buf, count);
+            s[count] = '\0';
+            buf += len;
+            break;
+
+        default:
+            if (isdigit(*format)) { // track max str len
+                maxstrlen = maxstrlen * 10 + (*format-'0');
+            }
+        }
+
+        if (!isdigit(*format)) maxstrlen = 0;
+    }
+
+    va_end(ap);
+}
+</code></pre>
+<p>そして、<a href="https://beej.us/guide/bgnet/examples/pack2.c">上記のコード</a>で、あるデータを <code>buf</code> にパックし、それを変数に展開するデモプログラムを以下に示します。なお、文字列の引数（フォーマット指定子 &quot;<code>s</code>&quot;）を指定して <code>unpack()</code> を呼び出す場合は、バッファオーバーランを防ぐために最大長を &quot;<code>96s</code>&quot; のように前に置くことが賢明です。ネットワーク経由で受け取ったデータを解凍するときには注意が必要です。悪意のあるユーザが、あなたのシステムを攻撃するために、うまく構成されたパケットを送るかもしれません！</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+// various bits for floating point types--
+// varies for different architectures
+typedef float float32_t;
+typedef double float64_t;
+
+int main(void)
+{
+    unsigned char buf[1024];
+    int8_t magic;
+    int16_t monkeycount;
+    int32_t altitude;
+    float32_t absurdityfactor;
+    char *s = &quot;Great unmitigated Zot! You've found the Runestaff!&quot;;
+    char s2[96];
+    int16_t packetsize, ps2;
+
+    packetsize = pack(buf, &quot;chhlsf&quot;, (int8_t)'B', (int16_t)0, (int16_t)37, 
+            (int32_t)-5, s, (float32_t)-3490.6677);
+    packi16(buf+1, packetsize); // store packet size in packet for kicks
+
+    printf(&quot;packet is %&quot; PRId32 &quot; bytes\n&quot;, packetsize);
+
+    unpack(buf, &quot;chhl96sf&quot;, &amp;magic, &amp;ps2, &amp;monkeycount, &amp;altitude, s2,
+        &amp;absurdityfactor);
+
+    printf(&quot;'%c' %&quot; PRId32&quot; %&quot; PRId16 &quot; %&quot; PRId32
+            &quot; \&quot;%s\&quot; %f\n&quot;, magic, ps2, monkeycount,
+            altitude, s2, absurdityfactor);
+
+    return 0;
+}
+</code></pre>
+<p>自分でコードをロールアップするにしても、他人のコードを使うにしても、毎回手作業で各ビットをパッキングするのではなく、バグを抑えるために一般的なデータパッキングルーチンのセットを用意するのは良いアイデアだと思います。</p>
+<p>データをパッキングする場合、どのような形式が良いのでしょうか？素晴らしい質問です。幸いなことに、<a href="https://datatracker.ietf.org/doc/html/rfc4506">RFC4506</a>（外部データ表現規格）では、浮動小数点型、整数型、配列、生データなど、さまざまな型のバイナリ形式をすでに定義しているんです。もし自分でデータをロールバックするのであれば、それに準拠することをお勧めします。でも、そうする義務はありません。パケット警察は、あなたのドアのすぐ外にいるわけではありません。少なくとも、私は彼らがそうだとは思いません。</p>
+<p>いずれにせよ、データを送信する前に何らかの方法でエンコードするのが正しい方法なのです！</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../slightly-advanced-techniques/handling-partial-sends.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../slightly-advanced-techniques/son-of-data-encapsulation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../slightly-advanced-techniques/handling-partial-sends.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../slightly-advanced-techniques/son-of-data-encapsulation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../theme/theme-solarized_dark.js"></script>
+        <script type="text/javascript" src="../theme/theme-solarized_light.js"></script>
+    </body>
+</html>
