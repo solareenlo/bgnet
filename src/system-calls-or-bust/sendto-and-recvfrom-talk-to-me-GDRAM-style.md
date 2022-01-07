@@ -15,7 +15,7 @@ int sendto(int sockfd, const void *msg, int len, unsigned int flags,
 
 `send()` と同様、`sendto()` は実際に送信したバイト数 (これも、送信するように指示したバイト数よりも少ないかもしれません！) を返し、エラーの場合は `-1` を返します。
 
-同様に、`recv()` と `recvfrom()` も類似しています。`recvfrom()` の概要は以下の通りです。
+同様に、`recv()` と `recvfrom()` も類似しています。`recvfrom()` の書式は以下の通りです。
 
 ```c
 int recvfrom(int sockfd, void *buf, int len, unsigned int flags,

@@ -76,7 +76,7 @@ W. Richard Stevens と全く同じ答えを出すのではなく、[UNIX Network
 
 私のお気に入りの解決策は、`goto` ステートメントを使うことです。これは教授をイライラさせるだけなので、ぜひやってみてください。
 
-```{.c .numberLines}
+```c
 select_restart:
 if ((err = select(fdmax+1, &readfds, NULL, NULL, NULL)) == -1) {
     if (errno == EINTR) {
@@ -95,7 +95,7 @@ if ((err = select(fdmax+1, &readfds, NULL, NULL, NULL)) == -1) {
 
 [`select()`](docs/slightly-advanced-techniques/#select)を使いましょう！これは、読み込みたいソケットディスクリプタに対して、タイムアウトパラメータを指定することができます。あるいは、このように関数全体を一つの関数で包むこともできます。
 
-```{.c .numberLines}
+```c
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/types.h>
