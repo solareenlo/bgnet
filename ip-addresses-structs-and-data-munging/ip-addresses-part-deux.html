@@ -1,0 +1,222 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>IP アドレス、パート2 - Beej のネットワークプログラミング入門</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
+        <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Home</a></li><li class="chapter-item expanded "><a href="../intro/index.html"><strong aria-hidden="true">1.</strong> 序説</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../intro/audience.html"><strong aria-hidden="true">1.1.</strong> 対象読者</a></li><li class="chapter-item expanded "><a href="../intro/platform-and-compiler.html"><strong aria-hidden="true">1.2.</strong> プラットフォームとコンパイラ</a></li><li class="chapter-item expanded "><a href="../intro/official-homepage-and-books-for-sale.html"><strong aria-hidden="true">1.3.</strong> 公式ホームページと販売書籍</a></li><li class="chapter-item expanded "><a href="../intro/note-for-solaris-sunos-programmers.html"><strong aria-hidden="true">1.4.</strong> Solaris/SunOS プログラマへの注意事項</a></li><li class="chapter-item expanded "><a href="../intro/note-for-windows-programmers.html"><strong aria-hidden="true">1.5.</strong> Windows プログラマへの注意事項</a></li><li class="chapter-item expanded "><a href="../intro/email-policy.html"><strong aria-hidden="true">1.6.</strong> メールポリシー</a></li><li class="chapter-item expanded "><a href="../intro/mirroring.html"><strong aria-hidden="true">1.7.</strong> ミラーリング</a></li><li class="chapter-item expanded "><a href="../intro/note-for-translators.html"><strong aria-hidden="true">1.8.</strong> 翻訳者への注意事項</a></li><li class="chapter-item expanded "><a href="../intro/copyright-distribution-and-legal.html"><strong aria-hidden="true">1.9.</strong> 著作権・配布・法的事項</a></li><li class="chapter-item expanded "><a href="../intro/dedication.html"><strong aria-hidden="true">1.10.</strong> 献辞</a></li><li class="chapter-item expanded "><a href="../intro/publishing-information.html"><strong aria-hidden="true">1.11.</strong> 出版情報</a></li></ol></li><li class="chapter-item expanded "><a href="../what-is-a-socket/index.html"><strong aria-hidden="true">2.</strong> ソケットとは？</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../what-is-a-socket/two-types-of-internet-sockets.html"><strong aria-hidden="true">2.1.</strong> 2種類のインターネットソケット</a></li><li class="chapter-item expanded "><a href="../what-is-a-socket/low-level-nonsense-and-network-theory.html"><strong aria-hidden="true">2.2.</strong> 低レベルのナンセンスとネットワーク理論</a></li></ol></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/index.html"><strong aria-hidden="true">3.</strong> IP アドレス, 構造体, データマンジング</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/ip-addresses-versions-4-and-6.html"><strong aria-hidden="true">3.1.</strong> IP アドレス、バージョン4と6</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/subnets.html"><strong aria-hidden="true">3.1.1.</strong> サブネット</a></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/port-munbers.html"><strong aria-hidden="true">3.1.2.</strong> ポート番号</a></li></ol></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/byte-order.html"><strong aria-hidden="true">3.2.</strong> バイトオーダー</a></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/structs.html"><strong aria-hidden="true">3.3.</strong> 構造体</a></li><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/ip-addresses-part-deux.html" class="active"><strong aria-hidden="true">3.4.</strong> IP アドレス、パート2</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ip-addresses-structs-and-data-munging/private-or-disconnected-networks.html"><strong aria-hidden="true">3.4.1.</strong> プライベート（またはディスコネクト）ネットワーク</a></li></ol></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="solarized-light">Solarized Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="solarized-dark">Solarized Dark</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Beej のネットワークプログラミング入門</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/solareenlo/bgnet" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/solareenlo/bgnet/edit/main/src/ip-addresses-structs-and-data-munging/ip-addresses-part-deux.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="34-ip-アドレスパート2"><a class="header" href="#34-ip-アドレスパート2">3.4 IP アドレス、パート2</a></h1>
+<p>幸いなことに、IP アドレスを操作するための関数がたくさんあります。手書きで把握して <code>&lt;&lt;</code> 演算子で <code>long</code> に詰め込む必要はありません。</p>
+<p>まず、<code>struct sockaddr_in ina</code> があり、そこに格納したい IP アドレスが <code>10.12.110.57</code> または <code>2001:db8:63b3:1::3490</code> だとしましょう。<code>inet_pton()</code> という関数は、数字とドットで表記された IP アドレスを、<code>AF_INET</code> か <code>AF_INET6</code> の指定によって、<code>in_addr</code> 構造体か <code>in6_addr</code> 構造体に変換する関数です。(&quot;<code>pton</code>&quot; は &quot;presentation to network&quot; の略で、覚えやすければ &quot;printable to network&quot; と呼んでも構いません)。変換は次のように行うことができます。</p>
+<pre><code class="language-c">struct sockaddr_in sa; // IPv4
+struct sockaddr_in6 sa6; // IPv6
+
+inet_pton(AF_INET, &quot;10.12.110.57&quot;, &amp;(sa.sin_addr)); // IPv4
+inet_pton(AF_INET6, &quot;2001:db8:63b3:1::3490&quot;, &amp;(sa6.sin6_addr)); // IPv6
+</code></pre>
+<p>(クイックメモ: 古い方法では、<code>inet_addr()</code> という関数や <code>inet_aton()</code> という別の関数を使っていましたが、これらはもう時代遅れで IPv6 では動きません。)</p>
+<p>さて、上記のコードスニペットは、エラーチェックがないため、あまり堅牢ではありません。<code>inet_pton()</code> はエラー時に <code>-1</code> を返し、アドレスがめちゃくちゃになった場合は 0 を返します。ですから、使用する前に結果が 0 よりも大きいことを確認してください！</p>
+<p>さて、これで文字列の IP アドレスをバイナリ表現に変換することができるようになりました。では、その逆はどうでしょうか？<code>in_addr</code> 構造体を持っていて、それを数字とドットの表記で印刷したい場合はどうでしょうか。(この場合、関数 <code>inet_ntop()</code> (&quot;<code>ntop</code>&quot; は &quot;network to presentation&quot; という意味です。覚えやすければ &quot;network to printable&quot; と呼んでも構いません) を次のように使用します。</p>
+<pre><code class="language-c">// IPv4:
+
+char ip4[INET_ADDRSTRLEN];  // space to hold the IPv4 string
+struct sockaddr_in sa;      // pretend this is loaded with something
+
+inet_ntop(AF_INET, &amp;(sa.sin_addr), ip4, INET_ADDRSTRLEN);
+
+printf(&quot;The IPv4 address is: %s\n&quot;, ip4);
+
+
+// IPv6:
+
+char ip6[INET6_ADDRSTRLEN]; // space to hold the IPv6 string
+struct sockaddr_in6 sa6;    // pretend this is loaded with something
+
+inet_ntop(AF_INET6, &amp;(sa6.sin6_addr), ip6, INET6_ADDRSTRLEN);
+
+printf(&quot;The address is: %s\n&quot;, ip6);
+</code></pre>
+<p>呼び出す際には、アドレスの種類（IPv4 または IPv6）、アドレス、結果を格納する文字列へのポインタ、その文字列の最大長を渡すことになります。(2つのマクロは、最大の IPv4 または IPv6 アドレスを保持するために必要な文字列のサイズを都合よく保持します。<code>INET_ADDRSTRLEN</code> と <code>INET6_ADDRSTRLEN</code> です)。</p>
+<p>(古いやり方についてもう一度簡単に触れておくと、この変換を行う歴史的な関数は <code>inet_ntoa()</code> と呼ばれるものでした。これも時代遅れで、IPv6 では動きません。)</p>
+<p>最後に、これらの関数は数値の IP アドレスに対してのみ動作します。&quot;<code>www.example.com</code>&quot; のようなホスト名に対してネームサーバの DNS ルックアップは行いません。後ほど説明するように、そのためには <code>getaddrinfo()</code> を使用します。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../ip-addresses-structs-and-data-munging/structs.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../ip-addresses-structs-and-data-munging/private-or-disconnected-networks.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../ip-addresses-structs-and-data-munging/structs.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../ip-addresses-structs-and-data-munging/private-or-disconnected-networks.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../theme/theme-solarized_dark.js"></script>
+        <script type="text/javascript" src="../theme/theme-solarized_light.js"></script>
+    </body>
+</html>
