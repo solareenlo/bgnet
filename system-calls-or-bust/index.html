@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -145,7 +147,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="5-システムコールかバスト"><a class="header" href="#5-システムコールかバスト">5 システムコールかバスト</a></h1>
-<p>このセクションでは、Unix マシンのネットワーク機能にアクセスするためのシステムコールやその他のライブラリコールに触れることができますし、ソケット API をサポートしているあらゆるマシン (BSD, Windows, Linux, Mac, など) も同様です。これらの関数を呼び出すと、カーネルが引き継ぎ、すべての作業を自動で行ってくれます。</p>
+<p>このセクションでは、Unix マシンのネットワーク機能にアクセスするためのシステムコールやその他のライブラリコールに触れることができますし、ソケット API をサポートしているあらゆるマシン（BSD, Windows, Linux, Mac, など）も同様です。これらの関数を呼び出すと、カーネルが引き継ぎ、すべての作業を自動で行ってくれます。</p>
 <p>このあたりで多くの人がつまづくのは、これらのものをどのような順序で呼び出すかということです。これについては、皆さんもお分かりのように、<code>man</code> ページが役に立ちません。そこで、この恐ろしい状況を改善するために、以下の章のシステムコールを、あなたがプログラムの中で呼び出す必要があるのと全く（おおよそ）同じ順序で並べることにしました。</p>
 <p>これに、あちこちにあるサンプルコード、ミルクとクッキー（自分で用意しなければならないのが怖い）、そして生粋のガッツと勇気があれば、ジョン・ポステルの息子のようにインターネット上でデータを発信することができるのです！</p>
 <p>（なお、以下の多くのコードでは、簡潔にするため、必要なエラーチェックは行っていません。また、<code>getaddrinfo()</code> の呼び出しが成功し、リンクリストの有効なエントリを返すと仮定することが非常に一般的です。これらの状況はいずれもスタンドアロン・プログラムで適切に対処されているので、それらをモデルとして使用してください。）</p>

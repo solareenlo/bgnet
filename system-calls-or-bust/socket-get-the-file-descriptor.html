@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -169,7 +171,7 @@ getaddrinfo(&quot;www.example.com&quot;, &quot;http&quot;, &amp;hints, &amp;res)
 
 s = socket(res-&gt;ai_family, res-&gt;ai_socktype, res-&gt;ai_protocol);
 </code></pre>
-<p><code>socket()</code> は単に、後のシステムコールで使用できるソケットディスクリプタを返すか、エラーの場合は <code>-1</code> を返します。グローバル変数 <code>errno</code> にはエラーの値が設定されます（詳細については <a href="#errnoman"><code>errno</code></a> のマニュアルページを参照してください。また、マルチスレッドプログラムで <code>errno</code> を使用する際の簡単な注意も参照してください。）</p>
+<p><code>socket()</code> は単に、後のシステムコールで使用できるソケットディスクリプタを返すか、エラーの場合は <code>-1</code> を返します。グローバル変数 <code>errno</code> にはエラーの値が設定されます（詳細については <a href="../man-pages/errno.html"><code>errno</code></a> のマニュアルページを参照してください。また、マルチスレッドプログラムで <code>errno</code> を使用する際の簡単な注意も参照してください。）</p>
 <p>でも、このソケットは何の役に立つのでしょうか？答えは、これだけでは本当に意味がなく、もっと読み進めてシステムコールを作らないと意味がないのです。</p>
 
                     </main>

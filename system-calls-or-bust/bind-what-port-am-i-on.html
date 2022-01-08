@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -191,7 +193,7 @@ memset(my_addr.sin_zero, '\0', sizeof my_addr.sin_zero);
 
 bind(sockfd, (struct sockaddr *)&amp;my_addr, sizeof my_addr);
 </code></pre>
-<p>上記のコードでは、ローカルの IP アドレスにバインドしたい場合、<code>s_addr</code> フィールドに <code>INADDR_ANY</code> を代入することもできます（上記の <code>AI_PASSIVE</code> フラグのようなものです）。<code>INADDR_ANY</code> の IPv6 バージョンはグローバル変数 <code>in6addr_any</code> で、<code>struct sockaddr_in6</code> の <code>sin6_addr</code> フィールドに代入されます。(変数の初期化で使用できるマクロ <code>IN6ADDR_ANY_INIT</code> も存在します。)また、<code>IN6ADDR_ANY_INIT</code> を使用することで、IPv6 の IP アドレスにバインドできます。</p>
+<p>上記のコードでは、ローカルの IP アドレスにバインドしたい場合、<code>s_addr</code> フィールドに <code>INADDR_ANY</code> を代入することもできます（上記の <code>AI_PASSIVE</code> フラグのようなものです）。<code>INADDR_ANY</code> の IPv6 バージョンはグローバル変数 <code>in6addr_any</code> で、<code>struct sockaddr_in6</code> の <code>sin6_addr</code> フィールドに代入されます。（変数の初期化で使用できるマクロ <code>IN6ADDR_ANY_INIT</code> も存在します。）また、<code>IN6ADDR_ANY_INIT</code> を使用することで、IPv6 の IP アドレスにバインドできます。</p>
 <p><code>bind()</code> を呼ぶときにもうひとつ気をつけなければならないのは、ポート番号で下手を打たないことです。1024 以下のポートはすべて予約済みです（あなたがスーパーユーザでない限り）！それ以上のポート番号は、（他のプログラムによってすでに使われていなければ） 65535 までの任意のポート番号を使用することができます。</p>
 <p>時々、サーバを再実行しようとすると、<code>bind()</code> が &quot;Address already in use&quot; と言って失敗することに気がつくかもしれません。これはどういうことでしょう？それは、接続されたソケットの一部がまだカーネル内に残っていて、ポートを占有しているのです。それが消えるのを待つか（1分くらい）、次のようにポートが再利用できるようなコードをプログラムに追加します。</p>
 <pre><code class="language-c">int yes=1;

@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -147,7 +149,7 @@
                         <h1 id="72-poll---同期式-io-多重化"><a class="header" href="#72-poll---同期式-io-多重化">7.2 <code>poll()</code>---同期式 I/O 多重化</a></h1>
 <p>本当にやりたいことは、一度にたくさんのソケットを監視して、データの準備ができたものを処理することです。そうすれば、すべてのソケットを継続的にポーリングして、どれが読み込み可能な状態にあるかを確認する必要がなくなります。</p>
 <blockquote>
-<p>警告: <code>poll()</code> は膨大な数のコネクションを持つ場合、恐ろしく遅くなります。そのような状況では、システムで利用可能な最も高速なメソッドを使用しようとする <a href="https://libevent.org/">libevent</a> のようなイベントライブラリの方が良いパフォーマンスを得ることができるでしょう。</p>
+<p>警告：<code>poll()</code> は膨大な数のコネクションを持つ場合、恐ろしく遅くなります。そのような状況では、システムで利用可能な最も高速なメソッドを使用しようとする <a href="https://libevent.org/">libevent</a> のようなイベントライブラリの方が良いパフォーマンスを得ることができるでしょう。</p>
 </blockquote>
 <p>では、どうすればポーリングを回避できるのでしょうか。少し皮肉なことに、<code>poll()</code> システムコールを使えばポーリングを避けることができます。簡単に言うと、オペレーティングシステムにすべての汚い仕事を代行してもらい、どのソケットでデータが読めるようになったかだけを知らせてもらうのです。その間、我々のプロセスはスリープして、システムリソースを節約することができます。</p>
 <p>一般的なゲームプランは、どのソケットディスクリプタを監視したいか、どのような種類のイベントを監視したいかという情報を <code>struct pollfd</code> の配列として保持することです。OS は、これらのイベントのいずれかが発生するか（例えば &quot;socket ready to read!&quot;）またはユーザが指定したタイムアウトが発生するまで <code>poll()</code> 呼び出しでブロックします。</p>
@@ -173,7 +175,7 @@ int poll(struct pollfd fds[], nfds_t nfds, int timeout);
 </tbody></table>
 <p>一旦 <code>struct pollfd</code> の配列を整えたら、それを <code>poll()</code> に渡すことができます。配列のサイズと、ミリ秒単位のタイムアウト値も一緒に渡してください。（タイムアウトに負の値を指定すると、永遠に待つことができます。）</p>
 <p><code>poll()</code> が返った後、<code>revents</code> フィールドをチェックして、<code>POLLIN</code> または <code>POLLOUT</code> がセットされているかどうかを確認し、イベントが発生したことを示すことができます。</p>
-<p>（実際には <code>poll()</code> の呼び出しでできることはもっとたくさんあります。詳細は以下の <a href="#pollman"><code>poll()</code> man ページ</a>を参照してください。）</p>
+<p>（実際には <code>poll()</code> の呼び出しでできることはもっとたくさんあります。詳細は以下の <a href="../man-pages/poll.html"><code>poll()</code> man ページ</a>を参照してください。）</p>
 <p>ここでは、標準入力からデータを読み込めるようになるまで、つまり <code>RETURN</code> を押したときに 2.5 秒間待つ<a href="https://beej.us/guide/bgnet/examples/poll.c">例</a>を示します。</p>
 <pre><code class="language-c">#include &lt;stdio.h&gt;
 #include &lt;poll.h&gt;
@@ -431,7 +433,7 @@ int main(void)
     return 0;
 }
 </code></pre>
-<p>次の節では、似たような古い関数である <code>select()</code> について見ていきます。<code>select()</code> と <code>poll()</code> はどちらも似たような機能とパフォーマンスを持っており、どのように使うかが違うだけです。<code>select()</code> の方が若干移植性が高いかもしれませんが、使い勝手は少し悪いかもしれません。あなたのシステムでサポートされている限り、一番好きなものを選んでください。</p>
+<p>次の章では、似たような古い関数である <code>select()</code> について見ていきます。<code>select()</code> と <code>poll()</code> はどちらも似たような機能とパフォーマンスを持っており、どのように使うかが違うだけです。<code>select()</code> の方が若干移植性が高いかもしれませんが、使い勝手は少し悪いかもしれません。あなたのシステムでサポートされている限り、一番好きなものを選んでください。</p>
 
                     </main>
 

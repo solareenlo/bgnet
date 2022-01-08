@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -149,14 +151,14 @@
 <pre><code class="language-c">close(sockfd);
 </code></pre>
 <p>これにより、それ以上のソケットへの読み書きができなくなります。リモート側でソケットの読み書きをしようとすると、エラーが発生します。</p>
-<p>ソケットの閉じ方をもう少し制御したい場合は、<code>shutdown()</code> 関数を使用します。この関数では、特定の方向、あるいは両方の通信を遮断することができます (ちょうど <code>close()</code> がそうであるように)。書式：</p>
+<p>ソケットの閉じ方をもう少し制御したい場合は、<code>shutdown()</code> 関数を使用します。この関数では、特定の方向、あるいは両方の通信を遮断することができます（ちょうど <code>close()</code> がそうであるように）。書式：</p>
 <pre><code class="language-c">int shutdown(int sockfd, int how);
 </code></pre>
 <p><code>sockfd</code> はシャットダウンしたいソケットファイル記述子、<code>how</code> は以下のいずれかです。</p>
 <table><thead><tr><th style="text-align: center"><code>how</code></th><th>Effect</th></tr></thead><tbody>
 <tr><td style="text-align: center"><code>0</code></td><td>それ以上の受信は不可</td></tr>
 <tr><td style="text-align: center"><code>1</code></td><td>それ以上の送信は禁止</td></tr>
-<tr><td style="text-align: center"><code>2</code></td><td>それ以上の送受信は禁止(<code>close()</code>のように)</td></tr>
+<tr><td style="text-align: center"><code>2</code></td><td>それ以上の送受信は禁止（<code>close()</code> のように）</td></tr>
 </tbody></table>
 <p><code>shutdown()</code> は成功すると <code>0</code> を、エラーが発生すると <code>-1</code> を返します（<code>errno</code> は適宜設定されます）。</p>
 <p>データグラムソケットが接続されていない状態で <code>shutdown()</code> を使用すると、それ以降の <code>send()</code> および <code>recv()</code> 呼び出しに使用できなくなります（データグラムソケットを <code>connect()</code> した場合、これらを使用できることを忘れないでください）。</p>

@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -158,9 +160,9 @@ fcntl(sockfd, F_SETFL, O_NONBLOCK);
 .
 .
 </code></pre>
-<p>ソケットをノンブロッキングに設定することで、効果的にソケットの情報を&quot;ポール&quot;することができます。ノンブロッキングソケットから読み込もうとしたときに、そこにデータがない場合、ブロックすることは許されません---その際には <code>-1</code> が返り、<code>errno</code> には <code>EAGAIN</code> または <code>EWOULDBLOCK</code> がセットされます。</p>
+<p>ソケットをノンブロッキングに設定することで、効果的にソケットの情報を&quot;ポーリング&quot;することができます。ノンブロッキングソケットから読み込もうとしたときに、そこにデータがない場合、ブロックすることは許されません---その際には <code>-1</code> が返り、<code>errno</code> には <code>EAGAIN</code> または <code>EWOULDBLOCK</code> がセットされます。</p>
 <p>（待てよ--<code>EAGAIN</code> や <code>EWOULDBLOCK</code> を返すこともあるのか？どちらをチェックする？仕様では実際にあなたのシステムがどちらを返すかは指定されていないので、移植性のために両方チェックしましょう。）</p>
-<p>しかし、一般的に言って、この種のポーリングは悪い考えです。ソケットのデータを探すためにプログラムをビジーウェイト状態にすると、流行遅れのように CPU 時間を吸い取られてしまうからです。読み込み待ちのデータがあるかどうかを確認するための、よりエレガントなソリューションが、次の <code>poll()</code> の節で紹介されています。</p>
+<p>しかし、一般的に言って、この種のポーリングは悪い考えです。ソケットのデータを探すためにプログラムをビジーウェイト状態にすると、流行遅れのように CPU 時間を吸い取られてしまうからです。読み込み待ちのデータがあるかどうかを確認するための、よりエレガントなソリューションが、次の <a href="./poll-synchronous-io-multiplexing.html"><code>poll()</code></a> の章で紹介されています。</p>
 
                     </main>
 

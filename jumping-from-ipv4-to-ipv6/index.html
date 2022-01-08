@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -150,7 +152,7 @@
 <p>ここに書かれていることはほとんどすべて、私が上で説明したことですが、せっかちな人のためのショートバージョンです。（もちろん、これ以外にもありますが、このガイドに該当するのはこれです。）</p>
 <ol>
 <li>
-<p>まず、構造体を手で詰めるのではなく、<a href="docs/ip-addresses-structs-and-data-munging/#structs"><code>getaddrinfo()</code></a> を使ってすべての <code>sockaddr</code> 構造体の情報を取得するようにしてください。こうすることで、IP のバージョンに左右されず、また、その後の多くのステップを省くことができます。</p>
+<p>まず、構造体を手で詰めるのではなく、<a href="../ip-addresses-structs-and-data-munging/structs.html"><code>getaddrinfo()</code></a> を使ってすべての <code>sockaddr</code> 構造体の情報を取得するようにしてください。こうすることで、IP のバージョンに左右されず、また、その後の多くのステップを省くことができます。</p>
 </li>
 <li>
 <p>IP バージョンに関連する何かをハードコーディングしていることが分かったら、ヘルパー関数でラップするようにします。</p>
@@ -169,16 +171,15 @@ struct sockaddr_in6 sa6;
 sa.sin_addr.s_addr = INADDR_ANY;  // use my IPv4 address
 sa6.sin6_addr = in6addr_any; // use my IPv6 address
 </code></pre>
-<p>Also, the value <code>IN6ADDR_ANY_INIT</code> can be used as an initializer when
-the <code>struct in6_addr</code> is declared, like so:</p>
+<p>また、<code>IN6ADDR_ANY_INIT</code> という値は、<code>struct in6_addr</code> を宣言する際にイニシャライザーとして以下のように使用することができます。</p>
 <pre><code class="language-c">struct in6_addr ia6 = IN6ADDR_ANY_INIT;
 </code></pre>
 </li>
 <li>
-<p><code>struct sockaddr_in</code> の代わりに <code>struct sockaddr_in6</code> を使用し、必要に応じてフィールドに &quot;6&quot; を追加してください（上記の <a href="docs/ip-addresses-structs-and-data-munging/#structs"><code>struct</code>s</a> を参照）。<code>sin6_zero</code> フィールドはありません。</p>
+<p><code>struct sockaddr_in</code> の代わりに <code>struct sockaddr_in6</code> を使用し、必要に応じてフィールドに &quot;6&quot; を追加してください（上記の <a href="../ip-addresses-structs-and-data-munging/structs.html">構造体</a> の章を参照）。<code>sin6_zero</code> フィールドはありません。</p>
 </li>
 <li>
-<p><code>struct in_addr</code> の代わりに <code>struct in6_addr</code> を使用し、必要に応じてフィールドに &quot;6&quot; を追加してください（上記の <a href="docs/ip-addresses-structs-and-data-munging/#structs"><code>struct</code>s</a> を参照）。</p>
+<p><code>struct in_addr</code> の代わりに <code>struct in6_addr</code> を使用し、必要に応じてフィールドに &quot;6&quot; を追加してください（上記の <a href="../ip-addresses-structs-and-data-munging/structs.html">構造体</a> の章を参照）。</p>
 </li>
 <li>
 <p><code>inet_aton()</code> や <code>inet_addr()</code> の代わりに、<code>inet_apton()</code> を使用してください。</p>

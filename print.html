@@ -28,6 +28,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -163,7 +165,7 @@ v3.1.5, Copyright © November 20, 2020
 <p>このドキュメントは、完全なリファレンスではなく、チュートリアルとして書かれています。 ソケットプログラミングを始めたばかりで、足がかりを探している人が読むと、おそらく最適なものになるでしょう。ソケットプログラミングの完全なガイドではありません。</p>
 <p>でも、うまくいけば、あのマニュアルページが意味を持ち始めるかもしれませんね...。<code>:-)</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="12-プラットフォームとコンパイラ"><a class="header" href="#12-プラットフォームとコンパイラ">1.2 プラットフォームとコンパイラ</a></h1>
-<p>この文書に含まれるコードは、Gnu の <code>gcc</code> コンパイラを使用して Linux PC でコンパイルされています。しかし、<code>gcc</code>を使うプラットフォームであれば、ほぼ全てのプラットフォームでビルドできるはずです。当然ながら、Windows 用のプログラミングには適用されません。以下の<a href="intro/docs/intro/#windows">section on Windows programming</a>を参照してください。</p>
+<p>この文書に含まれるコードは、Gnu の <code>gcc</code> コンパイラを使用して Linux PC でコンパイルされています。しかし、<code>gcc</code>を使うプラットフォームであれば、ほぼ全てのプラットフォームでビルドできるはずです。当然ながら、Windows 用のプログラミングには適用されません。以下の <a href="intro/note-for-windows-programmers.html">Windows プログラマへの注意事項</a>の章を参照してください。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="13-公式ホームページと販売書籍"><a class="header" href="#13-公式ホームページと販売書籍">1.3 公式ホームページと販売書籍</a></h1>
 <p>このドキュメントの正式な所在地は</p>
 <ul>
@@ -195,7 +197,7 @@ v3.1.5, Copyright © November 20, 2020
 <p>Windows 用の Unix ツールの集合体である <a href="https://cygwin.com/">Cygwin</a> をインストールするのもいい方法です。そうすると、これらのプログラムはすべて修正なしでコンパイルできるようになると、人づてに聞いたことがあります。</p>
 <p>もうひとつ、<a href="https://docs.microsoft.com/en-us/windows/wsl/about">Windows Subsystem for Linux</a> も検討してみてください。これは基本的に、Windows 10 に Linux の VM 的なものをインストールすることができます。これもまた、間違いなく位置づけられるでしょう。</p>
 <p>しかし、中には純粋な Windows のやり方で物事を進めたいと思う人もいるかもしれません。それはとてもガッツのあることで、こうすればいいんです。すぐに Unix を買ってきてください! いやいや---冗談です。最近は Windows フレンドリー(笑)なはずなんですが...。</p>
-<p>これは、あなたがしなければならないことです（<a href="intro/">Cygwin</a>をインストールしない限り！）：まず、ここで私が言及するシステムヘッダーファイルのほとんどを無視してください。あなたがインクルードする必要があるのは、以下のものだけです。</p>
+<p>これは、あなたがしなければならないことです（<a href="https://cygwin.com/">Cygwin</a>をインストールしない限り！）：まず、ここで私が言及するシステムヘッダーファイルのほとんどを無視してください。あなたがインクルードする必要があるのは、以下のものだけです。</p>
 <pre><code class="language-c">#include &lt;winsock.h&gt;
 </code></pre>
 <p>待ってください！ソケットライブラリで何かする前に <code>WSAStartup()</code> を呼び出す必要があります。これを行うためのコードは以下のようなものです。</p>
@@ -229,7 +231,7 @@ v3.1.5, Copyright © November 20, 2020
 <div style="break-before: page; page-break-before: always;"></div><h1 id="18-翻訳者への注意事項"><a class="header" href="#18-翻訳者への注意事項">1.8 翻訳者への注意事項</a></h1>
 <p>もし、このガイドを他の言語に翻訳したい場合は、<code>beej@beej.us</code> までメールをいただければ、メインページからあなたの翻訳をリンクさせていただきます。翻訳にはあなたの名前と連絡先を自由に追加してください。</p>
 <p>このソースマークダウン文書は UTF-8 エンコーディングを使用しています。</p>
-<p>後述の <a href="intro/note-for-translators.html#legal">Copyright, Distribution, and Legal</a> に記載されている使用許諾条件にご注意ください。</p>
+<p>後述の <a href="intro/copyright-distribution-and-legal.html">著作権・配布・法的事項</a> の章に記載されている使用許諾条件にご注意ください。</p>
 <p>もし私に翻訳をホストして欲しいのであれば、言ってください。また、あなたがホストすることを望むなら、私はそれにリンクします；どちらでも構いません。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="19-著作権配布法的事項"><a class="header" href="#19-著作権配布法的事項">1.9 著作権・配布・法的事項</a></h1>
 <pre><code class="language-text">Beej's Guide to Network Programming is Copyright © 2019 Brian &quot;Beej Jorgensen&quot; Hall.
@@ -252,22 +254,22 @@ v3.1.5, Copyright © November 20, 2020
 <p>&quot;ソケット&quot;という言葉をよく耳にしますが、そもそも&quot;ソケット&quot;とは何なのでしょうか？それは、標準的な Unix のファイルディスクリプタを使って他のプログラムと会話するための方法です。</p>
 <p>なんと？</p>
 <p>Ok--- Unix のハッカーが &quot;Unix では何でもファイルなんだ！&quot;と言ったのを聞いたことがあるかもしれません。その人が言っているのは、Unix のプログラムが何らかの I/O を行うとき、ファイル記述子に対して読み書きを行うという事実のことかもしれません。ファイルディスクリプタは、単純に、開いているファイルに関連する整数です。しかし、このファイルは、ネットワーク接続、FIFO、パイプ、ターミナル、ディスク上のファイルなど、あらゆるものになり得ます（ここが重要）。Unix ではすべてがファイルなのです！だから、インターネット上で他のプログラムと通信したいときは、ファイル記述子を介して行うことになるんだ。と思ってください。</p>
-<p>&quot;ネットワーク通信のためのファイルディスクリプタはどこで手に入るのですか、お利口さん？&quot;というのが、今あなたが考えている最後の質問でしょうが、とにかくそれに答えてあげましょう。あなたは <code>socket()</code> システムルーチンを呼び出すのです。このルーチンはソケットディスクリプタを返すので、それを使って <code>send()</code> と <code>recv()</code> (<a href="what-is-a-socket/docs/man-pages/#sendman"><code>man send</code></a>, <a href="what-is-a-socket/docs/man-pages/#recvman"><code>man recv</code></a>) という特別なソケットコールを使って通信を行います。</p>
+<p>&quot;ネットワーク通信のためのファイルディスクリプタはどこで手に入るのですか、お利口さん？&quot;というのが、今あなたが考えている最後の質問でしょうが、とにかくそれに答えてあげましょう。あなたは <code>socket()</code> システムルーチンを呼び出すのです。このルーチンはソケットディスクリプタを返すので、それを使って <code>send()</code> と <code>recv()</code>（<a href="what-is-a-socket/../man-pages/send-sendto.html"><code>man send</code></a>, <a href="what-is-a-socket/../man-pages/recv-recvfrom.html"><code>man recv</code></a>）という特別なソケットコールを使って通信を行います。</p>
 <p>&quot;でもね！&quot;あなたは今頃、そう叫んでいるかもしれません。&quot;ファイルディスクリプタなら、どうしてネプチューンの名において、通常の <code>read()</code> と <code>write()</code> の呼び出しでソケットを通して通信できないんだ？&quot;と。短い答えは、&quot;できる！&quot;です。もっと長い答えは、&quot;できるけど、<code>send()</code> と <code>recv()</code> はデータ転送をより大きく制御できる &quot;です。</p>
-<p>次は何？どうでしょう、ソケットにはいろいろな種類がありますね。DARPA インターネットアドレス (インターネットソケット)、ローカルノード上のパス名 (Unix ソケット)、CCITT X.25 アドレス (X.25 ソケット、無視しても大丈夫)、そしておそらくあなたが実行する Unix のフレーバーに応じて他の多くの種類があります。この文書では、最初の&quot;インターネットソケット&quot;のみを扱います。</p>
+<p>次は何？どうでしょう、ソケットにはいろいろな種類がありますね。DARPA インターネットアドレス（インターネットソケット）、ローカルノード上のパス名（Unix ソケット）、CCITT X.25 アドレス（X.25 ソケット、無視しても大丈夫）、そしておそらくあなたが実行する Unix のフレーバーに応じて他の多くの種類があります。この文書では、最初の&quot;インターネットソケット&quot;のみを扱います。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="21-2種類のインターネットソケット"><a class="header" href="#21-2種類のインターネットソケット">2.1 2種類のインターネットソケット</a></h1>
 <p>これは何？インターネットソケットには2種類ある？そうです。まあ、違うけど。嘘です。もっとあるんだけど、怖がらせたくなかったんだ。 ここでは2種類しか話しません。ただし、この文章では、&quot;Raw Sockets&quot; も非常に強力なので、ぜひ調べてみてくださいと言うつもりです。</p>
-<p>わかったよ、もう。この2つのタイプは何ですか？一つは&quot;ストリームソケット&quot;、もう一つは&quot;データグラムソケット&quot;で、以下、それぞれ &quot;<code>SOCK_STREAM</code>&quot; &quot;<code>SOCK_DGRAM</code>&quot; と呼ぶことがあります。データグラムソケットは&quot;コネクションレス型ソケット&quot;と呼ばれることもあります 。(ただし、本当に必要であれば <code>connect()'</code> を使用することができます。後述の <a href="what-is-a-socket/two-types-of-internet-sockets.html#connect"><code>connect()</code></a> を参照してください)。</p>
+<p>わかったよ、もう。この2つのタイプは何ですか？一つは&quot;ストリームソケット&quot;、もう一つは&quot;データグラムソケット&quot;で、以下、それぞれ &quot;<code>SOCK_STREAM</code>&quot; &quot;<code>SOCK_DGRAM</code>&quot; と呼ぶことがあります。データグラムソケットは&quot;コネクションレス型ソケット&quot;と呼ばれることもあります 。(ただし、本当に必要であれば <code>connect()'</code> を使用することができます。後述の <a href="what-is-a-socket/../system-calls-or-bust/connect-hey-you.html"><code>connect()</code></a> を参照してください)。</p>
 <p>ストリームソケットは、信頼性の高い双方向接続の通信ストリームです。ソケットに2つのアイテムを &quot;1, 2&quot; という順序で出力すると、反対側にも &quot;1, 2&quot; という順序で届きます。また、エラーも発生しません。実際、私はエラーフリーであることを確信しています。もし、そうでないと主張する人がいたら、耳に指を突っ込んで&quot;ララララ&quot;と唱えてやりたいくらいだ。</p>
 <p>何がストリーム・ソケットを使うのでしょうか？さて、皆さんは <code>telnet</code> というアプリケーションをご存知でしょうか？あれはストリームソケットを使っているんだ。あなたが入力した文字は、すべて入力した順番に到着する必要がありますよね？また、Webブラウザは HTTP(Hypertext Transfer Protocol) を使っていますが、これはストリームソケットを使ってページを取得します。実際、80番ポートで Web サイトに telnet して、&quot;<code>GET / HTTP/1.0</code>&quot; と入力してリターンを2回押すと、HTML がダンプされて戻ってきますよ。</p>
-<p>もし <code>telnet</code> がインストールされておらず、インストールもしたくない場合、あるいは <code>telnet</code> がクライアントとの接続にうるさい場合、ガイドには <a href="https://beej.us/guide/bgnet/examples/telnot.c"><code>telnot</code></a> という <code>telnet</code> に似たプログラムが付属しています。これは、このガイドで必要なものすべてに対してうまく機能するはずです。(なお、telnet は実際には <a href="https://datatracker.ietf.org/doc/html/rfc854">spec'd networking protocol</a> であり、<code>telnot</code> はこのプロトコルを全く実装していません)。</p>
+<p>もし <code>telnet</code> がインストールされておらず、インストールもしたくない場合、あるいは <code>telnet</code> がクライアントとの接続にうるさい場合、ガイドには <a href="https://beej.us/guide/bgnet/examples/telnot.c"><code>telnot</code></a> という <code>telnet</code> に似たプログラムが付属しています。これは、このガイドで必要なものすべてに対してうまく機能するはずです。（なお、telnet は実際には <a href="https://datatracker.ietf.org/doc/html/rfc854">spec'd networking protocol</a> であり、<code>telnot</code> はこのプロトコルを全く実装していません。）</p>
 <p>ストリームソケットは、どのようにしてこの高いレベルのデータ伝送品質を実現しているのでしょうか。 それは、&quot;TCP&quot; として知られる&quot;伝送制御プロトコル&quot;(TCP の詳細については <a href="https://datatracker.ietf.org/doc/html/rfc793">RFC 793</a> を参照)というプロトコルを使用しているからです。TCP はデータが順次、エラーなく到着することを確認します。&quot;TCP&quot; は &quot;TCP/IP&quot; の半分で、&quot;IP&quot; は &quot;Internet Protocol&quot;（<a href="https://datatracker.ietf.org/doc/html/rfc791">RFC 791</a> を参照）の略だと聞いたことがあるかもしれません。IP は主にインターネット・ルーティングを扱い、一般にデータの完全性には責任を持ちません。</p>
 <p>かっこいい。データグラムソケットについてはどうでしょうか？なぜコネクションレス型と呼ばれるのでしょうか？どうなっているんだ？なぜ信頼性が低いのでしょうか？データグラムを送ると、それが届くかもしれません。データグラムを送信すると、それは到着するかもしれません。もし到着すれば、パケット内のデータはエラーフリーです。</p>
 <p>データグラムソケットもルーティングに IP を使いますが、TCP は使わず、&quot;User Datagram Protocol&quot;、つまり &quot;UDP&quot; を使います（<a href="https://datatracker.ietf.org/doc/html/rfc768">RFC 768</a> を参照）。</p>
-<p>なぜコネクションレスレスなのか？まあ、基本的には、ストリームソケットのようにオープンな接続を維持する必要がないからです。パケットを作り、その上に宛先情報を含む IP ヘッダを貼り付け、送信するだけでいいのです。コネクションは必要ありません。一般的には、TCP スタックが利用できないときや、パケットをいくつか落としても宇宙の終わりを意味しないときに使用されます。サンプルアプリケーション: <code>tftp</code> (FTP の弟分のようなファイル転送プロトコル)、<code>dhcpcd</code> (DHCP クライアント)、マルチプレイヤーゲーム、ストリーミングオーディオ、ビデオ会議、などなど。</p>
+<p>なぜコネクションレスレスなのか？まあ、基本的には、ストリームソケットのようにオープンな接続を維持する必要がないからです。パケットを作り、その上に宛先情報を含む IP ヘッダを貼り付け、送信するだけでいいのです。コネクションは必要ありません。一般的には、TCP スタックが利用できないときや、パケットをいくつか落としても宇宙の終わりを意味しないときに使用されます。サンプルアプリケーション: <code>tftp</code>（FTP の弟分のようなファイル転送プロトコル）、<code>dhcpcd</code>（DHCP クライアント）、マルチプレイヤーゲーム、ストリーミングオーディオ、ビデオ会議、などなど。</p>
 <p>&quot;ちょっと待った！<code>tftp</code> と <code>dhcpcd</code> はバイナリアプリケーションをあるホストから別のホストに転送するために使われるんだ！アプリケーションが到着したときに動作することを期待するならば、データが失われることはありえない！これはどんな黒魔術なんだ？&quot;</p>
-<p>さて、私の人間の友人である <code>tftp</code> やそれに類するプログラムは、UDP の上に独自のプロトコルを載せています。たとえば、tftp プロトコルは、送信されたパケットごとに、受信者は&quot;受け取ったよ！&quot;というパケットを送り返さなければならない、と言っています。というパケット(&quot;ACK&quot; パケット)を送り返さなければなりません。元のパケットの送信者は、例えば5秒間返信がない場合、最終的に ACK を得るまでパケットを再送信することになります。この確認手続きは、信頼性の高い <code>SOCK_DGRAM</code> アプリケーションを実装する際に非常に重要です。</p>
-<p>ゲーム、オーディオ、ビデオなどの信頼性の低いアプリケーションでは、ドロップしたパケットを無視するか、あるいは巧みに補うようにします。(Quake プレイヤーは、この効果の発現を呪われたラグという専門用語で知っていることでしょう。 この場合の&quot;呪われた&quot;という単語は、非常に不敬な発言を意味します)。</p>
+<p>さて、私の人間の友人である <code>tftp</code> やそれに類するプログラムは、UDP の上に独自のプロトコルを載せています。たとえば、tftp プロトコルは、送信されたパケットごとに、受信者は&quot;受け取ったよ！&quot;というパケットを送り返さなければならない、と言っています。というパケット（&quot;ACK&quot; パケット）を送り返さなければなりません。元のパケットの送信者は、例えば5秒間返信がない場合、最終的に ACK を得るまでパケットを再送信することになります。この確認手続きは、信頼性の高い <code>SOCK_DGRAM</code> アプリケーションを実装する際に非常に重要です。</p>
+<p>ゲーム、オーディオ、ビデオなどの信頼性の低いアプリケーションでは、ドロップしたパケットを無視するか、あるいは巧みに補うようにします。（Quake プレイヤーは、この効果の発現を呪われたラグという専門用語で知っていることでしょう。この場合の&quot;呪われた&quot;という単語は、非常に不敬な発言を意味します。）</p>
 <p>なぜ信頼性の低い基礎プロトコルを使うのでしょうか？理由は2つ、速度とスピードです。何が無事に到着したかを追跡し、順序立てて確認したりするよりも、発射して忘れる方がずっと速いのです。チャットメッセージを送るなら、TCP は素晴らしいです。世界中のプレイヤーの位置情報を毎秒40件送るなら、1件や2件が落ちてもそれほど問題ではないので、UDP は良い選択だと思います。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="22-低レベルのナンセンスとネットワーク理論"><a class="header" href="#22-低レベルのナンセンスとネットワーク理論">2.2 低レベルのナンセンスとネットワーク理論</a></h1>
 <p>先ほどプロトコルの階層化について触れましたので、そろそろネットワークが実際にどのように動作するのか、そして <code>SOCK_DGRAM</code> パケットがどのように構築されるのかについて、いくつかの例を挙げて説明しましょう。 実際のところ、このセクションは読み飛ばしても大丈夫でしょう。しかし、良い背景にはなります。</p>
@@ -318,7 +320,7 @@ v3.1.5, Copyright © November 20, 2020
 <p>そして、IPv6 が誕生したのです。ヴィント・サーフはおそらく不死身なので（たとえ肉体がこの世を去ったとしても、おそらく彼はすでにインターネット2の奥深くにある超知的な <a href="https://en.wikipedia.org/wiki/ELIZA">ELIZA</a> プログラムとして存在しているはずです）、もし次のバージョンのインターネットプロトコルで十分なアドレスが確保できなければ、誰も彼の&quot;だから言っただろう&quot;という言葉を再び聞きたくはないでしょう。</p>
 <p>これは何を示唆しているのでしょうか？</p>
 <p>もっとたくさんのアドレスが必要だということです。2倍どころか10億倍でもなく1000兆倍でもなく 7900万ビリオン・トリリオンの数のアドレスが必要なのです！そうこなくちゃ！</p>
-<p>ビージェイ、それは本当なの？大きな数字を信じない理由があるんだ。&quot;32ビットと128ビットの差は大したことないように聞こえるかもしれない、96ビット多いだけだろ？しかし、私たちはここで累乗の話をしていることを忘れてはなりません。32ビットは約40億の数字（2^32）を表し、128ビットは約340兆の数字（2^128）を表します。これは、宇宙の星1つに対して、100万個の IPv4 インターネットがあるようなものです。</p>
+<p>ビージェイ、それは本当なの？大きな数字を信じない理由があるんだ。&quot;32ビットと128ビットの差は大したことないように聞こえるかもしれない、96ビット多いだけだろ？しかし、私たちはここで累乗の話をしていることを忘れてはなりません。32ビットは約40億の数字（\(2^{32}\)）を表し、128ビットは約340兆の数字（\(2^{128}\)）を表します。これは、宇宙の星1つに対して、100万個の IPv4 インターネットがあるようなものです。</p>
 <p>IPv4のドットや数字も忘れて、16進数では、2バイトの塊をコロンで区切って、このように表現しています。</p>
 <pre><code>2001:0db8:c9d2:aee5:73e3:934a:a5ae:9551
 </code></pre>
@@ -332,17 +334,17 @@ v3.1.5, Copyright © November 20, 2020
 0000:0000:0000:0000:0000:0000:0000:0001
 ::1
 </code></pre>
-<p>アドレス <code>::1</code> はループバックアドレスです。常に「今走っているこのマシン」という意味です。IPv4 では、ループバックアドレスは <code>127.0.0.1</code> です。</p>
+<p>アドレス <code>::1</code> はループバックアドレスです。常に&quot;今使っているこのマシン&quot;という意味です。IPv4 では、ループバックアドレスは <code>127.0.0.1</code> です。</p>
 <p>最後に、IPv6 アドレスの IPv4 互換モードですが、これは皆さんが遭遇する可能性のあるものです。例えば、<code>192.0.2.33</code>という IPv4 アドレスを IPv6 アドレスとして表現したい場合、次のような表記をします。&quot;<code>::ffff:192.0.2.33</code>&quot;。</p>
 <p>本気で楽しみたいんです。</p>
 <p>実際、IPv6 の開発者たちは、何兆個ものアドレスを軽率にも予約用に切り捨てたほど、IPv6 は楽しいものなのですが、数が多すぎて、正直言って、もう誰が数えているのでしょうか？銀河系のすべての惑星のすべての男性、女性、子供、子犬、そしてパーキングメーターのために十分な数が残されています。 信じてくれ、銀河系のどの星にもパーキングメーターはあるんだ。本当なんだ。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="311-サブネット"><a class="header" href="#311-サブネット">3.1.1 サブネット</a></h1>
-<p>組織上、「この IP アドレスの先頭からこのビットまでがネットワーク部分、それ以外がホスト部分」と宣言するのが便利な場合があります。</p>
+<p>組織の都合上、&quot;この IP アドレスの先頭からこのビットまでがネットワーク部分、それ以外がホスト部分&quot;と宣言するのが便利な場合があります。</p>
 <p>例えば、IPv4 では <code>192.0.2.12</code> というように、最初の3バイトがネットワークで、最後の1バイトがホストと言えるでしょう。あるいは、別の言い方をすれば、ネットワーク <code>192.0.2.0</code> 上のホスト <code>12</code> について話していることになります（ホストであるバイトをゼロにしているところをご覧ください）。</p>
-<p>そして、さらに時代遅れの情報を! 準備はいいですか？古代では、サブネットには「クラス」があり、アドレスの最初の1バイト、2バイト、3バイトがネットワーク部分でした。運良く1バイトがネットワーク、3バイトがホストの場合、ネットワーク上に24ビット分のホスト（1600万程度）を持つことができます。これが「クラス A」のネットワークである。一方、「クラス C」は、ネットワークが3バイト、ホストが1バイトで、256台のホスト（ただし、予約された数台は除く）を持ちます。</p>
-<p>ご覧のように、A クラスがほんの少し、C クラスが大量に、そして真ん中に B クラスが何個かある状態でした。</p>
+<p>そして、さらに時代遅れの情報を! 準備はいいですか？古代では、サブネットには&quot;クラス&quot;があり、アドレスの最初の1バイト、2バイト、3バイトがネットワーク部分でした。運良く1バイトがネットワーク、3バイトがホストの場合、ネットワーク上に24ビット分のホスト（1600万程度）を持つことができます。これが&quot;クラス A&quot; のネットワークである。一方、&quot;クラス C&quot; は、ネットワークが3バイト、ホストが1バイトで、256台のホスト（ただし、予約された数台は除く）を持ちます。</p>
+<p>ご覧のように、クラス A がほんの少し、クラス C が大量に、そして真ん中にクラス B が何個かある状態でした。</p>
 <p>IP アドレスのネットワーク部分は、ネットマスクと呼ばれるもので記述されており、IP アドレスとビット単位で AND することでネットワーク番号を取得します。ネットマスクは通常 <code>255.255.255.0</code> のような形をしています。（例えば、このネットマスクでは、あなたの IP が <code>192.0.2.12</code> なら、あなたのネットワークは <code>192.0.2.12</code> AND <code>255.255.255.0</code> で、 <code>192.0.2.0</code> となります。）</p>
-<p>しかし、残念ながら、これはインターネットの最終的なニーズに対して十分なきめ細かさではないことが判明しました。クラスCのネットワークはすぐに足りなくなったし、クラスAのネットワークも足りなくなったので、わざわざ尋ねる必要はありません。この問題を解決するために、権力者たちはネットマスクを 8、16、24 のどれでもなく、任意のビット数にすることを許可しました。例えば <code>255.255.255.252</code> というネットマスクは、30 ビットのネットワークと 2 ビットのホストで、 ネットワーク上に 4 つのホストを置くことができます。（ネットマスクは常に1ビットの束と0ビットの束からなることに注意してください。）</p>
+<p>しかし、残念ながら、これはインターネットの最終的なニーズに対して十分なきめ細かさではないことが判明しました。クラスCのネットワークはすぐに足りなくなったし、クラスAのネットワークも足りなくなったので、わざわざ尋ねる必要はありません。この問題を解決するために、権力者たちはネットマスクを 8、16、24 のどれでもなく、任意のビット数にすることを許可しました。例えば <code>255.255.255.252</code> というネットマスクは、30ビットのネットワークと2ビットのホストで、 ネットワーク上に4つのホストを置くことができます。（ネットマスクは常に1ビットの束と0ビットの束からなることに注意してください。）</p>
 <p>しかし、<code>255.192.0.0</code> のような大きな数字の羅列をネットマスクとして使うのは、少し扱いにくいです。まず、それが何ビットなのかが直感的にわからないし、コンパクトでもありません。そこで新スタイルが登場したのですが、これはもっとすっきりしています。IP アドレスの後にスラッシュを付けて、その後に10進数でネットワークのビット数を指定するだけです。こんな感じです。<code>192.0.2.12/30</code>。</p>
 <p>あるいは、IPv6 の場合、このようなものです。<code>2001:db8::/32</code> または <code>2001:db8:5413:4028::9db9/64</code> です。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="312-ポート番号"><a class="header" href="#312-ポート番号">3.1.2 ポート番号</a></h1>
@@ -372,7 +374,7 @@ v3.1.5, Copyright © November 20, 2020
 <tr><td><code>ntohl()</code></td><td><code>n</code>etwork <code>to</code> <code>h</code>ost <code>l</code>ong</td></tr>
 </tbody></table>
 <p>基本的には、送出する前にネットワークバイトオーダーに変換し、送出後にホストバイトオーダーに変換します。</p>
-<p>64bitのバリエーションは知らないです、すみません。また、浮動小数点をやりたい場合は、ずっと下の<a href="ip-addresses-structs-and-data-munging/byte-order.html#serialization">Serialization</a> の章をチェックしてください。</p>
+<p>64bitのバリエーションは知らないです、すみません。また、浮動小数点をやりたい場合は、ずっと下の<a href="ip-addresses-structs-and-data-munging/../slightly-advanced-techniques/serialization-how-to-pack-data.html">シリアライゼーション</a> の章をチェックしてください。</p>
 <p>この文書では、特に断らない限り、数値はホストバイトオーダーであると仮定しています。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="33-構造体"><a class="header" href="#33-構造体">3.3 構造体</a></h1>
 <p>さて、ついにここまで来ました。そろそろプログラミングの話をしましょう。この章では、ソケットインターフェイスで使用される様々なデータ型について説明します。</p>
@@ -399,7 +401,7 @@ v3.1.5, Copyright © November 20, 2020
 <p>これはリンクされたリストであることに注意してください：<code>ai_next</code> は次の要素を指しています---そこから選択するためにいくつかの結果があるかもしれません。私は最初にうまくいった結果を使いますが、あなたは異なるビジネスニーズを持っているかもしれません。何でもかんでも知ってるわけじゃないんです！</p>
 <p><code>struct addrinfo</code> の <code>ai_addr</code> フィールドは <code>struct sockaddr</code> へのポインタであることがわかります。ここからが、IP アドレス構造体の中身についての細かい話になります。</p>
 <p>通常、これらの構造体に書き込む必要はありません。多くの場合、<code>addrinfo</code> 構造体を埋めるために <code>getaddrinfo()</code> を呼び出すだけでよいでしょう。しかし、これらの構造体の内部を覗いて値を取得する必要があるため、ここでそれらを紹介します。</p>
-<p>(また、構造体 <code>addrinfo</code> が発明される前に書かれたコードはすべて、これらのものをすべて手作業で梱包していたので、まさにそのような IPv4 コードを多く見かけることができます。このガイドの古いバージョンなどでもそうです)。</p>
+<p>（また、構造体 <code>addrinfo</code> が発明される前に書かれたコードはすべて、これらのものをすべて手作業で梱包していたので、まさにそのような IPv4 コードを多く見かけることができます。このガイドの古いバージョンなどでもそうです。）</p>
 <p>ある構造体は IPv4 で、ある構造体は IPv6 で、ある構造体はその両方です。どれが何なのか、メモしておきます。</p>
 <p>とにかく、構造体 <code>sockaddr</code> は、多くの種類のソケットのためのソケットアドレス情報を保持します。</p>
 <pre><code class="language-c">struct sockaddr {
@@ -407,7 +409,7 @@ v3.1.5, Copyright © November 20, 2020
     char              sa_data[14];  // 14 bytes of protocol address
 };
 </code></pre>
-<p><code>sa_family</code> には様々なものを指定できますが、この文書ではすべて <code>AF_INET</code> (IPv4) または <code>AF_INET6</code> (IPv6) とします。<code>sa_data</code> にはソケットの宛先アドレスとポート番号を指定します。<code>sa_data</code> にアドレスを手で詰め込むのは面倒なので、これはかなり扱いにくいです。</p>
+<p><code>sa_family</code> には様々なものを指定できますが、この文書ではすべて <code>AF_INET</code>（IPv4）または <code>AF_INET6</code>（IPv6）とします。<code>sa_data</code> にはソケットの宛先アドレスとポート番号を指定します。<code>sa_data</code> にアドレスを手で詰め込むのは面倒なので、これはかなり扱いにくいです。</p>
 <p>構造体 <code>sockaddr</code> を扱うために、プログラマは IPv4 で使用する構造体 <code>sockaddr_in</code>（&quot;in&quot; は &quot;Internet&quot; の意）を並列に作成しました。</p>
 <p><code>sockaddr_in</code> 構造体へのポインタは <code>sockaddr</code> 構造体へのポインタにキャストすることができ、その逆も可能です。つまり、<code>connect()</code> が <code>struct sockaddr*</code> を要求しても、<code>struct sockaddr_in</code> を使用して、最後の最後でキャストすることができるのです！</p>
 <pre><code class="language-c">// (IPv4 only--see struct sockaddr_in6 for IPv6)
@@ -459,16 +461,16 @@ struct in6_addr {
 <p>重要なのは、<code>ss_family</code> フィールドでアドレスファミリーを確認できることで、これが <code>AF_INET</code> か <code>AF_INET6</code>（IPv4 か IPv6 か）かを確認することです。それから、必要なら <code>struct sockaddr_in</code> や <code>struct sockaddr_in6</code> にキャストすることができます。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="34-ip-アドレスパート2"><a class="header" href="#34-ip-アドレスパート2">3.4 IP アドレス、パート2</a></h1>
 <p>幸いなことに、IP アドレスを操作するための関数がたくさんあります。手書きで把握して <code>&lt;&lt;</code> 演算子で <code>long</code> に詰め込む必要はありません。</p>
-<p>まず、<code>struct sockaddr_in ina</code> があり、そこに格納したい IP アドレスが <code>10.12.110.57</code> または <code>2001:db8:63b3:1::3490</code> だとしましょう。<code>inet_pton()</code> という関数は、数字とドットで表記された IP アドレスを、<code>AF_INET</code> か <code>AF_INET6</code> の指定によって、<code>in_addr</code> 構造体か <code>in6_addr</code> 構造体に変換する関数です。(&quot;<code>pton</code>&quot; は &quot;presentation to network&quot; の略で、覚えやすければ &quot;printable to network&quot; と呼んでも構いません)。変換は次のように行うことができます。</p>
+<p>まず、<code>struct sockaddr_in ina</code> があり、そこに格納したい IP アドレスが <code>10.12.110.57</code> または <code>2001:db8:63b3:1::3490</code> だとしましょう。<code>inet_pton()</code> という関数は、数字とドットで表記された IP アドレスを、<code>AF_INET</code> か <code>AF_INET6</code> の指定によって、<code>in_addr</code> 構造体か <code>in6_addr</code> 構造体に変換する関数です。（&quot;<code>pton</code>&quot; は &quot;presentation to network&quot; の略で、覚えやすければ &quot;printable to network&quot; と呼んでも構いません。）変換は次のように行うことができます。</p>
 <pre><code class="language-c">struct sockaddr_in sa; // IPv4
 struct sockaddr_in6 sa6; // IPv6
 
 inet_pton(AF_INET, &quot;10.12.110.57&quot;, &amp;(sa.sin_addr)); // IPv4
 inet_pton(AF_INET6, &quot;2001:db8:63b3:1::3490&quot;, &amp;(sa6.sin6_addr)); // IPv6
 </code></pre>
-<p>(クイックメモ: 古い方法では、<code>inet_addr()</code> という関数や <code>inet_aton()</code> という別の関数を使っていましたが、これらはもう時代遅れで IPv6 では動きません。)</p>
-<p>さて、上記のコードスニペットは、エラーチェックがないため、あまり堅牢ではありません。<code>inet_pton()</code> はエラー時に <code>-1</code> を返し、アドレスがめちゃくちゃになった場合は 0 を返します。ですから、使用する前に結果が 0 よりも大きいことを確認してください！</p>
-<p>さて、これで文字列の IP アドレスをバイナリ表現に変換することができるようになりました。では、その逆はどうでしょうか？<code>in_addr</code> 構造体を持っていて、それを数字とドットの表記で印刷したい場合はどうでしょうか。(この場合、関数 <code>inet_ntop()</code> (&quot;<code>ntop</code>&quot; は &quot;network to presentation&quot; という意味です。覚えやすければ &quot;network to printable&quot; と呼んでも構いません) を次のように使用します。</p>
+<p>（クイックメモ：古い方法では、<code>inet_addr()</code> という関数や <code>inet_aton()</code> という別の関数を使っていましたが、これらはもう時代遅れで IPv6 では動きません。）</p>
+<p>さて、上記のコードスニペットは、エラーチェックがないため、あまり堅牢ではありません。<code>inet_pton()</code> はエラー時に <code>-1</code> を返し、アドレスがめちゃくちゃになった場合は <code>0</code> を返します。ですから、使用する前に結果が <code>0</code> よりも大きいことを確認してください！</p>
+<p>さて、これで文字列の IP アドレスをバイナリ表現に変換することができるようになりました。では、その逆はどうでしょうか？<code>in_addr</code> 構造体を持っていて、それを数字とドットの表記で印刷したい場合はどうでしょうか。この場合、関数 <code>inet_ntop()</code>（&quot;<code>ntop</code>&quot; は &quot;network to presentation&quot; という意味です。覚えやすければ &quot;network to printable&quot; と呼んでも構いません）を次のように使用します。</p>
 <pre><code class="language-c">// IPv4:
 
 char ip4[INET_ADDRSTRLEN];  // space to hold the IPv4 string
@@ -488,19 +490,19 @@ inet_ntop(AF_INET6, &amp;(sa6.sin6_addr), ip6, INET6_ADDRSTRLEN);
 
 printf(&quot;The address is: %s\n&quot;, ip6);
 </code></pre>
-<p>呼び出す際には、アドレスの種類（IPv4 または IPv6）、アドレス、結果を格納する文字列へのポインタ、その文字列の最大長を渡すことになります。(2つのマクロは、最大の IPv4 または IPv6 アドレスを保持するために必要な文字列のサイズを都合よく保持します。<code>INET_ADDRSTRLEN</code> と <code>INET6_ADDRSTRLEN</code> です)。</p>
-<p>(古いやり方についてもう一度簡単に触れておくと、この変換を行う歴史的な関数は <code>inet_ntoa()</code> と呼ばれるものでした。これも時代遅れで、IPv6 では動きません。)</p>
+<p>呼び出す際には、アドレスの種類（IPv4 または IPv6）、アドレス、結果を格納する文字列へのポインタ、その文字列の最大長を渡すことになります。（2つのマクロは、最大の IPv4 または IPv6 アドレスを保持するために必要な文字列のサイズを都合よく保持します。<code>INET_ADDRSTRLEN</code> と <code>INET6_ADDRSTRLEN</code> です。）</p>
+<p>（古いやり方についてもう一度簡単に触れておくと、この変換を行う歴史的な関数は <code>inet_ntoa()</code> と呼ばれるものでした。これも時代遅れで、IPv6 では動きません。）</p>
 <p>最後に、これらの関数は数値の IP アドレスに対してのみ動作します。&quot;<code>www.example.com</code>&quot; のようなホスト名に対してネームサーバの DNS ルックアップは行いません。後ほど説明するように、そのためには <code>getaddrinfo()</code> を使用します。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="341-プライベートまたはディスコネクトネットワーク"><a class="header" href="#341-プライベートまたはディスコネクトネットワーク">3.4.1 プライベート（またはディスコネクト）ネットワーク</a></h1>
 <p>多くの場所では、自分たちを守るために、ネットワークを他の地域から隠すファイアウォールがあります。そして多くの場合、ファイアウォールは、ネットワークアドレス変換（NAT）と呼ばれるプロセスを使って、&quot;内部&quot; IP アドレスを&quot;外部&quot;（世界中の誰もが知っている）IP アドレスに変換しています。</p>
-<p>もう緊張してきましたか？&quot;こんな変なことして どこへ行くんだろう？&quot;</p>
+<p>もう緊張してきましたか？&quot;こんな変なことしてどこへ行くんだろう？&quot;</p>
 <p>まあ、ノンアルコール飲料でも買ってリラックスしてください。初心者の場合、NAT は透過的に行われるので、心配する必要もありませんから。しかし、あなたが見ているネットワーク番号に混乱し始めた場合に備えて、ファイアウォールの背後にあるネットワークについて話したいと思います。</p>
 <p>例えば、私の自宅にはファイアウォールがあります。DSL 会社から割り当てられた2つの固定 IPv4 アドレスを持っていますが、ネットワーク上に7台のコンピューターがあります。どうしてこんなことが可能なのでしょうか？2台のコンピュータが同じ IP アドレスを共有することはできませんし、そうでなければデータはどちらに行けばいいのかわからなくなってしまいます。</p>
-<p>答えは、&quot;同じIPアドレスを共有していない&quot;です。2400万個の IP アドレスが割り当てられたプライベートネットワーク上にあるのです。それらはすべて私のためだけのものです。まあ、他の人たちから見れば、すべて私のためのものなのですが。ここで、何が起こっているのかを説明します。</p>
+<p>答えは、&quot;同じ IP アドレスを共有していない&quot;です。2400万個の IP アドレスが割り当てられたプライベートネットワーク上にあるのです。それらはすべて私のためだけのものです。まあ、他の人たちから見れば、すべて私のためのものなのですが。ここで、何が起こっているのかを説明します。</p>
 <p>リモートコンピューターにログインすると、ISP から提供されたパブリック IP アドレスである <code>192.0.2.33</code> からログインしていると表示されるのです。しかし、ローカルコンピューターにその IP アドレスを尋ねると、<code>10.0.0.5</code> と答えるのです。誰が IP アドレスを変換しているのでしょうか？そうです、ファイアウォールです。ファイアウォールが NAT しているのです。</p>
 <p><code>10.x.x.x</code> は、完全に切断されたネットワークか、ファイアウォールの内側にあるネットワークでのみ使用される、数少ない予約ネットワークの1つです。どのプライベート・ネットワーク番号が使用できるかの詳細は、<a href="https://datatracker.ietf.org/doc/html/rfc1918">RFC 1918</a> に概説されていますが、一般的によく目にするのは、<code>10.x.x.x</code> と <code>192.168.x.x</code> で、<code>x</code> は通常 0 ～ 255 です。一般的ではないのは、<code>172.y.x.x</code> で、<code>y</code> は16から31の間です。</p>
 <p>NAT するファイアウォールの内側のネットワークは、これらの予約されたネットワークのいずれかにある必要はありませんが、一般的にはそうなっています。</p>
-<p>(楽しい事実！私の外部 IP アドレスは、本当は <code>192.0.2.33</code> ではないのです。<code>192.0.2.x</code> ネットワークは、このガイドのように、ドキュメントで使用するための架空の&quot;本当の&quot; IP アドレスのために予約されているのです！わーい、すごい！)</p>
+<p>（楽しい事実！私の外部 IP アドレスは、本当は <code>192.0.2.33</code> ではないのです。<code>192.0.2.x</code> ネットワークは、このガイドのように、ドキュメントで使用するための架空の&quot;本当の&quot; IP アドレスのために予約されているのです！わーい、すごい！）</p>
 <p>IPv6 にも、ある意味プライベートネットワークがあります。<a href="https://datatracker.ietf.org/doc/html/rfc4193">RFC 4193</a> にあるように、<code>fdXX:</code>（将来的には <code>fcXX:</code>）で始まります。しかし、NAT と IPv6 は一般的に混ざりません(このドキュメントの範囲外である IPv6 から IPv4 へのゲートウェイを行う場合を除きます)。理論的には、自由に使えるアドレスが非常に多くなるため、NAT を使用する必要はなくなるはずです。しかし、外部にルーティングしないネットワーク上で自分のためにアドレスを割り当てたい場合は、このようにします。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="4-ipv4-から-ipv6-へのジャンプ"><a class="header" href="#4-ipv4-から-ipv6-へのジャンプ">4 IPv4 から IPv6 へのジャンプ</a></h1>
 <p>しかし、IPv6 で動作させるためには、私のコードのどこを変えればいいのか知りたいのです！今すぐ教えてください！</p>
@@ -508,7 +510,7 @@ printf(&quot;The address is: %s\n&quot;, ip6);
 <p>ここに書かれていることはほとんどすべて、私が上で説明したことですが、せっかちな人のためのショートバージョンです。（もちろん、これ以外にもありますが、このガイドに該当するのはこれです。）</p>
 <ol>
 <li>
-<p>まず、構造体を手で詰めるのではなく、<a href="jumping-from-ipv4-to-ipv6/docs/ip-addresses-structs-and-data-munging/#structs"><code>getaddrinfo()</code></a> を使ってすべての <code>sockaddr</code> 構造体の情報を取得するようにしてください。こうすることで、IP のバージョンに左右されず、また、その後の多くのステップを省くことができます。</p>
+<p>まず、構造体を手で詰めるのではなく、<a href="jumping-from-ipv4-to-ipv6/../ip-addresses-structs-and-data-munging/structs.html"><code>getaddrinfo()</code></a> を使ってすべての <code>sockaddr</code> 構造体の情報を取得するようにしてください。こうすることで、IP のバージョンに左右されず、また、その後の多くのステップを省くことができます。</p>
 </li>
 <li>
 <p>IP バージョンに関連する何かをハードコーディングしていることが分かったら、ヘルパー関数でラップするようにします。</p>
@@ -527,16 +529,15 @@ struct sockaddr_in6 sa6;
 sa.sin_addr.s_addr = INADDR_ANY;  // use my IPv4 address
 sa6.sin6_addr = in6addr_any; // use my IPv6 address
 </code></pre>
-<p>Also, the value <code>IN6ADDR_ANY_INIT</code> can be used as an initializer when
-the <code>struct in6_addr</code> is declared, like so:</p>
+<p>また、<code>IN6ADDR_ANY_INIT</code> という値は、<code>struct in6_addr</code> を宣言する際にイニシャライザーとして以下のように使用することができます。</p>
 <pre><code class="language-c">struct in6_addr ia6 = IN6ADDR_ANY_INIT;
 </code></pre>
 </li>
 <li>
-<p><code>struct sockaddr_in</code> の代わりに <code>struct sockaddr_in6</code> を使用し、必要に応じてフィールドに &quot;6&quot; を追加してください（上記の <a href="jumping-from-ipv4-to-ipv6/docs/ip-addresses-structs-and-data-munging/#structs"><code>struct</code>s</a> を参照）。<code>sin6_zero</code> フィールドはありません。</p>
+<p><code>struct sockaddr_in</code> の代わりに <code>struct sockaddr_in6</code> を使用し、必要に応じてフィールドに &quot;6&quot; を追加してください（上記の <a href="jumping-from-ipv4-to-ipv6/../ip-addresses-structs-and-data-munging/structs.html">構造体</a> の章を参照）。<code>sin6_zero</code> フィールドはありません。</p>
 </li>
 <li>
-<p><code>struct in_addr</code> の代わりに <code>struct in6_addr</code> を使用し、必要に応じてフィールドに &quot;6&quot; を追加してください（上記の <a href="jumping-from-ipv4-to-ipv6/docs/ip-addresses-structs-and-data-munging/#structs"><code>struct</code>s</a> を参照）。</p>
+<p><code>struct in_addr</code> の代わりに <code>struct in6_addr</code> を使用し、必要に応じてフィールドに &quot;6&quot; を追加してください（上記の <a href="jumping-from-ipv4-to-ipv6/../ip-addresses-structs-and-data-munging/structs.html">構造体</a> の章を参照）。</p>
 </li>
 <li>
 <p><code>inet_aton()</code> や <code>inet_addr()</code> の代わりに、<code>inet_apton()</code> を使用してください。</p>
@@ -556,14 +557,14 @@ the <code>struct in6_addr</code> is declared, like so:</p>
 </ol>
 <p>出来上がり！</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="5-システムコールかバスト"><a class="header" href="#5-システムコールかバスト">5 システムコールかバスト</a></h1>
-<p>このセクションでは、Unix マシンのネットワーク機能にアクセスするためのシステムコールやその他のライブラリコールに触れることができますし、ソケット API をサポートしているあらゆるマシン (BSD, Windows, Linux, Mac, など) も同様です。これらの関数を呼び出すと、カーネルが引き継ぎ、すべての作業を自動で行ってくれます。</p>
+<p>このセクションでは、Unix マシンのネットワーク機能にアクセスするためのシステムコールやその他のライブラリコールに触れることができますし、ソケット API をサポートしているあらゆるマシン（BSD, Windows, Linux, Mac, など）も同様です。これらの関数を呼び出すと、カーネルが引き継ぎ、すべての作業を自動で行ってくれます。</p>
 <p>このあたりで多くの人がつまづくのは、これらのものをどのような順序で呼び出すかということです。これについては、皆さんもお分かりのように、<code>man</code> ページが役に立ちません。そこで、この恐ろしい状況を改善するために、以下の章のシステムコールを、あなたがプログラムの中で呼び出す必要があるのと全く（おおよそ）同じ順序で並べることにしました。</p>
 <p>これに、あちこちにあるサンプルコード、ミルクとクッキー（自分で用意しなければならないのが怖い）、そして生粋のガッツと勇気があれば、ジョン・ポステルの息子のようにインターネット上でデータを発信することができるのです！</p>
 <p>（なお、以下の多くのコードでは、簡潔にするため、必要なエラーチェックは行っていません。また、<code>getaddrinfo()</code> の呼び出しが成功し、リンクリストの有効なエントリを返すと仮定することが非常に一般的です。これらの状況はいずれもスタンドアロン・プログラムで適切に対処されているので、それらをモデルとして使用してください。）</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="51-getaddrinfo---起動の準備をしよう"><a class="header" href="#51-getaddrinfo---起動の準備をしよう">5.1 <code>getaddrinfo()</code>---起動の準備をしよう！</a></h1>
 <p>この関数は多くのオプションを持つ真の主力関数ですが、使い方はいたってシンプルです。後で必要な構造体をセットアップするのに役立ちます。</p>
 <p>昔は、<code>gethostbyname()</code> という関数を使って DNS のルックアップを行っていました。そして、その情報を <code>sockaddr_in</code> 構造体に手作業でロードし、それを呼び出しに使用するのです。</p>
-<p>これは、ありがたいことに、もう必要ありません。(IPv4 と IPv6 の両方で動作するコードを書きたいのであれば、望ましいことではありません！) 現代では、DNS やサービス名のルックアップなど、あらゆる種類の良いことをやってくれる <code>getaddrinfo()</code> という関数があり、さらに必要な <code>struct</code> も埋めてくれます！</p>
+<p>これは、ありがたいことに、もう必要ありません。（IPv4 と IPv6 の両方で動作するコードを書きたいのであれば、望ましいことではありません！）現代では、DNS やサービス名のルックアップなど、あらゆる種類の良いことをやってくれる <code>getaddrinfo()</code> という関数があり、さらに必要な <code>struct</code> も埋めてくれます！</p>
 <p>それでは、ご覧ください！</p>
 <pre><code class="language-c">#include &lt;sys/types.h&gt;
 #include &lt;sys/socket.h&gt;
@@ -601,8 +602,8 @@ freeaddrinfo(servinfo); // free the linked-list
 </code></pre>
 <p><code>ai_family</code> を <code>AF_UNSPEC</code> に設定することで、IPv4 や IPv6 を使うかどうかを気にしないことを表明していることに注意してください。もし、どちらか一方だけを使いたい場合は、<code>AF_INET</code> または <code>AF_INET6</code> に設定することができます。</p>
 <p>また、<code>AI_PASSIVE</code> フラグがあるのがわかると思いますが、これは <code>getaddrinfo()</code> にローカルホストのアドレスをソケット構造体に割り当てるように指示しています。これは、ハードコードする必要がないのがいいところです。(あるいは、<code>getaddrinfo()</code> の最初のパラメータとして特定のアドレスを入れることもできます。私は現在 <code>NULL</code> を持っています。)</p>
-<p>そして、呼び出しを行います。エラー(<code>getaddrinfo()</code> が0以外を返す)があれば、ご覧のように関数 <code>gai_strerror()</code> を使ってそれを表示することができます。しかし、すべてがうまくいけば、<code>servinfo</code> は <code>struct addrinfos</code> のリンクリストを指し、それぞれのリストには後で使用できる何らかの <code>sockaddr</code> 構造体が含まれています！素晴らしい！</p>
-<p>最後に、<code>getaddrinfo()</code> が快く割り当ててくれたリンクリストをすべて使い終わったら、<code>freeaddrinfo()</code> を呼び出してすべてを解放することができます(そうすべき)です。</p>
+<p>そして、呼び出しを行います。エラー（<code>getaddrinfo()</code> が <code>0</code> 以外を返します）があれば、ご覧のように関数 <code>gai_strerror()</code> を使ってそれを表示することができます。しかし、すべてがうまくいけば、<code>servinfo</code> は <code>struct addrinfos</code> のリンクリストを指し、それぞれのリストには後で使用できる何らかの <code>sockaddr</code> 構造体が含まれています！素晴らしい！</p>
+<p>最後に、<code>getaddrinfo()</code> が快く割り当ててくれたリンクリストをすべて使い終わったら、<code>freeaddrinfo()</code> を呼び出してすべてを解放することができます（そうすべき）です。</p>
 <p>ここでは、クライアントが特定のサーバ、例えば &quot;www.example.net&quot; ポート 3490 に接続したい場合のサンプルコールを紹介します。繰り返しますが、これは実際には接続しませんが、後で使用する構造をセットアップしています。</p>
 <pre><code class="language-c">int status;
 struct addrinfo hints;
@@ -681,7 +682,7 @@ int main(int argc, char *argv[])
 }
 </code></pre>
 <p>ご覧のように、このコードはコマンドラインで渡されたものに対して <code>getaddrinfo()</code> を呼び出し、<code>res</code> が指すリンクリストを埋めて、そのリストを繰り返し表示して何かを出力したりすることができます。</p>
-<p>(そこには、IP バージョンによって異なるタイプの <code>struct sockaddrs</code> を掘り下げなければならない、ちょっとした醜さがあります。申し訳ありません。他にいい方法はないかなぁ...)</p>
+<p>（そこには、IP バージョンによって異なるタイプの <code>struct sockaddrs</code> を掘り下げなければならない、ちょっとした醜さがあります。申し訳ありません。他にいい方法はないかなぁ...）</p>
 <p>サンプル走行！みんな大好きスクリーンショット。</p>
 <pre><code>$ showip www.example.net
 IP addresses for www.example.net:
@@ -720,7 +721,7 @@ getaddrinfo(&quot;www.example.com&quot;, &quot;http&quot;, &amp;hints, &amp;res)
 
 s = socket(res-&gt;ai_family, res-&gt;ai_socktype, res-&gt;ai_protocol);
 </code></pre>
-<p><code>socket()</code> は単に、後のシステムコールで使用できるソケットディスクリプタを返すか、エラーの場合は <code>-1</code> を返します。グローバル変数 <code>errno</code> にはエラーの値が設定されます（詳細については <a href="system-calls-or-bust/socket-get-the-file-descriptor.html#errnoman"><code>errno</code></a> のマニュアルページを参照してください。また、マルチスレッドプログラムで <code>errno</code> を使用する際の簡単な注意も参照してください。）</p>
+<p><code>socket()</code> は単に、後のシステムコールで使用できるソケットディスクリプタを返すか、エラーの場合は <code>-1</code> を返します。グローバル変数 <code>errno</code> にはエラーの値が設定されます（詳細については <a href="system-calls-or-bust/../man-pages/errno.html"><code>errno</code></a> のマニュアルページを参照してください。また、マルチスレッドプログラムで <code>errno</code> を使用する際の簡単な注意も参照してください。）</p>
 <p>でも、このソケットは何の役に立つのでしょうか？答えは、これだけでは本当に意味がなく、もっと読み進めてシステムコールを作らないと意味がないのです。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="53-bind---私はどのポートにいるのでしょうか"><a class="header" href="#53-bind---私はどのポートにいるのでしょうか">5.3 <code>bind()</code>---私はどのポートにいるのでしょうか？</a></h1>
 <p>ソケットを取得したら、そのソケットをローカルマシンのポートに関連付ける必要があるかもしれません。（これは、特定のポートへの接続を <code>listen()</code> する場合によく行われます。多人数参加型ネットワークゲームで &quot;192.168.5.10 ポート 3490 に接続&quot; と指示されたときに行います。）ポート番号はカーネルが受信パケットを特定のプロセスのソケットディスクリプタにマッチさせるために使用されます。もしあなたが <code>connect()</code> を行うだけなら（あなたはクライアントであり、サーバではないので）、これはおそらく不要でしょう。とにかく読んでみてください。</p>
@@ -769,7 +770,7 @@ memset(my_addr.sin_zero, '\0', sizeof my_addr.sin_zero);
 
 bind(sockfd, (struct sockaddr *)&amp;my_addr, sizeof my_addr);
 </code></pre>
-<p>上記のコードでは、ローカルの IP アドレスにバインドしたい場合、<code>s_addr</code> フィールドに <code>INADDR_ANY</code> を代入することもできます（上記の <code>AI_PASSIVE</code> フラグのようなものです）。<code>INADDR_ANY</code> の IPv6 バージョンはグローバル変数 <code>in6addr_any</code> で、<code>struct sockaddr_in6</code> の <code>sin6_addr</code> フィールドに代入されます。(変数の初期化で使用できるマクロ <code>IN6ADDR_ANY_INIT</code> も存在します。)また、<code>IN6ADDR_ANY_INIT</code> を使用することで、IPv6 の IP アドレスにバインドできます。</p>
+<p>上記のコードでは、ローカルの IP アドレスにバインドしたい場合、<code>s_addr</code> フィールドに <code>INADDR_ANY</code> を代入することもできます（上記の <code>AI_PASSIVE</code> フラグのようなものです）。<code>INADDR_ANY</code> の IPv6 バージョンはグローバル変数 <code>in6addr_any</code> で、<code>struct sockaddr_in6</code> の <code>sin6_addr</code> フィールドに代入されます。（変数の初期化で使用できるマクロ <code>IN6ADDR_ANY_INIT</code> も存在します。）また、<code>IN6ADDR_ANY_INIT</code> を使用することで、IPv6 の IP アドレスにバインドできます。</p>
 <p><code>bind()</code> を呼ぶときにもうひとつ気をつけなければならないのは、ポート番号で下手を打たないことです。1024 以下のポートはすべて予約済みです（あなたがスーパーユーザでない限り）！それ以上のポート番号は、（他のプログラムによってすでに使われていなければ） 65535 までの任意のポート番号を使用することができます。</p>
 <p>時々、サーバを再実行しようとすると、<code>bind()</code> が &quot;Address already in use&quot; と言って失敗することに気がつくかもしれません。これはどういうことでしょう？それは、接続されたソケットの一部がまだカーネル内に残っていて、ポートを占有しているのです。それが消えるのを待つか（1分くらい）、次のようにポートが再利用できるようなコードをプログラムに追加します。</p>
 <pre><code class="language-c">int yes=1;
@@ -813,11 +814,11 @@ sockfd = socket(res-&gt;ai_family, res-&gt;ai_socktype, res-&gt;ai_protocol);
 
 connect(sockfd, res-&gt;ai_addr, res-&gt;ai_addrlen);
 </code></pre>
-<p>繰り返しになりますが、古いタイプのプログラムでは、独自の <code>struct sockaddr_ins</code> を作成して <code>connect()</code> に渡していました。必要であれば、そうすることができます。上の <a href="system-calls-or-bust/docs/system-calls-or-bust/#bind"><code>bind()</code></a> の節で同様のことを書いています。</p>
+<p>繰り返しになりますが、古いタイプのプログラムでは、独自の <code>struct sockaddr_ins</code> を作成して <code>connect()</code> に渡していました。必要であれば、そうすることができます。上の <a href="system-calls-or-bust/..//system-calls-or-bust/bind-what-port-am-i-on.html"><code>bind()</code></a> の章で同様のことを書いています。</p>
 <p><code>connect()</code> の戻り値を必ず確認してください。エラー時に <code>-1</code> が返され、<code>errno</code> という変数がセットされます。</p>
 <p>また、<code>bind()</code> を呼んでいないことに注意してください。基本的に、私たちはローカルのポート番号には関心がありません。カーネルは私たちのためにローカルポートを選択し、接続先のサイトは自動的にこの情報を取得します。心配はいりません。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="55-listen---誰かコールしてくれない"><a class="header" href="#55-listen---誰かコールしてくれない">5.5 <code>listen()</code>---誰かコールしてくれない？</a></h1>
-<p>よし、気分転換の時間です。リモートホストに接続したくない場合はどうすればいいのでしょう。例えば、接続が来るのを待ち、何らかの方法でそれを処理したいとします。この処理は2段階です。まず <code>listen()</code> を行い、次に <code>accept()</code> を行います (後述)。</p>
+<p>よし、気分転換の時間です。リモートホストに接続したくない場合はどうすればいいのでしょう。例えば、接続が来るのを待ち、何らかの方法でそれを処理したいとします。この処理は2段階です。まず <code>listen()</code> を行い、次に <code>accept()</code> を行います（後述）。</p>
 <p><code>listen()</code> の書式はかなり単純ですが、少し説明が必要です。</p>
 <pre><code class="language-c">int listen(int sockfd, int backlog);
 </code></pre>
@@ -830,7 +831,7 @@ bind();
 listen();
 /* accept() goes here */
 </code></pre>
-<p>かなり自明なので、サンプルコードの代わりに置いておきます。（以下の <code>accept()</code> 章のコードはより完全なものです。）この全体の中で本当に厄介なのは、<code>accept()</code> の呼び出しです。</p>
+<p>かなり自明なので、サンプルコードの代わりに置いておきます。（以下の <a href="system-calls-or-bust/./accept-thank-you-for-calling-port-3490.html"><code>accept()</code></a> 章のコードはより完全なものです。）この全体の中で本当に厄介なのは、<code>accept()</code> の呼び出しです。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="56-accept---3490番ポートにコールいただきありがとうございます"><a class="header" href="#56-accept---3490番ポートにコールいただきありがとうございます">5.6 <code>accept()</code>---&quot;3490番ポートにコールいただきありがとうございます。&quot;</a></h1>
 <p><code>accept()</code> の呼び出しはちょっと変です。これから起こることはこうです。遠く離れた誰かが、あなたが <code>listen()</code> しているポートであなたのマシンに <code>connect()</code> しようとするでしょう。その接続は、<code>accept()</code> されるのを待つためにキューに入れられることになります。あなたは <code>accept()</code> をコールし、保留中の接続を取得するように指示します。すると、この接続に使用する新しいソケットファイル記述子が返されます！そうです、1つの値段で2つのソケットファイル記述子を手に入れたことになります。元のソケットファイル記述子はまだ新しい接続を待ち続けており、新しく作成されたソケットファイル記述子はようやく <code>send()</code> と <code>recv()</code> を行う準備が整いました。着いたぞ！</p>
 <p>書式は以下の通りです。</p>
@@ -886,11 +887,11 @@ int main(void)
 </code></pre>
 <p>ここでも、すべての <code>send()</code> と <code>recv()</code> の呼び出しに、ソケットディスクリプタ <code>new_fd</code> を使用することに注意してください。もし、一度しか接続がないのであれば、同じポートからの接続を防ぐために、<code>listen</code> している <code>sockfd</code> を <code>close()</code> することができます。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="57-send-and-recv---話せよベイビー"><a class="header" href="#57-send-and-recv---話せよベイビー">5.7 <code>send()</code> and <code>recv()</code>---話せよ、ベイビー！</a></h1>
-<p>この2つの関数は、ストリームソケットまたは接続されたデータグラムソケットで通信を行うためのものです。通常の非接続型データグラムソケットを使いたい場合は、以下の <a href="system-calls-or-bust/docs/system-calls-or-bust/#sendtorecv"><code>sendto()</code> and <code>recvfrom()</code></a> の節を参照する必要があります。</p>
+<p>この2つの関数は、ストリームソケットまたは接続されたデータグラムソケットで通信を行うためのものです。通常の非接続型データグラムソケットを使いたい場合は、以下の <a href="system-calls-or-bust/./sendto-and-recvfrom-talk-to-me-GDRAM-style.html"><code>sendto()</code> and <code>recvfrom()</code></a> の章を参照する必要があります。</p>
 <p><code>send()</code> の書式。</p>
 <pre><code class="language-c">int send(int sockfd, const void *msg, int len, int flags);
 </code></pre>
-<p><code>sockfd</code> はデータを送信したいソケットディスクリプタ（<code>socket()</code> で返されたものでも <code>accept()</code> で取得したものでも可）、<code>msg</code> は送信したいデータへのポインタ、<code>len</code> はそのデータの長さ(バイト数)です。<code>flags</code> を <code>0</code> に設定するだけです(フラグに関する詳しい情報は <code>send()</code> の man ページを参照してください)。</p>
+<p><code>sockfd</code> はデータを送信したいソケットディスクリプタ（<code>socket()</code> で返されたものでも <code>accept()</code> で取得したものでも可）、<code>msg</code> は送信したいデータへのポインタ、<code>len</code> はそのデータの長さ(バイト数)です。<code>flags</code> を <code>0</code> に設定するだけです（フラグに関する詳しい情報は <code>send()</code> の man ページを参照してください）。</p>
 <p>サンプルコードとしては、以下のようなものがあります。</p>
 <pre><code class="language-c">char *msg = &quot;Beej was here!&quot;;
 int len, bytes_sent;
@@ -903,11 +904,11 @@ bytes_sent = send(sockfd, msg, len, 0);
 .
 .
 </code></pre>
-<p><code>send()</code> は実際に送信されたバイト数を返しますが、これは送信するように指示した数よりも少ないかもしれません！つまり、大量のデータを送信するように指示しても、それが処理しきれないことがあるのです。その場合、できる限りのデータを送信し、残りは後で送信するように指示します。<code>send()</code> が返す値が <code>len</code> の値と一致しない場合、残りの文字列を送信するかどうかはあなた次第だということを覚えておいてください。良いニュースはこれです。パケットが小さければ（1K以下とか）、 おそらく全部を一度に送信することができるでしょう。ここでも、エラー時には <code>-1</code> が返され、 <code>errno</code> にはエラー番号がセットされます。</p>
+<p><code>send()</code> は実際に送信されたバイト数を返しますが、これは送信するように指示した数よりも少ないかもしれません！つまり、大量のデータを送信するように指示しても、それが処理しきれないことがあるのです。その場合、できる限りのデータを送信し、残りは後で送信するように指示します。<code>send()</code> が返す値が <code>len</code> の値と一致しない場合、残りの文字列を送信するかどうかはあなた次第だということを覚えておいてください。良いニュースはこれです。パケットが小さければ（1K以下とか）、おそらく全部を一度に送信することができるでしょう。ここでも、エラー時には <code>-1</code> が返され、 <code>errno</code> にはエラー番号がセットされます。</p>
 <p><code>recv()</code> の書式は、多くの点で類似しています。</p>
 <pre><code class="language-c">int recv(int sockfd, void *buf, int len, int flags);
 </code></pre>
-<p><code>sockfd</code> は読み込むソケットディスクリプタ、<code>buf</code> は情報を読み込むバッファ、<code>len</code> はバッファの最大長、<code>flags</code> は再び <code>0</code> に設定できます(フラグについては <code>recv()</code> の man ページを参照してください)。</p>
+<p><code>sockfd</code> は読み込むソケットディスクリプタ、<code>buf</code> は情報を読み込むバッファ、<code>len</code> はバッファの最大長、<code>flags</code> は再び <code>0</code> に設定できます（フラグについては <a href="system-calls-or-bust/../man-pages/recv-recvfrom.html"><code>recv()</code> の man ページ</a>を参照してください）。</p>
 <p><code>recv()</code> は、実際にバッファに読み込まれたバイト数を返し、エラーの場合は <code>-1</code> を返します（それに応じて <code>errno</code> が設定されます）。</p>
 <p>待ってください！<code>recv()</code> は <code>0</code> を返すことがあります。これは、リモート側が接続を切断したことを意味します！<code>0</code> という返り値は、<code>recv()</code> がこのような事態が発生したことをあなたに知らせるためのものです。</p>
 <p>ほら、簡単だったでしょう？これでストリームソケットでデータのやり取りができるようになったぞ。やったー！あなたは Unix ネットワークプログラマーです！</p>
@@ -934,14 +935,14 @@ bytes_sent = send(sockfd, msg, len, 0);
 <pre><code class="language-c">close(sockfd);
 </code></pre>
 <p>これにより、それ以上のソケットへの読み書きができなくなります。リモート側でソケットの読み書きをしようとすると、エラーが発生します。</p>
-<p>ソケットの閉じ方をもう少し制御したい場合は、<code>shutdown()</code> 関数を使用します。この関数では、特定の方向、あるいは両方の通信を遮断することができます (ちょうど <code>close()</code> がそうであるように)。書式：</p>
+<p>ソケットの閉じ方をもう少し制御したい場合は、<code>shutdown()</code> 関数を使用します。この関数では、特定の方向、あるいは両方の通信を遮断することができます（ちょうど <code>close()</code> がそうであるように）。書式：</p>
 <pre><code class="language-c">int shutdown(int sockfd, int how);
 </code></pre>
 <p><code>sockfd</code> はシャットダウンしたいソケットファイル記述子、<code>how</code> は以下のいずれかです。</p>
 <table><thead><tr><th style="text-align: center"><code>how</code></th><th>Effect</th></tr></thead><tbody>
 <tr><td style="text-align: center"><code>0</code></td><td>それ以上の受信は不可</td></tr>
 <tr><td style="text-align: center"><code>1</code></td><td>それ以上の送信は禁止</td></tr>
-<tr><td style="text-align: center"><code>2</code></td><td>それ以上の送受信は禁止(<code>close()</code>のように)</td></tr>
+<tr><td style="text-align: center"><code>2</code></td><td>それ以上の送受信は禁止（<code>close()</code> のように）</td></tr>
 </tbody></table>
 <p><code>shutdown()</code> は成功すると <code>0</code> を、エラーが発生すると <code>-1</code> を返します（<code>errno</code> は適宜設定されます）。</p>
 <p>データグラムソケットが接続されていない状態で <code>shutdown()</code> を使用すると、それ以降の <code>send()</code> および <code>recv()</code> 呼び出しに使用できなくなります（データグラムソケットを <code>connect()</code> した場合、これらを使用できることを忘れないでください）。</p>
@@ -978,7 +979,7 @@ int gethostname(char *hostname, size_t size);
 </figure>
 <p>クライアントとサーバ間の情報のやりとりは、上の図のようにまとめられます。</p>
 <p>クライアントとサーバのペアは、<code>SOCK_STREAM</code>、<code>SOCK_DGRAM</code>、その他（同じことを話している限り）何でも話すことができることに注意してください。クライアントとサーバのペアの良い例としては、<code>telnet</code>/<code>telnetd</code>、<code>ftp</code>/<code>ftpd</code>、<code>Firefox</code>/<code>Apache</code> などがあります。<code>ftp</code> を使うときはいつも、リモートプログラム <code>ftpd</code> があなたにサービスを提供します。</p>
-<p>多くの場合、1つのマシンには1つのサーバしかなく、そのサーバは <code>fork()</code> を使用して複数のクライアントを処理します。基本的なルーチンは、サーバが接続を待ち、それを <code>accept()</code> し、それを処理するために子プロセスを <code>fork()</code> する、というものです。これが、次の節で紹介するサンプルサーバが行っていることです。</p>
+<p>多くの場合、1つのマシンには1つのサーバしかなく、そのサーバは <code>fork()</code> を使用して複数のクライアントを処理します。基本的なルーチンは、サーバが接続を待ち、それを <code>accept()</code> し、それを処理するために子プロセスを <code>fork()</code> する、というものです。これが、次の章で紹介するサンプルサーバが行っていることです。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="61-シンプルなストリームサーバ"><a class="header" href="#61-シンプルなストリームサーバ">6.1 シンプルなストリームサーバ</a></h1>
 <p>このサーバがすることは、ストリーム接続で <code>Hello, world!</code> という文字列を送り出すだけです。このサーバをテストするために必要なことは、あるウィンドウでこのサーバを実行し、別のウィンドウからこのサーバに telnet でアクセスすることだけです。</p>
 <pre><code>$ telnet remotehostname 3490
@@ -1221,7 +1222,7 @@ int main(int argc, char *argv[])
 </code></pre>
 <p>クライアントを実行する前にサーバを実行しない場合、<code>connect()</code> は &quot;Connection refused&quot; を返すことに注意してください。非常に便利です。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="63-データグラムソケット"><a class="header" href="#63-データグラムソケット">6.3 データグラムソケット</a></h1>
-<p>UDP データグラムソケットの基本は、上記の <a href="client-server-background/docs/system-calls-or-bust/#sendtorecv">5.8 sendto() and recvfrom()</a> ですでに説明しましたので、ここでは <code>talker.c</code> と <code>listener.c</code> という2つのサンプルプログラムのみを紹介します。</p>
+<p>UDP データグラムソケットの基本は、上記の <a href="client-server-background/../system-calls-or-bust/sendto-and-recvfrom-talk-to-me-GDRAM-style.html">5.8 sendto() and recvfrom()</a> ですでに説明しましたので、ここでは <code>talker.c</code> と <code>listener.c</code> という2つのサンプルプログラムのみを紹介します。</p>
 <p><code>listener</code> は、ポート 4950 で入ってくるパケットを待つマシンに座っています。<code>talker</code> は、指定されたマシンのそのポートに、ユーザがコマンドラインに入力したものを含むパケットを送信します。</p>
 <p>データグラムソケットはコネクションレス型であり、パケットを無慈悲に発射するだけなので、クライアントとサーバには IPv6 を使用するように指示することにしています。こうすることで、サーバが IPv6 でリッスンしていて、クライアントが IPv4 で送信するような状況を避けることができます。（接続された TCP ストリームソケットの世界では、まだ不一致があるかもしれませんが、一方のアドレスファミリーの <code>connect()</code> でエラーが発生すると、他方のアドレスファミリーの再試行が行われます。）</p>
 <p><a href="https://beej.us/guide/bgnet/examples/listener.c">listener.c ソースコード</a></p>
@@ -1391,7 +1392,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 </code></pre>
-<p>と、これだけです！<code>listener</code> をあるマシンで実行し、次に <code>takler</code> を別のマシンで実行します。それらのコミュニケーションをご覧ください！核家族で楽しめるG級興奮体験です！</p>
+<p>と、これだけです！<code>listener</code> をあるマシンで実行し、次に <code>takler</code> を別のマシンで実行します。それらのコミュニケーションをご覧ください！核家族で楽しめる G 級興奮体験です！</p>
 <p>今回はサーバを動かす必要もありません。<code>talker</code> はただ楽しくパケットをエーテルに発射し、相手側に <code>recvfrom()</code> の準備が出来ていなければ消えてしまうのです。UDP データグラムソケットを使用して送信されたデータは、到着が保証されていないことを思い出してください！</p>
 <p>過去に何度も述べた、もうひとつの小さなディテールを除いては、コネクテッド・データグラム・ソケットです。このドキュメントのデータグラムセクションにいるので、ここでこれについて話す必要があります。例えば、<code>talker</code> が <code>connect()</code> を呼び出して <code>listener</code> のアドレスを指定したとします。それ以降、<code>talker</code> は <code>connect()</code> で指定されたアドレスにのみ送信と受信ができます。このため、<code>sendto()</code> と <code>recvfrom()</code> を使う必要はなく、単に <code>send()</code> と <code>recv()</code> を使えばいいのです。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="7-少し高度なテクニック"><a class="header" href="#7-少し高度なテクニック">7 少し高度なテクニック</a></h1>
@@ -1411,13 +1412,13 @@ fcntl(sockfd, F_SETFL, O_NONBLOCK);
 .
 .
 </code></pre>
-<p>ソケットをノンブロッキングに設定することで、効果的にソケットの情報を&quot;ポール&quot;することができます。ノンブロッキングソケットから読み込もうとしたときに、そこにデータがない場合、ブロックすることは許されません---その際には <code>-1</code> が返り、<code>errno</code> には <code>EAGAIN</code> または <code>EWOULDBLOCK</code> がセットされます。</p>
+<p>ソケットをノンブロッキングに設定することで、効果的にソケットの情報を&quot;ポーリング&quot;することができます。ノンブロッキングソケットから読み込もうとしたときに、そこにデータがない場合、ブロックすることは許されません---その際には <code>-1</code> が返り、<code>errno</code> には <code>EAGAIN</code> または <code>EWOULDBLOCK</code> がセットされます。</p>
 <p>（待てよ--<code>EAGAIN</code> や <code>EWOULDBLOCK</code> を返すこともあるのか？どちらをチェックする？仕様では実際にあなたのシステムがどちらを返すかは指定されていないので、移植性のために両方チェックしましょう。）</p>
-<p>しかし、一般的に言って、この種のポーリングは悪い考えです。ソケットのデータを探すためにプログラムをビジーウェイト状態にすると、流行遅れのように CPU 時間を吸い取られてしまうからです。読み込み待ちのデータがあるかどうかを確認するための、よりエレガントなソリューションが、次の <code>poll()</code> の節で紹介されています。</p>
+<p>しかし、一般的に言って、この種のポーリングは悪い考えです。ソケットのデータを探すためにプログラムをビジーウェイト状態にすると、流行遅れのように CPU 時間を吸い取られてしまうからです。読み込み待ちのデータがあるかどうかを確認するための、よりエレガントなソリューションが、次の <a href="slightly-advanced-techniques/./poll-synchronous-io-multiplexing.html"><code>poll()</code></a> の章で紹介されています。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="72-poll---同期式-io-多重化"><a class="header" href="#72-poll---同期式-io-多重化">7.2 <code>poll()</code>---同期式 I/O 多重化</a></h1>
 <p>本当にやりたいことは、一度にたくさんのソケットを監視して、データの準備ができたものを処理することです。そうすれば、すべてのソケットを継続的にポーリングして、どれが読み込み可能な状態にあるかを確認する必要がなくなります。</p>
 <blockquote>
-<p>警告: <code>poll()</code> は膨大な数のコネクションを持つ場合、恐ろしく遅くなります。そのような状況では、システムで利用可能な最も高速なメソッドを使用しようとする <a href="https://libevent.org/">libevent</a> のようなイベントライブラリの方が良いパフォーマンスを得ることができるでしょう。</p>
+<p>警告：<code>poll()</code> は膨大な数のコネクションを持つ場合、恐ろしく遅くなります。そのような状況では、システムで利用可能な最も高速なメソッドを使用しようとする <a href="https://libevent.org/">libevent</a> のようなイベントライブラリの方が良いパフォーマンスを得ることができるでしょう。</p>
 </blockquote>
 <p>では、どうすればポーリングを回避できるのでしょうか。少し皮肉なことに、<code>poll()</code> システムコールを使えばポーリングを避けることができます。簡単に言うと、オペレーティングシステムにすべての汚い仕事を代行してもらい、どのソケットでデータが読めるようになったかだけを知らせてもらうのです。その間、我々のプロセスはスリープして、システムリソースを節約することができます。</p>
 <p>一般的なゲームプランは、どのソケットディスクリプタを監視したいか、どのような種類のイベントを監視したいかという情報を <code>struct pollfd</code> の配列として保持することです。OS は、これらのイベントのいずれかが発生するか（例えば &quot;socket ready to read!&quot;）またはユーザが指定したタイムアウトが発生するまで <code>poll()</code> 呼び出しでブロックします。</p>
@@ -1443,7 +1444,7 @@ int poll(struct pollfd fds[], nfds_t nfds, int timeout);
 </tbody></table>
 <p>一旦 <code>struct pollfd</code> の配列を整えたら、それを <code>poll()</code> に渡すことができます。配列のサイズと、ミリ秒単位のタイムアウト値も一緒に渡してください。（タイムアウトに負の値を指定すると、永遠に待つことができます。）</p>
 <p><code>poll()</code> が返った後、<code>revents</code> フィールドをチェックして、<code>POLLIN</code> または <code>POLLOUT</code> がセットされているかどうかを確認し、イベントが発生したことを示すことができます。</p>
-<p>（実際には <code>poll()</code> の呼び出しでできることはもっとたくさんあります。詳細は以下の <a href="slightly-advanced-techniques/poll-synchronous-io-multiplexing.html#pollman"><code>poll()</code> man ページ</a>を参照してください。）</p>
+<p>（実際には <code>poll()</code> の呼び出しでできることはもっとたくさんあります。詳細は以下の <a href="slightly-advanced-techniques/../man-pages/poll.html"><code>poll()</code> man ページ</a>を参照してください。）</p>
 <p>ここでは、標準入力からデータを読み込めるようになるまで、つまり <code>RETURN</code> を押したときに 2.5 秒間待つ<a href="https://beej.us/guide/bgnet/examples/poll.c">例</a>を示します。</p>
 <pre><code class="language-c">#include &lt;stdio.h&gt;
 #include &lt;poll.h&gt;
@@ -1701,7 +1702,7 @@ int main(void)
     return 0;
 }
 </code></pre>
-<p>次の節では、似たような古い関数である <code>select()</code> について見ていきます。<code>select()</code> と <code>poll()</code> はどちらも似たような機能とパフォーマンスを持っており、どのように使うかが違うだけです。<code>select()</code> の方が若干移植性が高いかもしれませんが、使い勝手は少し悪いかもしれません。あなたのシステムでサポートされている限り、一番好きなものを選んでください。</p>
+<p>次の章では、似たような古い関数である <code>select()</code> について見ていきます。<code>select()</code> と <code>poll()</code> はどちらも似たような機能とパフォーマンスを持っており、どのように使うかが違うだけです。<code>select()</code> の方が若干移植性が高いかもしれませんが、使い勝手は少し悪いかもしれません。あなたのシステムでサポートされている限り、一番好きなものを選んでください。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="73-select---同期式-io-多重化旧式"><a class="header" href="#73-select---同期式-io-多重化旧式">7.3 <code>select()</code>---同期式 I/O 多重化、旧式</a></h1>
 <p>この関数、ちょっと不思議なんですが、とても便利なんです。次のような状況を考えてみましょう。あなたはサーバで、入ってくるコネクションをリッスンするだけでなく、すでに持っているコネクションを読み続けたいのです。</p>
 <p>問題ありません。<code>accept()</code> と <code>recv()</code> を数回実行するだけです。そうはいかないよ、バスター！もし <code>accept()</code> の呼び出しがブロックされていたらどうでしょう？どうやって <code>recv()</code> を同時に行うんだ？&quot;ノンブロッキングソケットを使いましょう！&quot;まさか！CPU を占有するようなことはしない方がいい。じゃあ、何？</p>
@@ -1947,10 +1948,10 @@ int main(void)
 <p>注目すべきは、<code>listener</code> ソケットが読み込み可能な状態になったかどうかをチェックしていることです。このとき、新しい接続が保留されていることを意味するので、それを <code>accept()</code> して <code>master</code> セットに追加します。同様に、クライアントの接続が読み込み可能な状態になったときに、<code>recv()</code> が <code>0</code> を返したら、クライアントが接続を閉じたことがわかるので、<code>master</code> セットからそれを削除しなければなりません。</p>
 <p>しかし、クライアントの <code>recv()</code> がゼロ以外を返した場合、何らかのデータを受信したことが分かります。そこで私はそれを取得し、<code>master</code> リストを経由して、接続されている残りのすべてのクライアントにそのデータを送信します。</p>
 <p>以上が、全能の関数 <code>select()</code> の簡単でない概要です。</p>
-<p>Linux ファンの皆さんへ：まれに、Linux の <code>select()</code> が &quot;ready-to-read&quot; を返した後、実際には読み込む準備ができていないことがあります！これは、Linux の <code>select()</code> が &quot;ready-to-read&quot; を返した後、実際には読み込む準備ができていないことを意味します。これはつまり、<code>select()</code> が読まないと言っているのに、<code>read()</code> でブロックしてしまうということです！なぜだ、この野郎---！とにかく、回避策は受信側のソケットで <code>O_NONBLOCK</code> フラグをセットして、 <code>EWOULDBLOCK</code> でエラーにすることです（これは発生しても無視しても大丈夫です）。ソケットをノンブロッキングに設定する方法については、<a href="slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.html#fcntlman"><code>fcntl()</code> リファレンスページ</a>を参照してください。</p>
+<p>Linux ファンの皆さんへ：まれに、Linux の <code>select()</code> が &quot;ready-to-read&quot; を返した後、実際には読み込む準備ができていないことがあります！これは、Linux の <code>select()</code> が &quot;ready-to-read&quot; を返した後、実際には読み込む準備ができていないことを意味します。これはつまり、<code>select()</code> が読まないと言っているのに、<code>read()</code> でブロックしてしまうということです！なぜだ、この野郎---！とにかく、回避策は受信側のソケットで <code>O_NONBLOCK</code> フラグをセットして、 <code>EWOULDBLOCK</code> でエラーにすることです（これは発生しても無視しても大丈夫です）。ソケットをノンブロッキングに設定する方法については、<a href="slightly-advanced-techniques/../man-pages/fcntl.html"><code>fcntl()</code> のリファレンスページ</a>を参照してください。</p>
 <p>さらに、ここでボーナス的な余談ですが、<code>poll()</code> という別の関数があります。これは <code>select()</code> とほぼ同じ動作をしますが、ファイルディスクリプタ集合を管理するシステムが異なります。<a href="slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.html#pollman">チェックしてみてください！</a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="74-部分的な-sends-の処理"><a class="header" href="#74-部分的な-sends-の処理">7.4 部分的な <code>send()</code>s の処理</a></h1>
-<p>上の <a href="slightly-advanced-techniques/docs/system-calls-or-bust/#sendrecv"><code>send()</code> の節</a>で、<code>send()</code> はあなたが頼んだバイトをすべて送らないかもしれない、と言ったのを覚えていますか？つまり、512バイト送って欲しいのに、412バイトが返ってきたとします。残りの100バイトはどうなったのでしょうか？</p>
+<p>上の <a href="slightly-advanced-techniques/../system-calls-or-bust/send-and-recv-talk-to-me-baby.html"><code>send()</code> の章</a>で、<code>send()</code> はあなたが頼んだバイトをすべて送らないかもしれない、と言ったのを覚えていますか？つまり、512バイト送って欲しいのに、412バイトが返ってきたとします。残りの100バイトはどうなったのでしょうか？</p>
 <p>さて、それらはまだあなたの小さなバッファの中で送信されるのを待っています。あなたがコントロールできない状況のために、カーネルはすべてのデータを1つのチャンクで送信しないことを決定しました、そして今、私の友人は、データを外に出すのはあなた次第です。</p>
 <p>このような関数を書いてやってもいいんじゃないでしょうか。</p>
 <pre><code class="language-c">#include &lt;sys/types.h&gt;
@@ -1986,7 +1987,7 @@ if (sendall(s, buf, &amp;len) == -1) {
     printf(&quot;We only sent %d bytes because of the error!\n&quot;, len);
 }
 </code></pre>
-<p>パケットの一部が到着した場合、受信側ではどのようなことが起こるのでしょうか？パケットの長さがまちまちな場合、あるパケットが終わり、別のパケットが始まるのを受信側はどうやって知るのでしょうか？そう、現実のシナリオはロバの王道なのです。あなたはおそらくカプセル化しなければならないでしょう（冒頭の<a href="slightly-advanced-techniques/docs/what-is-a-socket/#lowlevel">データのカプセル化の章</a>を覚えていますか？）詳細はこちらをご覧ください。</p>
+<p>パケットの一部が到着した場合、受信側ではどのようなことが起こるのでしょうか？パケットの長さがまちまちな場合、あるパケットが終わり、別のパケットが始まるのを受信側はどうやって知るのでしょうか？そう、現実のシナリオはロバの王道なのです。あなたはおそらくカプセル化しなければならないでしょう（冒頭の<a href="slightly-advanced-techniques/../what-is-a-socket/low-level-nonsense-and-network-theory.html">データのカプセル化の章</a>を覚えていますか？）詳細はこちらをご覧ください。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="75-シリアライゼーション---データの詰め方"><a class="header" href="#75-シリアライゼーション---データの詰め方">7.5 シリアライゼーション---データの詰め方</a></h1>
 <p>ネットワーク上でテキストデータを送るのは簡単ですが、<code>int</code> や <code>float</code> のような&quot;バイナリ&quot;データを送りたい場合はどうしたらよいでしょうか？その結果、いくつかの選択肢があることがわかりました。</p>
 <ol>
@@ -2007,7 +2008,7 @@ if (sendall(s, buf, &amp;len) == -1) {
 <p>（この章を本格的に始める前に、これを行うためのライブラリは世の中に存在し、自分でローリングして移植性とエラーのない状態を維持することはかなり困難であることをお伝えしておきます。ですから、自分で実装することを決める前に、いろいろと調べて下調べをしてください。私は、このようなことがどのように機能するのかに興味がある人のために、ここに情報を記載します。）</p>
 <p>実は、上記の方法はどれも欠点と利点があるのですが、一般的には、先ほど言ったように、私は3番目の方法を好みます。しかし、まず、他の2つの方法の欠点と利点について説明しましょう。</p>
 <p>最初の方法は、数字をテキストとしてエンコードしてから送信するもので、電線を伝わってくるデータを簡単に印刷して読むことができるという利点があります。<a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">インターネットリレーチャット（IRC）</a>のように、帯域幅を必要としない状況で使用するには、人間が読めるプロトコルが優れている場合もあります。しかし、変換に時間がかかるという欠点があり、その結果はほとんど常に元の数値よりも多くのスペースを取ってしまいます。</p>
-<p>方法2：生データを渡します。これは非常に簡単です（しかし危険です！）。送信するデータへのポインタを取り、それを使って send を呼び出すだけです。</p>
+<p>方法2：生データを渡します。これは非常に簡単です（しかし危険です！）。送信するデータへのポインタを取り、それを使って <code>send()</code> を呼び出すだけです。</p>
 <pre><code class="language-c">double d = 3490.15926535;
 
 send(s, &amp;d, sizeof d, 0);  /* DANGER--non-portable! */
@@ -2070,7 +2071,7 @@ int main(void)
 </code></pre>
 <p>プラス面は、小さくてシンプル、そして速いことです。32767 より大きい数を格納しようとすると、とても満足できるものではありません！マイナス面は、スペースを有効活用できないことと、範囲が大きく制限されることです。上の例では、小数点以下の桁数が正しく保存されていないこともおわかりいただけると思います。</p>
 <p>代わりに何ができるのか？浮動小数点数を保存するための標準規格は <a href="https://en.wikipedia.org/wiki/IEEE_754">IEEE-754</a> として知られています。ほとんどのコンピュータは内部でこのフォーマットを使って浮動小数点演算を行っているので、厳密に言えば変換する必要はないのです。しかし、ソースコードの移植性を重視するのであれば、必ずしもそのような前提は成り立ちません。（一方、高速に動作させたいのであれば、変換を行う必要のないプラットフォームでは最適化すべきです！それが <code>htons()</code> やその類いの処理です。）</p>
-<p>以下は、浮動小数点と倍数を IEEE-754 フォーマットにエンコードするコードです。（ほとんど--- NaN や Infinity はエンコードしませんが、そのように修正することができます。）</p>
+<p>以下は、<a href="https://beej.us/guide/bgnet/examples/ieee754.c">浮動小数点と倍数を IEEE-754 フォーマットにエンコードするコード</a>です。（ほとんど--- NaN や Infinity はエンコードしませんが、そのように修正することができます。）</p>
 <pre><code class="language-c">#define pack754_32(f) (pack754((f), 32, 8))
 #define pack754_64(f) (pack754((f), 64, 11))
 #define unpack754_32(i) (unpack754((i), 32, 8))
@@ -2177,7 +2178,7 @@ double after  : 3.14159265358979311600
 <p>Kernighan と Pike の <a href="https://www.amazon.com/gp/product/020161586X/ref=as_li_tl?ie=UTF8&amp;tag=beejus0c-20&amp;camp=1789&amp;creative=9325&amp;linkCode=as2&amp;creativeASIN=020161586X&amp;linkId=b3ac9370d2df122adcce0316aed99924">The Practice of Programming</a> という本の中で、彼らは <code>printf()</code> に似た関数である <code>pack()</code> と <code>unpack()</code> を実装し、まさにこのようなことをやっています。リンクしたいのですが、どうやらこれらの関数はこの本の他のソースと一緒にオンラインにないようです。</p>
 <p>（The Practice of Programming は素晴らしい読み物です。ゼウスは私が勧めるたびに子猫を救ってくれます。）</p>
 <p>この時点で、私は使ったことはありませんが、完全に立派に見える <a href="https://github.com/protobuf-c/protobuf-c">Protocol Buffers implementation in C</a> へのポインタを落とすつもりです。Python や Perl のプログラマは、同じことを実現するために、それぞれの言語の <code>pack()</code> と <code>unpack()</code> 関数をチェックアウトしたいと思うでしょう。また、Java には大きな Serializable インターフェースがあり、同じような方法で使用することができます。</p>
-<p>しかし、C言語で独自のパッキングユーティリティを書きたい場合、K&amp;P のトリックは、変数の引数リストを使って <code>printf()</code> 風の関数を作り、パケットを構築することです。 以下は、それを元に[<a href="https://beej.us/guide/bgnet/examples/pack2.c">私が自作したバージョン</a>ですが、うまくいけば、このようなものがどのように動作するかのアイデアを与えるのに十分なものです。</p>
+<p>しかし、C言語で独自のパッキングユーティリティを書きたい場合、K&amp;P のトリックは、変数の引数リストを使って <code>printf()</code> 風の関数を作り、パケットを構築することです。 以下は、それを元に<a href="https://beej.us/guide/bgnet/examples/pack2.c">私が自作したバージョン</a>ですが、うまくいけば、このようなものがどのように動作するかのアイデアを与えるのに十分なものです。</p>
 <p>（このコードは、上記の <code>pack754()</code> 関数を参照しています。<code>packi*()</code> 関数はおなじみの <code>htons()</code> ファミリーと同じように動作しますが、別の整数の代わりに <code>char</code> 配列にパックする点が異なります。）</p>
 <pre><code class="language-c">#include &lt;stdio.h&gt;
 #include &lt;ctype.h&gt;
@@ -2622,8 +2623,8 @@ int main(void)
 <p>そこで、これらのものが入ってきたときに <code>send()</code> でクライアントに送るわけです。送信するデータストリームは次のようになります。</p>
 <pre><code>t o m H i B e n j a m i n H e y g u y s w h a t i s u p ?
 </code></pre>
-<p>といった具合に。あるメッセージが始まり、別のメッセージが止まったとき、クライアントはどうやって知るのでしょうか？もし望むなら、すべてのメッセージを同じ長さにして、<a href="slightly-advanced-techniques/docs/slightly-advanced-techniques/#sendall">上で実装</a>した <code>sendall()</code> を呼び出すだけでよいでしょう。しかし、それはバンド幅を浪費します！&quot;tom&quot; が &quot;Hi&quot; と言うために 1024 バイトも <code>send()</code> したくはないでしょう。</p>
-<p>そこで、データを小さなヘッダーとパケット構造でカプセル化します。クライアントもサーバも、このデータをどのようにパックしたりアンパックしたりするか（&quot;マーシャル&quot;&quot;アンマーシャル&quot;と呼ばれることもあります）知っています。今は見ないでください、私たちは、クライアントとサーバがどのように通信するかを記述するプロトコルを定義し始めているのです</p>
+<p>といった具合に。あるメッセージが始まり、別のメッセージが止まったとき、クライアントはどうやって知るのでしょうか？もし望むなら、すべてのメッセージを同じ長さにして、<a href="slightly-advanced-techniques/../slightly-advanced-techniques/handling-partial-sends.html">上で実装</a>した <code>sendall()</code> を呼び出すだけでよいでしょう。しかし、それはバンド幅を浪費します！&quot;tom&quot; が &quot;Hi&quot; と言うために 1024 バイトも <code>send()</code> したくはないでしょう。</p>
+<p>そこで、データを小さなヘッダーとパケット構造でカプセル化します。クライアントもサーバも、このデータをどのようにパックしたりアンパックしたりするか（&quot;マーシャル&quot;, &quot;アンマーシャル&quot;と呼ばれることもあります）知っています。今は見ないでください、私たちは、クライアントとサーバがどのように通信するかを記述するプロトコルを定義し始めているのです</p>
 <p>この場合、ユーザ名は固定長で8文字、パディングは <code>'\0'</code> とします。そして、データは最大 128 文字の可変長とします。このような場合に使用するパケット構造の例を見てみましょう。</p>
 <ol>
 <li>
@@ -2646,7 +2647,7 @@ int main(void)
 (length)  B  e  n  j  a  m  i  n       H  e  y     g  u  y  s     w  ...
 </code></pre>
 <p>（もちろん、長さはネットワークバイトオーダーで格納されます。この場合は 1 バイトだけなので問題ないですが、一般的にはパケット内の 2 進整数はすべてネットワークバイトオーダーで格納されるようにしたいです。）</p>
-<p>このデータを送信するときには、安全策をとって上記の <a href="slightly-advanced-techniques/docs/slightly-advanced-techniques/#sendall"><code>sendall()</code></a> のようなコマンドを使うべきです。そうすれば、たとえすべてのデータを送信するために <code>send()</code> を複数回呼び出す必要があったとしても、すべてのデータが送信されたことを確認できます。</p>
+<p>このデータを送信するときには、安全策をとって上記の <a href="slightly-advanced-techniques/../slightly-advanced-techniques/handling-partial-sends.html"><code>sendall()</code></a> のようなコマンドを使うべきです。そうすれば、たとえすべてのデータを送信するために <code>send()</code> を複数回呼び出す必要があったとしても、すべてのデータが送信されたことを確認できます。</p>
 <p>同様に、このデータを受信するときにも、少し余分な作業をする必要があります。念のため、部分的なパケットを受け取るかもしれないことを想定しておく必要があります（例えば、上の Benjamin から &quot;<code>18 42 65 6E 6A</code>&quot; を受け取るかもしれませんが、この <code>recv()</code> のコールではそれがすべてです。）。パケットが完全に受信されるまで、何度も何度も <code>recv()</code> を呼び出す必要があります。</p>
 <p>でも、どうやって？さて、私たちはパケットが完成するために必要な合計バイト数を知っています。その数はパケットの前面に貼られているからです。 また、パケットの最大サイズは 1+8+128、つまり 137 バイトであることも知っています（パケットの定義がそうなっているからです）。</p>
 <p>実は、ここでできることがいくつかあるんです。すべてのパケットが長さで始まることを知っているので、パケットの長さを取得するためだけに <code>recv()</code> を呼び出すことができます。そして、一度それを手に入れたら、パケットの残りの長さを正確に指定して（おそらくすべてのデータを得るために繰り返し）、完全なパケットを手に入れるまで再びそれを呼び出すことができます。この方法の利点は、1つのパケットに対して十分な大きさのバッファが必要なことで、欠点は、すべてのデータを取得するために少なくとも2回 <code>recv()</code> を呼び出す必要があることです。</p>
@@ -2672,7 +2673,7 @@ int main(void)
 <p>&quot;グローバル&quot;ブロードキャストアドレスにデータを送信します。これは <code>255.255.255.255</code> で、別名 <code>INADDR_BROADCAST</code> と呼ばれるものです。多くのマシンはこれをネットワーク番号と自動的にビット演算して、ネットワークブロードキャストアドレスに変換しますが、そうでないものもあります。ルータは、皮肉なことに、この種のブロードキャストパケットをローカルネットワークから転送しません。</p>
 </li>
 </ol>
-<p>では、ソケットオプション <code>SO_BROADCAST</code> を設定せずに、ブロードキャストアドレスでデータを送信しようとするとどうなるでしょうか。それでは、古き良き時代の <a href="slightly-advanced-techniques/docs/client-server-background/#datagram"><code>talker</code> and <code>listener</code></a> を起動し、何が起こるか見てみましょう。</p>
+<p>では、ソケットオプション <code>SO_BROADCAST</code> を設定せずに、ブロードキャストアドレスでデータを送信しようとするとどうなるでしょうか。それでは、古き良き時代の <a href="slightly-advanced-techniques/../client-server-background/datagram-sockets.html"><code>talker</code> と <code>listener</code></a> を起動し、何が起こるか見てみましょう。</p>
 <pre><code>$ talker 192.168.1.2 foo
 sent 3 bytes to 192.168.1.2
 $ talker 192.168.1.255 foo
@@ -2750,7 +2751,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 </code></pre>
-<p>&quot;通常の&quot; UDP クライアント/サーバーの状況と何が違うのでしょうか？何もありません。（この場合、クライアントがブロードキャストパケットの送信を許可されていることを除けば。）このように、古い UDP <a href="slightly-advanced-techniques/docs/client-server-background/#datagram"><code>listener</code></a> プログラムを1つのウィンドウで実行し、<code>broadcaster</code> を別のウィンドウで実行してみてください。これで、上で失敗した送信をすべて行うことができるはずです。</p>
+<p>&quot;通常の&quot; UDP クライアント/サーバーの状況と何が違うのでしょうか？何もありません。（この場合、クライアントがブロードキャストパケットの送信を許可されていることを除けば。）このように、古い UDP <a href="slightly-advanced-techniques/../client-server-background/datagram-sockets.html"><code>listener</code></a> プログラムを1つのウィンドウで実行し、<code>broadcaster</code> を別のウィンドウで実行してみてください。これで、上で失敗した送信をすべて行うことができるはずです。</p>
 <pre><code>$ broadcaster 192.168.1.2 foo
 sent 3 bytes to 192.168.1.2
 $ broadcaster 192.168.1.255 foo
@@ -2766,7 +2767,7 @@ sent 3 bytes to 255.255.255.255
 <h3 id="81-ヘッダーファイルはどこで入手できますか"><a class="header" href="#81-ヘッダーファイルはどこで入手できますか">8.1 ヘッダーファイルはどこで入手できますか？</a></h3>
 <p>もし、あなたのシステムに既にないのであれば、おそらく必要ないでしょう。あなたのプラットフォームのマニュアルを参照してください。Windows 用にビルドする場合は、<code>#include &lt;winsock.h&gt;</code> だけが必要です。</p>
 <h3 id="82-bind-が-address-already-in-use-と報告した場合どうすればよいのでしょうか"><a class="header" href="#82-bind-が-address-already-in-use-と報告した場合どうすればよいのでしょうか">8.2 <code>bind()</code> が &quot;Address already in use&quot; と報告した場合、どうすればよいのでしょうか？</a></h3>
-<p>リスニングしているソケットで <code>SO_REUSEADDR</code> オプションを指定して <code>setsockopt()</code> を使用する必要があります。例として、<a href="common-questions/docs/system-calls-or-bust/#bind"><code>bind()</code></a> の章と <a href="common-questions/docs/slightly-advanced-techniques/#select"><code>select()</code></a> の章をチェックしてみてください。</p>
+<p>リスニングしているソケットで <code>SO_REUSEADDR</code> オプションを指定して <code>setsockopt()</code> を使用する必要があります。例として、<a href="common-questions/../system-calls-or-bust/bind-what-port-am-i-on.html"><code>bind()</code> の章</a>と <a href="common-questions/../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.html"><code>select()</code> の章</a>をチェックしてみてください。</p>
 <h3 id="83-システム上のオープンソケットのリストを取得するにはどうすればよいですか"><a class="header" href="#83-システム上のオープンソケットのリストを取得するにはどうすればよいですか">8.3 システム上のオープンソケットのリストを取得するにはどうすればよいですか？</a></h3>
 <p><code>netstat</code> を使用します。詳しくは <code>man</code> ページをチェックしてください。しかし、タイプするだけで良い出力が得られるはずです。</p>
 <pre><code>$ netstat
@@ -2781,17 +2782,17 @@ sent 3 bytes to 255.255.255.255
 <h3 id="86-リモート側が接続を閉じたかどうかを判断するにはどうすればよいですか"><a class="header" href="#86-リモート側が接続を閉じたかどうかを判断するにはどうすればよいですか">8.6 リモート側が接続を閉じたかどうかを判断するにはどうすればよいですか？</a></h3>
 <p><code>recv()</code> が <code>0</code> を返すのでわかります。</p>
 <h3 id="87-ping-ユーティリティを実装するにはicmp-とは何ですか生ソケットと-sock_raw-についてもっと詳しく知りたいのですがどこに行けばよいですか"><a class="header" href="#87-ping-ユーティリティを実装するにはicmp-とは何ですか生ソケットと-sock_raw-についてもっと詳しく知りたいのですがどこに行けばよいですか">8.7 &quot;ping&quot; ユーティリティを実装するには？ICMP とは何ですか？生ソケットと <code>SOCK_RAW</code> についてもっと詳しく知りたいのですが、どこに行けばよいですか?</a></h3>
-<p>生ソケットに関するすべての疑問は、<a href="common-questions/index.html#books">W. Richard Stevens の UNIX Network Programming books</a> で解決されるでしょう。また、<a href="http://www.unpbook.com/src.html">オンラインの Stevens の UNIX Network Programming</a> のソースコードの <code>ping/</code> サブディレクトリも見てみてください。</p>
+<p>生ソケットに関するすべての疑問は、<a href="common-questions/../more-references/books.html">W. Richard Stevens の UNIX Network Programming books</a> で解決されるでしょう。また、<a href="http://www.unpbook.com/src.html">オンラインの Stevens の UNIX Network Programming</a> のソースコードの <code>ping/</code> サブディレクトリも見てみてください。</p>
 <h3 id="88-connect-の呼び出しのタイムアウトを変更または短縮するにはどうすればよいですか"><a class="header" href="#88-connect-の呼び出しのタイムアウトを変更または短縮するにはどうすればよいですか">8.8 <code>connect()</code> の呼び出しのタイムアウトを変更または短縮するにはどうすればよいですか？</a></h3>
 <p>W. Richard Stevens と全く同じ答えを出すのではなく、<a href="http://www.unpbook.com/src.html">UNIX Network Programming のソースコードにある <code>lib/connect_nonb.c</code></a> を参照することにしましょう。</p>
-<p>その要点は、<code>socket()</code> でソケットディスクリプタを作成し、<a href="common-questions/docs/slightly-advanced-techniques/#blocking">それをノンブロッキングに設定</a>して <code>connect()</code> を呼び、すべてがうまくいけば <code>connect()</code> は直ちに <code>-1</code> を返して <code>errno</code> は <code>EINPROGRESS</code> に設定されるということです。その後、好きなタイムアウトで <a href="common-questions/docs/slightly-advanced-techniques/#select"><code>select()</code></a> を呼び出し、ソケットディスクリプタをリードとライトの両方で渡します。タイムアウトしなければ、<code>connect()</code> の呼び出しが完了したことになります。このとき、<code>getsockopt()</code> に <code>SO_ERROR</code> オプションをつけて <code>connect()</code> 呼び出しからの戻り値を取得する必要があります（エラーがなければ <code>0</code> になるはずです）。</p>
+<p>その要点は、<code>socket()</code> でソケットディスクリプタを作成し、<a href="common-questions/../slightly-advanced-techniques/blocking.html">それをノンブロッキングに設定</a>して <code>connect()</code> を呼び、すべてがうまくいけば <code>connect()</code> は直ちに <code>-1</code> を返して <code>errno</code> は <code>EINPROGRESS</code> に設定されるということです。その後、好きなタイムアウトで <a href="common-questions/../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.html"><code>select()</code></a> を呼び出し、ソケットディスクリプタをリードとライトの両方で渡します。タイムアウトしなければ、<code>connect()</code> の呼び出しが完了したことになります。このとき、<code>getsockopt()</code> に <code>SO_ERROR</code> オプションをつけて <code>connect()</code> 呼び出しからの戻り値を取得する必要があります（エラーがなければ <code>0</code> になるはずです）。</p>
 <p>最後に、データ転送を開始する前に、ソケットを再びブロッキングに設定する必要があります。</p>
 <p>この方法には、接続中に何か他のことをすることができるという利点もあることに注意してください。例えば、タイムアウトを 500ms のような低い値に設定し、タイムアウトするたびに画面上のインジケータを更新し、それから再び <code>select() </code> を呼び出すことができます。例えば、<code>select()</code> を20回ほど呼び出してタイムアウトしたら、そろそろ接続をあきらめる時期だとわかるでしょう。</p>
 <p>私が言ったように、スティーブンスのソースに完璧に優れた例があるので、チェックしてみてください。</p>
 <h3 id="89-windows-用にビルドするにはどうしたらいいですか"><a class="header" href="#89-windows-用にビルドするにはどうしたらいいですか">8.9 Windows 用にビルドするにはどうしたらいいですか？</a></h3>
-<p>まず、Windows を削除し、Linux または BSD をインストールします。<code>};-)</code>。いや、実際には、導入部の <a href="common-questions/docs/intro/#windows">Windows 用のビルドの章</a>を見ればいいんですけどね。</p>
+<p>まず、Windows を削除し、Linux または BSD をインストールします。<code>};-)</code>。いや、実際には、導入部の <a href="common-questions/../intro/note-for-windows-programmers.html">Windows 用のビルドの章</a>を見ればいいんですけどね。</p>
 <h3 id="810-solarissunos-用にビルドするにはどうしたらいいですかコンパイルしようとするとリンカエラーが出ます"><a class="header" href="#810-solarissunos-用にビルドするにはどうしたらいいですかコンパイルしようとするとリンカエラーが出ます">8.10 Solaris/SunOS 用にビルドするにはどうしたらいいですか？コンパイルしようとするとリンカエラーが出ます！</a></h3>
-<p>リンカーエラーは、Sun ボックスがソケットライブラリを自動的にコンパイルしないために起こります。この方法の例については、導入部の <a href="common-questions/docs/intro/#solaris">Solaris/SunOS 用のビルドに関する章</a> を参照してください。</p>
+<p>リンカーエラーは、Sun ボックスがソケットライブラリを自動的にコンパイルしないために起こります。この方法の例については、導入部の <a href="common-questions/../intro/note-for-solaris-sunos-programmers.html">Solaris/SunOS 用のビルドに関する章</a> を参照してください。</p>
 <h3 id="811-select-がシグナルで落ち続けるのはなぜか"><a class="header" href="#811-select-がシグナルで落ち続けるのはなぜか">8.11 <code>select()</code> がシグナルで落ち続けるのはなぜか？</a></h3>
 <p>シグナルはブロックされたシステムコールに <code>-1</code> を返し、<code>errno</code> に <code>EINTR</code> をセットする傾向があります。<code>sigaction()</code> でシグナルハンドラをセットアップするときに、フラグ <code>SA_RESTART</code> を設定することができます。これは、システムコールが中断された後に再開することを想定したものです。</p>
 <p>当然ながら、いつもうまくいくわけではありません。</p>
@@ -2808,7 +2809,7 @@ if ((err = select(fdmax+1, &amp;readfds, NULL, NULL, NULL)) == -1) {
 </code></pre>
 <p>もちろん、この場合は <code>goto</code> を使う必要はありません。他の構造体を使用して制御することができます。しかし、私は <code>goto</code> 文の方が実際きれいだと思うんです。</p>
 <h3 id="812-recv-の呼び出しにタイムアウトを実装するにはどうすればよいですか"><a class="header" href="#812-recv-の呼び出しにタイムアウトを実装するにはどうすればよいですか">8.12 <code>recv()</code> の呼び出しにタイムアウトを実装するにはどうすればよいですか？</a></h3>
-<p><a href="common-questions/docs/slightly-advanced-techniques/#select"><code>select()</code></a>を使いましょう！これは、読み込みたいソケットディスクリプタに対して、タイムアウトパラメータを指定することができます。あるいは、このように関数全体を一つの関数で包むこともできます。</p>
+<p><a href="common-questions/../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.html"><code>select()</code></a>を使いましょう！これは、読み込みたいソケットディスクリプタに対して、タイムアウトパラメータを指定することができます。あるいは、このように関数全体を一つの関数で包むこともできます。</p>
 <pre><code class="language-c">#include &lt;unistd.h&gt;
 #include &lt;sys/time.h&gt;
 #include &lt;sys/types.h&gt;
@@ -2874,7 +2875,7 @@ else if (n == -2) {
 <p>ただ、サーバがやったことをクライアントがきちんと元に戻してくれれば、いくら中間ステップを追加しても、最終的にはデータは大丈夫です。</p>
 <p>つまり、私のコードを使うために必要なことは、データが読み込まれる場所と、ネットワーク上で（<code>send()</code> を使って）データが送信される場所の間にある場所を見つけ、そこに暗号化を行うコードを貼り付けるだけです。</p>
 <h3 id="814-pf_inet-をずっと見ているのですがこれは何ですかaf_inetと関係があるのでしょうか"><a class="header" href="#814-pf_inet-をずっと見ているのですがこれは何ですかaf_inetと関係があるのでしょうか">8.14 &quot;<code>PF_INET</code>&quot; をずっと見ているのですが、これは何ですか？<code>AF_INET</code>と関係があるのでしょうか？</a></h3>
-<p>はい、そうです。詳しくは <a href="common-questions/docs/system-calls-or-bust/#socket"><code>socket()</code> の項</a>を参照してください。</p>
+<p>はい、そうです。詳しくは <a href="common-questions/../system-calls-or-bust/socket-get-the-file-descriptor.html"><code>socket()</code> の章</a>を参照してください。</p>
 <h3 id="815-クライアントからシェルコマンドを受け取って実行するサーバを書くにはどうしたらいいでしょうか"><a class="header" href="#815-クライアントからシェルコマンドを受け取って実行するサーバを書くにはどうしたらいいでしょうか">8.15 クライアントからシェルコマンドを受け取って実行するサーバを書くにはどうしたらいいでしょうか？</a></h3>
 <p>簡単のために、クライアントが <code>connect()</code>s, <code>send()</code>s, <code>close()</code>s で接続したとしましょう（つまり、クライアントが再び接続しない限り、その後のシステムコールはありません）。</p>
 <p>クライアントがたどるプロセスはこうです。</p>
@@ -2901,8 +2902,8 @@ else if (n == -2) {
 <p>このように、クライアントが送信したものをサーバが実行し始めると、セキュリティはかなり大きな問題になります。</p>
 <h3 id="816-slew-でデータを送っているのですがrecv-すると一度に-536-バイトか-1460-バイトしか受信できませんしかし私のローカルマシンで実行するとすべてのデータを同時に受信することができますどうなっているのでしょうか"><a class="header" href="#816-slew-でデータを送っているのですがrecv-すると一度に-536-バイトか-1460-バイトしか受信できませんしかし私のローカルマシンで実行するとすべてのデータを同時に受信することができますどうなっているのでしょうか">8.16 slew でデータを送っているのですが、<code>recv()</code> すると、一度に 536 バイトか 1460 バイトしか受信できません。しかし、私のローカルマシンで実行すると、すべてのデータを同時に受信することができます。どうなっているのでしょうか？</a></h3>
 <p>物理媒体が処理できる最大サイズであるMTUに当たっています。ローカルマシンでは、8K 以上を問題なく処理できるループバックデバイスを使用しています。しかし、Ethernet では、ヘッダーを含めて 1500 バイトしか扱えないので、その限界にぶつかってしまうのです。モデムでは、576 MTU（これもヘッダ付き）で、さらに低い制限にぶつかります。</p>
-<p>まず、すべてのデータが送信されていることを確認する必要があります。（詳しくは <a href="common-questions/docs/slightly-advanced-techniques/#sendall"><code>sendall()</code></a> 関数の実装を参照してください。）それが確認できたら、すべてのデータが読み込まれるまで、ループで <code>recv()</code> を呼び出す必要があります。</p>
-<p><code>recv()</code> を複数回呼び出して完全なデータパケットを受信する方法については、<a href="common-questions/docs/slightly-advanced-techniques/#sonofdataencap">7.6 Son of Data Encapsulation</a> の節を読んでください。</p>
+<p>まず、すべてのデータが送信されていることを確認する必要があります。（詳しくは <a href="common-questions/../slightly-advanced-techniques/handling-partial-sends.html"><code>sendall()</code></a> 関数の実装を参照してください。）それが確認できたら、すべてのデータが読み込まれるまで、ループで <code>recv()</code> を呼び出す必要があります。</p>
+<p><code>recv()</code> を複数回呼び出して完全なデータパケットを受信する方法については、<a href="common-questions/../slightly-advanced-techniques/son-of-data-encapsulation.html">7.6 データカプセル化の子</a> の章を読んでください。</p>
 <h3 id="817-私は-windows-マシンを使っていますがfork-システムコールも-struct-sigaction-のようなものも持っていませんどうしたらいいでしょうか"><a class="header" href="#817-私は-windows-マシンを使っていますがfork-システムコールも-struct-sigaction-のようなものも持っていませんどうしたらいいでしょうか">8.17 私は Windows マシンを使っていますが、<code>fork()</code> システムコールも <code>struct sigaction</code> のようなものも持っていません。どうしたらいいでしょうか？</a></h3>
 <p>もし、どこかにあるとすれば、コンパイラに同梱されているであろう POSIX ライブラリでしょう。私は Windows を持っていないので、答えようがないのですが、Microsoft には POSIX 互換性レイヤーがあり、そこに <code>fork()</code> があるように記憶しています。（そして多分、<code>sigaction</code> も。）</p>
 <p>VC++ 付属のヘルプで &quot;fork&quot; または &quot;POSIX&quot; を検索して、何か手がかりがないか見てみてください。</p>
@@ -2914,7 +2915,7 @@ else if (n == -2) {
 <p>ファイアウォールの穴は、決して軽視できないものであることを認識しておいてください。悪い人が内部ネットワークにアクセスできないようにしなければなりません。初心者の場合、ソフトウェアを安全にするのは想像以上に難しいのです。</p>
 <p>シスアドを怒らせないようにね。<code>;-)</code></p>
 <h3 id="819-パケットスニファーの書き方を教えてくださいイーサネットインタフェースをプロミスキャスモードにするにはどうしたらよいですか"><a class="header" href="#819-パケットスニファーの書き方を教えてくださいイーサネットインタフェースをプロミスキャスモードにするにはどうしたらよいですか">8.19 パケットスニファーの書き方を教えてください。イーサネットインタフェースをプロミスキャスモードにするにはどうしたらよいですか?</a></h3>
-<p>ネットワークカードが&quot;プロミスカスモード&quot;の場合、このマシン宛のパケットだけでなく、すべてのパケットをオペレーティングシステムに転送することをご存じない方のために説明します。（しかし、イーサネットは IP より下位の層なので、すべての IP アドレスは効果的に転送されます。より詳しくは、<a href="common-questions/docs/what-is-a-socket/#lowlevel">Low Level Nonsense and Network Theory</a> の章をご覧ください)。</p>
+<p>ネットワークカードが&quot;プロミスカスモード&quot;の場合、このマシン宛のパケットだけでなく、すべてのパケットをオペレーティングシステムに転送することをご存じない方のために説明します。（しかし、イーサネットは IP より下位の層なので、すべての IP アドレスは効果的に転送されます。より詳しくは、<a href="common-questions/../what-is-a-socket/low-level-nonsense-and-network-theory.html">2.2 低レベルのナンセンスとネットワーク理論</a> の章をご覧ください。）</p>
 <p>これは、パケットスニファーの仕組みの基本です。インターフェイスをプロミスカスモードにし、OSはワイヤー上を通過するすべてのパケットを取得します。 このデータを読むために、ある種のソケットを持っているはずです。</p>
 <p>残念ながら、その答えはプラットフォームによって異なりますが、例えば &quot;windows promiscuous ioctl&quot; でググれば、おそらくどこかにたどり着けるはずです。Linux の場合は、<a href="https://stackoverflow.com/questions/21323023/sniffing-an-ethernet-interface-on-linux">Stack Overflow のスレッド</a>にも有用そうなものがあります。</p>
 <h3 id="820-tcpudp-ソケットにカスタムタイムアウト値を設定するにはどうすればよいですか"><a class="header" href="#820-tcpudp-ソケットにカスタムタイムアウト値を設定するにはどうすればよいですか">8.20 TCP/UDP ソケットにカスタムタイムアウト値を設定するにはどうすればよいですか？</a></h3>
@@ -2989,8 +2990,10 @@ new_fd = accept(sockfd, (struct sockaddr *)&amp;their_addr, &amp;addr_size);
 // ready to communicate on socket descriptor new_fd!
 </code></pre>
 <h3 id="915-参照"><a class="header" href="#915-参照">9.1.5 参照</a></h3>
-<p><a href="man-pages/accept.html#socketman"><code>socket()</code></a>, <a href="man-pages/accept.html#getaddrinfoman"><code>getaddrinfo()</code></a>,
-<a href="man-pages/accept.html#listenman"><code>listen()</code></a>, <a href="man-pages/accept.html#sockaddr_inman"><code>struct sockaddr_in</code></a></p>
+<p><a href="man-pages/./socket.html"><code>socket()</code></a>,
+<a href="man-pages/./getaddrinfo-freeaddrinfo-gai_strerror.html"><code>getaddrinfo()</code></a>,
+<a href="man-pages/./listen.html"><code>listen()</code></a>,
+<a href="man-pages/./struct-sockaddr-and-pals.html"><code>struct sockaddr_in</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="92-bind"><a class="header" href="#92-bind">9.2 <code>bind()</code></a></h1>
 <p>ソケットをIPアドレスとポート番号に関連付けます。</p>
 <h3 id="921-書式"><a class="header" href="#921-書式">9.2.1 書式</a></h3>
@@ -3049,7 +3052,10 @@ s = socket(PF_INET, SOCK_STREAM, 0);
 bind(s, (struct sockaddr*)&amp;myaddr, sizeof myaddr);
 </code></pre>
 <h3 id="925-参照"><a class="header" href="#925-参照">9.2.5 参照</a></h3>
-<p><a href="man-pages/bind.html#getaddrinfoman"><code>getaddrinfo()</code></a>, <a href="man-pages/bind.html#socketman"><code>socket()</code></a>, <a href="man-pages/bind.html#sockaddr_inman"><code>struct sockaddr_in</code></a>, <a href="man-pages/bind.html#sockaddr_inman"><code>struct in_addr</code></a></p>
+<p><a href="man-pages/./getaddrinfo-freeaddrinfo-gai_strerror.html"><code>getaddrinfo()</code></a>,
+<a href="man-pages/./socket.html"><code>socket()</code></a>,
+<a href="man-pages/./struct-sockaddr-and-pals.html"><code>struct sockaddr_in</code></a>,
+<a href="man-pages/./struct-sockaddr-and-pals.html"><code>struct in_addr</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="93-connect"><a class="header" href="#93-connect">9.3 <code>connect()</code></a></h1>
 <p>サーバーにソケットを接続します。</p>
 <h3 id="931-書式"><a class="header" href="#931-書式">9.3.1 書式</a></h3>
@@ -3091,7 +3097,8 @@ sockfd = socket(res-&gt;ai_family, res-&gt;ai_socktype, res-&gt;ai_protocol);
 connect(sockfd, res-&gt;ai_addr, res-&gt;ai_addrlen);
 </code></pre>
 <h3 id="935-参照"><a class="header" href="#935-参照">9.3.5 参照</a></h3>
-<p><a href="man-pages/connect.html#socketman"><code>socket()</code></a>, <a href="man-pages/connect.html#bindman"><code>bind()</code></a></p>
+<p><a href="man-pages/./socket.html"><code>socket()</code></a>,
+<a href="man-pages/./bind.html"><code>bind()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="94-close"><a class="header" href="#94-close">9.4 <code>close()</code></a></h1>
 <p>ソケットディスクリプタを閉じます。</p>
 <h3 id="941-書式"><a class="header" href="#941-書式">9.4.1 書式</a></h3>
@@ -3117,7 +3124,8 @@ int close(int s);
 close(s);  // not much to it, really.
 </code></pre>
 <h3 id="945-参照"><a class="header" href="#945-参照">9.4.5 参照</a></h3>
-<p><a href="man-pages/close.html#socketman"><code>socket()</code></a>, <a href="man-pages/close.html#shutdownman"><code>shutdown()</code></a></p>
+<p><a href="man-pages/./socket.html"><code>socket()</code></a>,
+<a href="man-pages/./shutdown.html"><code>shutdown()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="95-getaddrinfo-freeaddrinfo-gai_strerror"><a class="header" href="#95-getaddrinfo-freeaddrinfo-gai_strerror">9.5 <code>getaddrinfo()</code>, <code>freeaddrinfo()</code>, <code>gai_strerror()</code></a></h1>
 <p>ホスト名やサービスに関する情報を取得し、その結果を <code>struct sockaddr</code> にロードします。</p>
 <h3 id="951-書式"><a class="header" href="#951-書式">9.5.1 書式</a></h3>
@@ -3248,7 +3256,8 @@ if (p == NULL) {
 freeaddrinfo(servinfo); // all done with this structure
 </code></pre>
 <h3 id="955-参照"><a class="header" href="#955-参照">9.5.5 参照</a></h3>
-<p><a href="man-pages/getaddrinfo-freeaddrinfo-gai_strerror.html#gethostbynameman"><code>gethostbyname()</code></a>, <a href="man-pages/getaddrinfo-freeaddrinfo-gai_strerror.html#getnameinfoman"><code>getnameinfo()</code></a></p>
+<p><a href="man-pages/./gethostbyname-gethostbyaddr.html"><code>gethostbyname()</code></a>,
+<a href="man-pages/./getnameinfo.html"><code>getnameinfo()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="96-gethostname"><a class="header" href="#96-gethostname">9.6 <code>gethostname()</code></a></h1>
 <p>システムの名称を返します。</p>
 <h3 id="961-書式"><a class="header" href="#961-書式">9.6.1 書式</a></h3>
@@ -3269,7 +3278,7 @@ gethostname(hostname, sizeof hostname);
 printf(&quot;My hostname: %s\n&quot;, hostname);
 </code></pre>
 <h3 id="965-参照"><a class="header" href="#965-参照">9.6.5 参照</a></h3>
-<p><a href="man-pages/gethostname.html#gethostbynameman"><code>gethostbyname()</code></a></p>
+<p><a href="man-pages/./gethostbyname-gethostbyaddr.html"><code>gethostbyname()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="97-gethostbyname-gethostbyaddr"><a class="header" href="#97-gethostbyname-gethostbyaddr">9.7 <code>gethostbyname()</code>, <code>gethostbyaddr()</code></a></h1>
 <p>ホスト名に対するIPアドレスの取得、またはその逆を行います。</p>
 <h3 id="971-書式"><a class="header" href="#971-書式">9.7.1 書式</a></h3>
@@ -3354,9 +3363,13 @@ he = gethostbyaddr(&amp;ipv6addr, sizeof ipv6addr, AF_INET6);
 printf(&quot;Host name: %s\n&quot;, he-&gt;h_name);
 </code></pre>
 <h3 id="975-参照"><a class="header" href="#975-参照">9.7.5 参照</a></h3>
-<p><a href="man-pages/gethostbyname-gethostbyaddr.html#getaddrinfoman"><code>getaddrinfo()</code></a>, <a href="man-pages/gethostbyname-gethostbyaddr.html#getnameinfoman"><code>getnameinfo()</code></a>,
-<a href="man-pages/gethostbyname-gethostbyaddr.html#gethostnameman"><code>gethostname()</code></a>, <a href="man-pages/gethostbyname-gethostbyaddr.html#errnoman"><code>errno</code></a>,
-<a href="man-pages/gethostbyname-gethostbyaddr.html#perrorman"><code>perror()</code></a>, <a href="man-pages/gethostbyname-gethostbyaddr.html#perrorman"><code>strerror()</code></a>, <a href="man-pages/gethostbyname-gethostbyaddr.html#sockaddr_inman"><code>struct in_addr</code></a></p>
+<p><a href="man-pages/./getaddrinfo-freeaddrinfo-gai_strerror.html"><code>getaddrinfo()</code></a>,
+<a href="man-pages/./getnameinfo.html"><code>getnameinfo()</code></a>,
+<a href="man-pages/./gethostname.html"><code>gethostname()</code></a>,
+<a href="man-pages/./errno.html"><code>errno</code></a>,
+<a href="man-pages/./perror-strerror.html"><code>perror()</code></a>,
+<a href="man-pages/./perror-strerror.html"><code>strerror()</code></a>,
+<a href="man-pages/./struct-sockaddr-and-pals.html"><code>struct in_addr</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="98-getnameinfo"><a class="header" href="#98-getnameinfo">9.8 <code>getnameinfo()</code></a></h1>
 <p>与えられた <code>struct sockaddr</code> のホスト名とサービス名の情報を検索します。</p>
 <h3 id="981-書式"><a class="header" href="#981-書式">9.8.1 書式</a></h3>
@@ -3388,7 +3401,8 @@ printf(&quot;   host: %s\n&quot;, host);    // e.g. &quot;www.example.com&quot;
 printf(&quot;service: %s\n&quot;, service); // e.g. &quot;http&quot;
 </code></pre>
 <h3 id="985-参照"><a class="header" href="#985-参照">9.8.5 参照</a></h3>
-<p><a href="man-pages/getnameinfo.html#getaddrinfoman"><code>getaddrinfo()</code></a>, <a href="man-pages/getnameinfo.html#gethostbynameman"><code>gethostbyaddr()</code></a></p>
+<p><a href="man-pages/./getaddrinfo-freeaddrinfo-gai_strerror.html"><code>getaddrinfo()</code></a>,
+<a href="man-pages/./gethostbyname-gethostbyaddr.html"><code>gethostbyaddr()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="99-getpeername"><a class="header" href="#99-getpeername">9.9 <code>getpeername()</code></a></h1>
 <p>リモート側の接続に関するアドレス情報を返す。</p>
 <h3 id="991-書式"><a class="header" href="#991-書式">9.9.1 書式</a></h3>
@@ -3429,8 +3443,9 @@ printf(&quot;Peer IP address: %s\n&quot;, ipstr);
 printf(&quot;Peer port      : %d\n&quot;, port);
 </code></pre>
 <h3 id="995-参照"><a class="header" href="#995-参照">9.9.5 参照</a></h3>
-<p><a href="man-pages/getpeername.html#gethostnameman"><code>gethostname()</code></a>, <a href="man-pages/getpeername.html#gethostbynameman"><code>gethostbyname()</code></a>,
-<a href="man-pages/getpeername.html#gethostbynameman"><code>gethostbyaddr()</code></a></p>
+<p><a href="man-pages/./gethostname.html"><code>gethostname()</code></a>,
+<a href="man-pages/./gethostbyname-gethostbyaddr.html"><code>gethostbyname()</code></a>,
+<a href="man-pages/./gethostbyname-gethostbyaddr.html"><code>gethostbyaddr()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="910-errno"><a class="header" href="#910-errno">9.10 <code>errno</code></a></h1>
 <p>最後のシステムコールのエラーコードを保持します。</p>
 <h3 id="9101-書式"><a class="header" href="#9101-書式">9.10.1 書式</a></h3>
@@ -3464,7 +3479,8 @@ if (select(n, &amp;readfds, NULL, NULL) == -1) {
 }
 </code></pre>
 <h3 id="9105-参照"><a class="header" href="#9105-参照">9.10.5 参照</a></h3>
-<p><a href="man-pages/errno.html#perrorman"><code>perror()</code></a>, <a href="man-pages/errno.html#perrorman"><code>strerror()</code></a></p>
+<p><a href="man-pages/./perror-strerror.html"><code>perror()</code></a>,
+<a href="man-pages/./perror-strerror.html"><code>strerror()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="911-fcntl"><a class="header" href="#911-fcntl">9.11 <code>fcntl()</code></a></h1>
 <p>ソケットディスクリプタを制御します。</p>
 <h3 id="9111-書式"><a class="header" href="#9111-書式">9.11.1 書式</a></h3>
@@ -3490,7 +3506,8 @@ fcntl(s, F_SETFL, O_NONBLOCK);  // set to non-blocking
 fcntl(s, F_SETFL, O_ASYNC);     // set to asynchronous I/O
 </code></pre>
 <h3 id="9115-参照"><a class="header" href="#9115-参照">9.11.5 参照</a></h3>
-<p><a href="man-pages/fcntl.html#blocking">Blocking</a>, <a href="man-pages/fcntl.html#sendman"><code>send()</code></a></p>
+<p><a href="man-pages/../slightly-advanced-techniques/blocking.html">Blocking</a>,
+<a href="man-pages/./send-sendto.html"><code>send()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="912-htons-htonl-ntohs-ntohl"><a class="header" href="#912-htons-htonl-ntohs-ntohl">9.12 <code>htons()</code>, <code>htonl()</code>, <code>ntohs()</code>, <code>ntohl()</code></a></h1>
 <p>マルチバイト整数型をホストバイトオーダーからネットワークバイトオーダーに変換します。</p>
 <h3 id="9121-書式"><a class="header" href="#9121-書式">9.12.1 書式</a></h3>
@@ -3563,8 +3580,10 @@ printf(&quot;%s\n&quot;, some_addr); // prints &quot;10.0.0.1&quot;
 antelope.sin_addr.s_addr = inet_addr(&quot;10.0.0.1&quot;);
 </code></pre>
 <h3 id="9135-参照"><a class="header" href="#9135-参照">9.13.5 参照</a></h3>
-<p><a href="man-pages/inet_ntoa-inet_aton-inet_addr.html#inet_ntopman"><code>inet_ntop()</code></a>, <a href="man-pages/inet_ntoa-inet_aton-inet_addr.html#inet_ntopman"><code>inet_pton()</code></a>,
-<a href="man-pages/inet_ntoa-inet_aton-inet_addr.html#gethostbynameman"><code>gethostbyname()</code></a>, <a href="man-pages/inet_ntoa-inet_aton-inet_addr.html#gethostbynameman"><code>gethostbyaddr()</code></a></p>
+<p><a href="man-pages/./inet_ntop-inet-pton.html"><code>inet_ntop()</code></a>,
+<a href="man-pages/./inet_ntop-inet-pton.html"><code>inet_pton()</code></a>,
+<a href="man-pages/./gethostbyname-gethostbyaddr.html"><code>gethostbyname()</code></a>,
+<a href="man-pages/./gethostbyname-gethostbyaddr.html"><code>gethostbyaddr()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="914-inet_ntop-inet_pton"><a class="header" href="#914-inet_ntop-inet_pton">9.14 <code>inet_ntop()</code>, <code>inet_pton()</code></a></h1>
 <p>IPアドレスを人間が読める形に変換して戻します。</p>
 <h3 id="9141-書式"><a class="header" href="#9141-書式">9.14.1 書式</a></h3>
@@ -3640,7 +3659,7 @@ char *get_ip_str(const struct sockaddr *sa, char *s, size_t maxlen)
 }
 </code></pre>
 <h3 id="9145-参照"><a class="header" href="#9145-参照">9.14.5 参照</a></h3>
-<p><a href="man-pages/inet_ntop-inet-pton.html#getaddrinfoman"><code>getaddrinfo()</code></a></p>
+<p><a href="man-pages/./getaddrinfo-freeaddrinfo-gai_strerror.html"><code>getaddrinfo()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="915-listen"><a class="header" href="#915-listen">9.15 <code>listen()</code></a></h1>
 <p>ソケットに着信を待つように指示します。</p>
 <h3 id="9151-書式"><a class="header" href="#9151-書式">9.15.1 書式</a></h3>
@@ -3680,7 +3699,9 @@ listen(sockfd, 10); // set s up to be a server (listening) socket
 // then have an accept() loop down here somewhere
 </code></pre>
 <h3 id="9155-参照"><a class="header" href="#9155-参照">9.15.5 参照</a></h3>
-<p><a href="man-pages/listen.html#acceptman"><code>accept()</code></a>, <a href="man-pages/listen.html#bindman"><code>bind()</code></a>, <a href="man-pages/listen.html#socketman"><code>socket()</code></a></p>
+<p><a href="man-pages/./accept.html"><code>accept()</code></a>,
+<a href="man-pages/./bind.html"><code>bind()</code></a>,
+<a href="man-pages/./socket.html"><code>socket()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="916-perror-strerror"><a class="header" href="#916-perror-strerror">9.16 <code>perror()</code>, <code>strerror()</code></a></h1>
 <p>エラーを人間が読める文字列で表示します。</p>
 <h3 id="9161-書式"><a class="header" href="#9161-書式">9.16.1 書式</a></h3>
@@ -3714,7 +3735,7 @@ if (listen(s, 10) == -1) {
 }
 </code></pre>
 <h3 id="9165-参照"><a class="header" href="#9165-参照">9.16.5 参照</a></h3>
-<p><a href="man-pages/perror-strerror.html#errnoman"><code>errno</code></a></p>
+<p><a href="man-pages/./errno.html"><code>errno</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="917-poll"><a class="header" href="#917-poll">9.17 <code>poll()</code></a></h1>
 <p>複数のソケットで同時にイベントをテストします。</p>
 <h3 id="9171-書式"><a class="header" href="#9171-書式">9.17.1 書式</a></h3>
@@ -3793,7 +3814,7 @@ if (rv == -1) {
 }
 </code></pre>
 <h3 id="9175-参照"><a class="header" href="#9175-参照">9.17.5 参照</a></h3>
-<p><a href="man-pages/poll.html#selectman"><code>select()</code></a></p>
+<p><a href="man-pages/./select.html"><code>select()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="918-recv-recvfrom"><a class="header" href="#918-recv-recvfrom">9.18 <code>recv()</code>, <code>recvfrom()</code></a></h1>
 <p>ソケットでデータを受信します。</p>
 <h3 id="9181-書式"><a class="header" href="#9181-書式">9.18.1 書式</a></h3>
@@ -3871,8 +3892,11 @@ printf(&quot;from IP address %s\n&quot;,
         ipstr, sizeof ipstr);
 </code></pre>
 <h3 id="9185-参照"><a class="header" href="#9185-参照">9.18.5 参照</a></h3>
-<p><a href="man-pages/recv-recvfrom.html#sendman"><code>send()</code></a>, <a href="man-pages/recv-recvfrom.html#sendman"><code>sendto()</code></a>, <a href="man-pages/recv-recvfrom.html#selectman"><code>select()</code></a>,
-<a href="man-pages/recv-recvfrom.html#pollman"><code>poll()</code></a>, <a href="man-pages/recv-recvfrom.html#blocking">Blocking</a></p>
+<p><a href="man-pages/./send-sendto.html"><code>send()</code></a>,
+<a href="man-pages/./send-sendto.html"><code>sendto()</code></a>,
+<a href="man-pages/./select.html"><code>select()</code></a>,
+<a href="man-pages/./poll.html"><code>poll()</code></a>,
+<a href="man-pages/../slightly-advanced-techniques/blocking.html">Blocking</a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="919-select"><a class="header" href="#919-select">9.19 <code>select()</code></a></h1>
 <p>ソケットディスクリプタが読み込み/書き込み可能かどうか確認します。</p>
 <h3 id="9191-書式"><a class="header" href="#9191-書式">9.19.1 書式</a></h3>
@@ -3944,7 +3968,7 @@ if (rv == -1) {
 }
 </code></pre>
 <h3 id="9195-参照"><a class="header" href="#9195-参照">9.19.5 参照</a></h3>
-<p><a href="man-pages/select.html#pollman"><code>poll()</code></a></p>
+<p><a href="man-pages/./poll.html"><code>poll()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="920-setsockopt-getsockopt"><a class="header" href="#920-setsockopt-getsockopt">9.20 <code>setsockopt()</code>, <code>getsockopt()</code></a></h1>
 <p>ソケットの各種オプションを設定します。</p>
 <h3 id="9201-書式"><a class="header" href="#9201-書式">9.20.1 書式</a></h3>
@@ -3990,7 +4014,7 @@ if (optval != 0) {
 }
 </code></pre>
 <h3 id="9205-参照"><a class="header" href="#9205-参照">9.20.5 参照</a></h3>
-<p><a href="man-pages/setsockopt-getsockopt.html#fcntlman"><code>fcntl()</code></a></p>
+<p><a href="man-pages/./fcntl.html"><code>fcntl()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="921-send-sendto"><a class="header" href="#921-send-sendto">9.21 <code>send()</code>, <code>sendto()</code></a></h1>
 <p>ソケットでデータを送信します。</p>
 <h3 id="9211-書式"><a class="header" href="#9211-書式">9.21.1 書式</a></h3>
@@ -4046,7 +4070,8 @@ sendto(dgram_socket, secret_message, strlen(secret_message)+1, 0,
        (struct sockaddr*)&amp;dest, sizeof dest);
 </code></pre>
 <h3 id="9215-参照"><a class="header" href="#9215-参照">9.21.5 参照</a></h3>
-<p><a href="man-pages/send-sendto.html#recvman"><code>recv()</code></a>, <a href="man-pages/send-sendto.html#recvman"><code>recvfrom()</code></a></p>
+<p><a href="man-pages/./recv-recvfrom.html"><code>recv()</code></a>,
+<a href="man-pages/./recv-recvfrom.html"><code>recvfrom()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="922-shutdown"><a class="header" href="#922-shutdown">9.22 <code>shutdown()</code></a></h1>
 <p>ソケットでのさらなる送受信を停止します。</p>
 <h3 id="9221-書式"><a class="header" href="#9221-書式">9.22.1 書式</a></h3>
@@ -4071,7 +4096,7 @@ int shutdown(int s, int how);
 shutdown(s, SHUT_WR);
 </code></pre>
 <h3 id="9225-参照"><a class="header" href="#9225-参照">9.22.5 参照</a></h3>
-<p><a href="man-pages/shutdown.html#closeman"><code>close()</code></a></p>
+<p><a href="man-pages/./close.html"><code>close()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="923-socket"><a class="header" href="#923-socket">9.23 <code>socket()</code></a></h1>
 <p>ソケットディスクリプタをアロケートします。</p>
 <h3 id="9231-書式"><a class="header" href="#9231-書式">9.23.1 書式</a></h3>
@@ -4106,8 +4131,10 @@ getaddrinfo(&quot;www.example.com&quot;, &quot;3490&quot;, &amp;hints, &amp;res)
 sockfd = socket(res-&gt;ai_family, res-&gt;ai_socktype, res-&gt;ai_protocol);
 </code></pre>
 <h3 id="9235-参照"><a class="header" href="#9235-参照">9.23.5 参照</a></h3>
-<p><a href="man-pages/socket.html#acceptman"><code>accept()</code></a>, <a href="man-pages/socket.html#bindman"><code>bind()</code></a>,
-<a href="man-pages/socket.html#getaddrinfoman"><code>getaddrinfo()</code></a>, <a href="man-pages/socket.html#listenman"><code>listen()</code></a></p>
+<p><a href="man-pages/./accept.html"><code>accept()</code></a>,
+<a href="man-pages/./bind.html"><code>bind()</code></a>,
+<a href="man-pages/./getaddrinfo-freeaddrinfo-gai_strerror.html"><code>getaddrinfo()</code></a>,
+<a href="man-pages/./listen.html"><code>listen()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="924-struct-sockaddr-and-pals"><a class="header" href="#924-struct-sockaddr-and-pals">9.24 <code>struct sockaddr</code> and pals</a></h1>
 <p>インターネットアドレスを扱うための構造体です。</p>
 <h3 id="9241-書式"><a class="header" href="#9241-書式">9.24.1 書式</a></h3>
@@ -4199,9 +4226,12 @@ s = socket(PF_INET6, SOCK_STREAM, 0);
 bind(s, (struct sockaddr*)&amp;ip6addr, sizeof ip6addr);
 </code></pre>
 <h3 id="9244-参照"><a class="header" href="#9244-参照">9.24.4 参照</a></h3>
-<p><a href="man-pages/struct-sockaddr-and-pals.html#acceptman"><code>accept()</code></a>, <a href="man-pages/struct-sockaddr-and-pals.html#bindman"><code>bind()</code></a>, <a href="man-pages/struct-sockaddr-and-pals.html#connectman"><code>connect()</code></a>,
-<a href="man-pages/struct-sockaddr-and-pals.html#inet_ntoaman"><code>inet_aton()</code></a>, <a href="man-pages/struct-sockaddr-and-pals.html#inet_ntoaman"><code>inet_ntoa()</code></a></p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="その他の参考文献"><a class="header" href="#その他の参考文献">その他の参考文献</a></h1>
+<p><a href="man-pages/./accept.html"><code>accept()</code></a>,
+<a href="man-pages/./bind.html"><code>bind()</code></a>,
+<a href="man-pages/./connect.html"><code>connect()</code></a>,
+<a href="man-pages/./inet_ntoa-inet_aton-inet_addr.html"><code>inet_aton()</code></a>,
+<a href="man-pages/./inet_ntoa-inet_aton-inet_addr.html"><code>inet_ntoa()</code></a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="10-その他の参考文献"><a class="header" href="#10-その他の参考文献">10 その他の参考文献</a></h1>
 <p>ここまで来たのに、もっともっとと叫んでいるあなたへ。このようなことをもっと知るには、他にどこへ行けばいいのでしょうか？</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="101-書籍"><a class="header" href="#101-書籍">10.1 書籍</a></h1>
 <p>昔ながらのパルプ紙を使った本をお探しなら、以下のような素晴らしい本があります。これらは、人気のある書店のアフィリエイト・リンクにリダイレクトされ、私に素敵なキックバックを与えてくれます。もしあなたが単に気前がいいと思うなら、<a href="mailto:beej@beej.us"><code>beej@beej.us</code></a> に寄付をすることができます。<code>:-)</code></p>
@@ -4315,7 +4345,9 @@ ISBN <a href="https://www.amazon.com/gp/product/0321637739/ref=as_li_tl?ie=UTF8&
         <script type="text/javascript" src="theme/theme-solarized_light.js"></script>
         <script type="text/javascript">
         window.addEventListener('load', function() {
-            window.setTimeout(window.print, 100);
+            MathJax.Hub.Register.StartupHook('End', function() {
+                window.setTimeout(window.print, 100);
+            });
         });
         </script>
     </body>

@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -389,7 +391,7 @@ int main(void)
 <p>注目すべきは、<code>listener</code> ソケットが読み込み可能な状態になったかどうかをチェックしていることです。このとき、新しい接続が保留されていることを意味するので、それを <code>accept()</code> して <code>master</code> セットに追加します。同様に、クライアントの接続が読み込み可能な状態になったときに、<code>recv()</code> が <code>0</code> を返したら、クライアントが接続を閉じたことがわかるので、<code>master</code> セットからそれを削除しなければなりません。</p>
 <p>しかし、クライアントの <code>recv()</code> がゼロ以外を返した場合、何らかのデータを受信したことが分かります。そこで私はそれを取得し、<code>master</code> リストを経由して、接続されている残りのすべてのクライアントにそのデータを送信します。</p>
 <p>以上が、全能の関数 <code>select()</code> の簡単でない概要です。</p>
-<p>Linux ファンの皆さんへ：まれに、Linux の <code>select()</code> が &quot;ready-to-read&quot; を返した後、実際には読み込む準備ができていないことがあります！これは、Linux の <code>select()</code> が &quot;ready-to-read&quot; を返した後、実際には読み込む準備ができていないことを意味します。これはつまり、<code>select()</code> が読まないと言っているのに、<code>read()</code> でブロックしてしまうということです！なぜだ、この野郎---！とにかく、回避策は受信側のソケットで <code>O_NONBLOCK</code> フラグをセットして、 <code>EWOULDBLOCK</code> でエラーにすることです（これは発生しても無視しても大丈夫です）。ソケットをノンブロッキングに設定する方法については、<a href="#fcntlman"><code>fcntl()</code> リファレンスページ</a>を参照してください。</p>
+<p>Linux ファンの皆さんへ：まれに、Linux の <code>select()</code> が &quot;ready-to-read&quot; を返した後、実際には読み込む準備ができていないことがあります！これは、Linux の <code>select()</code> が &quot;ready-to-read&quot; を返した後、実際には読み込む準備ができていないことを意味します。これはつまり、<code>select()</code> が読まないと言っているのに、<code>read()</code> でブロックしてしまうということです！なぜだ、この野郎---！とにかく、回避策は受信側のソケットで <code>O_NONBLOCK</code> フラグをセットして、 <code>EWOULDBLOCK</code> でエラーにすることです（これは発生しても無視しても大丈夫です）。ソケットをノンブロッキングに設定する方法については、<a href="../man-pages/fcntl.html"><code>fcntl()</code> のリファレンスページ</a>を参照してください。</p>
 <p>さらに、ここでボーナス的な余談ですが、<code>poll()</code> という別の関数があります。これは <code>select()</code> とほぼ同じ動作をしますが、ファイルディスクリプタ集合を管理するシステムが異なります。<a href="#pollman">チェックしてみてください！</a></p>
 
                     </main>

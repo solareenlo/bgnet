@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -145,11 +147,11 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="57-send-and-recv---話せよベイビー"><a class="header" href="#57-send-and-recv---話せよベイビー">5.7 <code>send()</code> and <code>recv()</code>---話せよ、ベイビー！</a></h1>
-<p>この2つの関数は、ストリームソケットまたは接続されたデータグラムソケットで通信を行うためのものです。通常の非接続型データグラムソケットを使いたい場合は、以下の <a href="docs/system-calls-or-bust/#sendtorecv"><code>sendto()</code> and <code>recvfrom()</code></a> の節を参照する必要があります。</p>
+<p>この2つの関数は、ストリームソケットまたは接続されたデータグラムソケットで通信を行うためのものです。通常の非接続型データグラムソケットを使いたい場合は、以下の <a href="./sendto-and-recvfrom-talk-to-me-GDRAM-style.html"><code>sendto()</code> and <code>recvfrom()</code></a> の章を参照する必要があります。</p>
 <p><code>send()</code> の書式。</p>
 <pre><code class="language-c">int send(int sockfd, const void *msg, int len, int flags);
 </code></pre>
-<p><code>sockfd</code> はデータを送信したいソケットディスクリプタ（<code>socket()</code> で返されたものでも <code>accept()</code> で取得したものでも可）、<code>msg</code> は送信したいデータへのポインタ、<code>len</code> はそのデータの長さ(バイト数)です。<code>flags</code> を <code>0</code> に設定するだけです(フラグに関する詳しい情報は <code>send()</code> の man ページを参照してください)。</p>
+<p><code>sockfd</code> はデータを送信したいソケットディスクリプタ（<code>socket()</code> で返されたものでも <code>accept()</code> で取得したものでも可）、<code>msg</code> は送信したいデータへのポインタ、<code>len</code> はそのデータの長さ(バイト数)です。<code>flags</code> を <code>0</code> に設定するだけです（フラグに関する詳しい情報は <code>send()</code> の man ページを参照してください）。</p>
 <p>サンプルコードとしては、以下のようなものがあります。</p>
 <pre><code class="language-c">char *msg = &quot;Beej was here!&quot;;
 int len, bytes_sent;
@@ -162,11 +164,11 @@ bytes_sent = send(sockfd, msg, len, 0);
 .
 .
 </code></pre>
-<p><code>send()</code> は実際に送信されたバイト数を返しますが、これは送信するように指示した数よりも少ないかもしれません！つまり、大量のデータを送信するように指示しても、それが処理しきれないことがあるのです。その場合、できる限りのデータを送信し、残りは後で送信するように指示します。<code>send()</code> が返す値が <code>len</code> の値と一致しない場合、残りの文字列を送信するかどうかはあなた次第だということを覚えておいてください。良いニュースはこれです。パケットが小さければ（1K以下とか）、 おそらく全部を一度に送信することができるでしょう。ここでも、エラー時には <code>-1</code> が返され、 <code>errno</code> にはエラー番号がセットされます。</p>
+<p><code>send()</code> は実際に送信されたバイト数を返しますが、これは送信するように指示した数よりも少ないかもしれません！つまり、大量のデータを送信するように指示しても、それが処理しきれないことがあるのです。その場合、できる限りのデータを送信し、残りは後で送信するように指示します。<code>send()</code> が返す値が <code>len</code> の値と一致しない場合、残りの文字列を送信するかどうかはあなた次第だということを覚えておいてください。良いニュースはこれです。パケットが小さければ（1K以下とか）、おそらく全部を一度に送信することができるでしょう。ここでも、エラー時には <code>-1</code> が返され、 <code>errno</code> にはエラー番号がセットされます。</p>
 <p><code>recv()</code> の書式は、多くの点で類似しています。</p>
 <pre><code class="language-c">int recv(int sockfd, void *buf, int len, int flags);
 </code></pre>
-<p><code>sockfd</code> は読み込むソケットディスクリプタ、<code>buf</code> は情報を読み込むバッファ、<code>len</code> はバッファの最大長、<code>flags</code> は再び <code>0</code> に設定できます(フラグについては <code>recv()</code> の man ページを参照してください)。</p>
+<p><code>sockfd</code> は読み込むソケットディスクリプタ、<code>buf</code> は情報を読み込むバッファ、<code>len</code> はバッファの最大長、<code>flags</code> は再び <code>0</code> に設定できます（フラグについては <a href="../man-pages/recv-recvfrom.html"><code>recv()</code> の man ページ</a>を参照してください）。</p>
 <p><code>recv()</code> は、実際にバッファに読み込まれたバイト数を返し、エラーの場合は <code>-1</code> を返します（それに応じて <code>errno</code> が設定されます）。</p>
 <p>待ってください！<code>recv()</code> は <code>0</code> を返すことがあります。これは、リモート側が接続を切断したことを意味します！<code>0</code> という返り値は、<code>recv()</code> がこのような事態が発生したことをあなたに知らせるためのものです。</p>
 <p>ほら、簡単だったでしょう？これでストリームソケットでデータのやり取りができるようになったぞ。やったー！あなたは Unix ネットワークプログラマーです！</p>

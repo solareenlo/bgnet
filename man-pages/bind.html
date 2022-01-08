@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -202,7 +204,10 @@ s = socket(PF_INET, SOCK_STREAM, 0);
 bind(s, (struct sockaddr*)&amp;myaddr, sizeof myaddr);
 </code></pre>
 <h3 id="925-参照"><a class="header" href="#925-参照">9.2.5 参照</a></h3>
-<p><a href="#getaddrinfoman"><code>getaddrinfo()</code></a>, <a href="#socketman"><code>socket()</code></a>, <a href="#sockaddr_inman"><code>struct sockaddr_in</code></a>, <a href="#sockaddr_inman"><code>struct in_addr</code></a></p>
+<p><a href="./getaddrinfo-freeaddrinfo-gai_strerror.html"><code>getaddrinfo()</code></a>,
+<a href="./socket.html"><code>socket()</code></a>,
+<a href="./struct-sockaddr-and-pals.html"><code>struct sockaddr_in</code></a>,
+<a href="./struct-sockaddr-and-pals.html"><code>struct in_addr</code></a></p>
 
                     </main>
 

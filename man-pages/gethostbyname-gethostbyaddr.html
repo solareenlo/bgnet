@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -228,9 +230,13 @@ he = gethostbyaddr(&amp;ipv6addr, sizeof ipv6addr, AF_INET6);
 printf(&quot;Host name: %s\n&quot;, he-&gt;h_name);
 </code></pre>
 <h3 id="975-参照"><a class="header" href="#975-参照">9.7.5 参照</a></h3>
-<p><a href="#getaddrinfoman"><code>getaddrinfo()</code></a>, <a href="#getnameinfoman"><code>getnameinfo()</code></a>,
-<a href="#gethostnameman"><code>gethostname()</code></a>, <a href="#errnoman"><code>errno</code></a>,
-<a href="#perrorman"><code>perror()</code></a>, <a href="#perrorman"><code>strerror()</code></a>, <a href="#sockaddr_inman"><code>struct in_addr</code></a></p>
+<p><a href="./getaddrinfo-freeaddrinfo-gai_strerror.html"><code>getaddrinfo()</code></a>,
+<a href="./getnameinfo.html"><code>getnameinfo()</code></a>,
+<a href="./gethostname.html"><code>gethostname()</code></a>,
+<a href="./errno.html"><code>errno</code></a>,
+<a href="./perror-strerror.html"><code>perror()</code></a>,
+<a href="./perror-strerror.html"><code>strerror()</code></a>,
+<a href="./struct-sockaddr-and-pals.html"><code>struct in_addr</code></a></p>
 
                     </main>
 

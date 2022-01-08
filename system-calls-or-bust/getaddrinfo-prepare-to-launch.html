@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -147,7 +149,7 @@
                         <h1 id="51-getaddrinfo---起動の準備をしよう"><a class="header" href="#51-getaddrinfo---起動の準備をしよう">5.1 <code>getaddrinfo()</code>---起動の準備をしよう！</a></h1>
 <p>この関数は多くのオプションを持つ真の主力関数ですが、使い方はいたってシンプルです。後で必要な構造体をセットアップするのに役立ちます。</p>
 <p>昔は、<code>gethostbyname()</code> という関数を使って DNS のルックアップを行っていました。そして、その情報を <code>sockaddr_in</code> 構造体に手作業でロードし、それを呼び出しに使用するのです。</p>
-<p>これは、ありがたいことに、もう必要ありません。(IPv4 と IPv6 の両方で動作するコードを書きたいのであれば、望ましいことではありません！) 現代では、DNS やサービス名のルックアップなど、あらゆる種類の良いことをやってくれる <code>getaddrinfo()</code> という関数があり、さらに必要な <code>struct</code> も埋めてくれます！</p>
+<p>これは、ありがたいことに、もう必要ありません。（IPv4 と IPv6 の両方で動作するコードを書きたいのであれば、望ましいことではありません！）現代では、DNS やサービス名のルックアップなど、あらゆる種類の良いことをやってくれる <code>getaddrinfo()</code> という関数があり、さらに必要な <code>struct</code> も埋めてくれます！</p>
 <p>それでは、ご覧ください！</p>
 <pre><code class="language-c">#include &lt;sys/types.h&gt;
 #include &lt;sys/socket.h&gt;
@@ -185,8 +187,8 @@ freeaddrinfo(servinfo); // free the linked-list
 </code></pre>
 <p><code>ai_family</code> を <code>AF_UNSPEC</code> に設定することで、IPv4 や IPv6 を使うかどうかを気にしないことを表明していることに注意してください。もし、どちらか一方だけを使いたい場合は、<code>AF_INET</code> または <code>AF_INET6</code> に設定することができます。</p>
 <p>また、<code>AI_PASSIVE</code> フラグがあるのがわかると思いますが、これは <code>getaddrinfo()</code> にローカルホストのアドレスをソケット構造体に割り当てるように指示しています。これは、ハードコードする必要がないのがいいところです。(あるいは、<code>getaddrinfo()</code> の最初のパラメータとして特定のアドレスを入れることもできます。私は現在 <code>NULL</code> を持っています。)</p>
-<p>そして、呼び出しを行います。エラー(<code>getaddrinfo()</code> が0以外を返す)があれば、ご覧のように関数 <code>gai_strerror()</code> を使ってそれを表示することができます。しかし、すべてがうまくいけば、<code>servinfo</code> は <code>struct addrinfos</code> のリンクリストを指し、それぞれのリストには後で使用できる何らかの <code>sockaddr</code> 構造体が含まれています！素晴らしい！</p>
-<p>最後に、<code>getaddrinfo()</code> が快く割り当ててくれたリンクリストをすべて使い終わったら、<code>freeaddrinfo()</code> を呼び出してすべてを解放することができます(そうすべき)です。</p>
+<p>そして、呼び出しを行います。エラー（<code>getaddrinfo()</code> が <code>0</code> 以外を返します）があれば、ご覧のように関数 <code>gai_strerror()</code> を使ってそれを表示することができます。しかし、すべてがうまくいけば、<code>servinfo</code> は <code>struct addrinfos</code> のリンクリストを指し、それぞれのリストには後で使用できる何らかの <code>sockaddr</code> 構造体が含まれています！素晴らしい！</p>
+<p>最後に、<code>getaddrinfo()</code> が快く割り当ててくれたリンクリストをすべて使い終わったら、<code>freeaddrinfo()</code> を呼び出してすべてを解放することができます（そうすべき）です。</p>
 <p>ここでは、クライアントが特定のサーバ、例えば &quot;www.example.net&quot; ポート 3490 に接続したい場合のサンプルコールを紹介します。繰り返しますが、これは実際には接続しませんが、後で使用する構造をセットアップしています。</p>
 <pre><code class="language-c">int status;
 struct addrinfo hints;
@@ -265,7 +267,7 @@ int main(int argc, char *argv[])
 }
 </code></pre>
 <p>ご覧のように、このコードはコマンドラインで渡されたものに対して <code>getaddrinfo()</code> を呼び出し、<code>res</code> が指すリンクリストを埋めて、そのリストを繰り返し表示して何かを出力したりすることができます。</p>
-<p>(そこには、IP バージョンによって異なるタイプの <code>struct sockaddrs</code> を掘り下げなければならない、ちょっとした醜さがあります。申し訳ありません。他にいい方法はないかなぁ...)</p>
+<p>（そこには、IP バージョンによって異なるタイプの <code>struct sockaddrs</code> を掘り下げなければならない、ちょっとした醜さがあります。申し訳ありません。他にいい方法はないかなぁ...）</p>
 <p>サンプル走行！みんな大好きスクリーンショット。</p>
 <pre><code>$ showip www.example.net
 IP addresses for www.example.net:

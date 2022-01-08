@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -145,7 +147,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="63-データグラムソケット"><a class="header" href="#63-データグラムソケット">6.3 データグラムソケット</a></h1>
-<p>UDP データグラムソケットの基本は、上記の <a href="docs/system-calls-or-bust/#sendtorecv">5.8 sendto() and recvfrom()</a> ですでに説明しましたので、ここでは <code>talker.c</code> と <code>listener.c</code> という2つのサンプルプログラムのみを紹介します。</p>
+<p>UDP データグラムソケットの基本は、上記の <a href="../system-calls-or-bust/sendto-and-recvfrom-talk-to-me-GDRAM-style.html">5.8 sendto() and recvfrom()</a> ですでに説明しましたので、ここでは <code>talker.c</code> と <code>listener.c</code> という2つのサンプルプログラムのみを紹介します。</p>
 <p><code>listener</code> は、ポート 4950 で入ってくるパケットを待つマシンに座っています。<code>talker</code> は、指定されたマシンのそのポートに、ユーザがコマンドラインに入力したものを含むパケットを送信します。</p>
 <p>データグラムソケットはコネクションレス型であり、パケットを無慈悲に発射するだけなので、クライアントとサーバには IPv6 を使用するように指示することにしています。こうすることで、サーバが IPv6 でリッスンしていて、クライアントが IPv4 で送信するような状況を避けることができます。（接続された TCP ストリームソケットの世界では、まだ不一致があるかもしれませんが、一方のアドレスファミリーの <code>connect()</code> でエラーが発生すると、他方のアドレスファミリーの再試行が行われます。）</p>
 <p><a href="https://beej.us/guide/bgnet/examples/listener.c">listener.c ソースコード</a></p>
@@ -315,7 +317,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 </code></pre>
-<p>と、これだけです！<code>listener</code> をあるマシンで実行し、次に <code>takler</code> を別のマシンで実行します。それらのコミュニケーションをご覧ください！核家族で楽しめるG級興奮体験です！</p>
+<p>と、これだけです！<code>listener</code> をあるマシンで実行し、次に <code>takler</code> を別のマシンで実行します。それらのコミュニケーションをご覧ください！核家族で楽しめる G 級興奮体験です！</p>
 <p>今回はサーバを動かす必要もありません。<code>talker</code> はただ楽しくパケットをエーテルに発射し、相手側に <code>recvfrom()</code> の準備が出来ていなければ消えてしまうのです。UDP データグラムソケットを使用して送信されたデータは、到着が保証されていないことを思い出してください！</p>
 <p>過去に何度も述べた、もうひとつの小さなディテールを除いては、コネクテッド・データグラム・ソケットです。このドキュメントのデータグラムセクションにいるので、ここでこれについて話す必要があります。例えば、<code>talker</code> が <code>connect()</code> を呼び出して <code>listener</code> のアドレスを指定したとします。それ以降、<code>talker</code> は <code>connect()</code> で指定されたアドレスにのみ送信と受信ができます。このため、<code>sendto()</code> と <code>recvfrom()</code> を使う必要はなく、単に <code>send()</code> と <code>recv()</code> を使えばいいのです。</p>
 

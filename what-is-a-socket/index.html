@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -148,9 +150,9 @@
 <p>&quot;ソケット&quot;という言葉をよく耳にしますが、そもそも&quot;ソケット&quot;とは何なのでしょうか？それは、標準的な Unix のファイルディスクリプタを使って他のプログラムと会話するための方法です。</p>
 <p>なんと？</p>
 <p>Ok--- Unix のハッカーが &quot;Unix では何でもファイルなんだ！&quot;と言ったのを聞いたことがあるかもしれません。その人が言っているのは、Unix のプログラムが何らかの I/O を行うとき、ファイル記述子に対して読み書きを行うという事実のことかもしれません。ファイルディスクリプタは、単純に、開いているファイルに関連する整数です。しかし、このファイルは、ネットワーク接続、FIFO、パイプ、ターミナル、ディスク上のファイルなど、あらゆるものになり得ます（ここが重要）。Unix ではすべてがファイルなのです！だから、インターネット上で他のプログラムと通信したいときは、ファイル記述子を介して行うことになるんだ。と思ってください。</p>
-<p>&quot;ネットワーク通信のためのファイルディスクリプタはどこで手に入るのですか、お利口さん？&quot;というのが、今あなたが考えている最後の質問でしょうが、とにかくそれに答えてあげましょう。あなたは <code>socket()</code> システムルーチンを呼び出すのです。このルーチンはソケットディスクリプタを返すので、それを使って <code>send()</code> と <code>recv()</code> (<a href="docs/man-pages/#sendman"><code>man send</code></a>, <a href="docs/man-pages/#recvman"><code>man recv</code></a>) という特別なソケットコールを使って通信を行います。</p>
+<p>&quot;ネットワーク通信のためのファイルディスクリプタはどこで手に入るのですか、お利口さん？&quot;というのが、今あなたが考えている最後の質問でしょうが、とにかくそれに答えてあげましょう。あなたは <code>socket()</code> システムルーチンを呼び出すのです。このルーチンはソケットディスクリプタを返すので、それを使って <code>send()</code> と <code>recv()</code>（<a href="../man-pages/send-sendto.html"><code>man send</code></a>, <a href="../man-pages/recv-recvfrom.html"><code>man recv</code></a>）という特別なソケットコールを使って通信を行います。</p>
 <p>&quot;でもね！&quot;あなたは今頃、そう叫んでいるかもしれません。&quot;ファイルディスクリプタなら、どうしてネプチューンの名において、通常の <code>read()</code> と <code>write()</code> の呼び出しでソケットを通して通信できないんだ？&quot;と。短い答えは、&quot;できる！&quot;です。もっと長い答えは、&quot;できるけど、<code>send()</code> と <code>recv()</code> はデータ転送をより大きく制御できる &quot;です。</p>
-<p>次は何？どうでしょう、ソケットにはいろいろな種類がありますね。DARPA インターネットアドレス (インターネットソケット)、ローカルノード上のパス名 (Unix ソケット)、CCITT X.25 アドレス (X.25 ソケット、無視しても大丈夫)、そしておそらくあなたが実行する Unix のフレーバーに応じて他の多くの種類があります。この文書では、最初の&quot;インターネットソケット&quot;のみを扱います。</p>
+<p>次は何？どうでしょう、ソケットにはいろいろな種類がありますね。DARPA インターネットアドレス（インターネットソケット）、ローカルノード上のパス名（Unix ソケット）、CCITT X.25 アドレス（X.25 ソケット、無視しても大丈夫）、そしておそらくあなたが実行する Unix のフレーバーに応じて他の多くの種類があります。この文書では、最初の&quot;インターネットソケット&quot;のみを扱います。</p>
 
                     </main>
 

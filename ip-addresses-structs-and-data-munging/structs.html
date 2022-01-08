@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -169,7 +171,7 @@
 <p>これはリンクされたリストであることに注意してください：<code>ai_next</code> は次の要素を指しています---そこから選択するためにいくつかの結果があるかもしれません。私は最初にうまくいった結果を使いますが、あなたは異なるビジネスニーズを持っているかもしれません。何でもかんでも知ってるわけじゃないんです！</p>
 <p><code>struct addrinfo</code> の <code>ai_addr</code> フィールドは <code>struct sockaddr</code> へのポインタであることがわかります。ここからが、IP アドレス構造体の中身についての細かい話になります。</p>
 <p>通常、これらの構造体に書き込む必要はありません。多くの場合、<code>addrinfo</code> 構造体を埋めるために <code>getaddrinfo()</code> を呼び出すだけでよいでしょう。しかし、これらの構造体の内部を覗いて値を取得する必要があるため、ここでそれらを紹介します。</p>
-<p>(また、構造体 <code>addrinfo</code> が発明される前に書かれたコードはすべて、これらのものをすべて手作業で梱包していたので、まさにそのような IPv4 コードを多く見かけることができます。このガイドの古いバージョンなどでもそうです)。</p>
+<p>（また、構造体 <code>addrinfo</code> が発明される前に書かれたコードはすべて、これらのものをすべて手作業で梱包していたので、まさにそのような IPv4 コードを多く見かけることができます。このガイドの古いバージョンなどでもそうです。）</p>
 <p>ある構造体は IPv4 で、ある構造体は IPv6 で、ある構造体はその両方です。どれが何なのか、メモしておきます。</p>
 <p>とにかく、構造体 <code>sockaddr</code> は、多くの種類のソケットのためのソケットアドレス情報を保持します。</p>
 <pre><code class="language-c">struct sockaddr {
@@ -177,7 +179,7 @@
     char              sa_data[14];  // 14 bytes of protocol address
 };
 </code></pre>
-<p><code>sa_family</code> には様々なものを指定できますが、この文書ではすべて <code>AF_INET</code> (IPv4) または <code>AF_INET6</code> (IPv6) とします。<code>sa_data</code> にはソケットの宛先アドレスとポート番号を指定します。<code>sa_data</code> にアドレスを手で詰め込むのは面倒なので、これはかなり扱いにくいです。</p>
+<p><code>sa_family</code> には様々なものを指定できますが、この文書ではすべて <code>AF_INET</code>（IPv4）または <code>AF_INET6</code>（IPv6）とします。<code>sa_data</code> にはソケットの宛先アドレスとポート番号を指定します。<code>sa_data</code> にアドレスを手で詰め込むのは面倒なので、これはかなり扱いにくいです。</p>
 <p>構造体 <code>sockaddr</code> を扱うために、プログラマは IPv4 で使用する構造体 <code>sockaddr_in</code>（&quot;in&quot; は &quot;Internet&quot; の意）を並列に作成しました。</p>
 <p><code>sockaddr_in</code> 構造体へのポインタは <code>sockaddr</code> 構造体へのポインタにキャストすることができ、その逆も可能です。つまり、<code>connect()</code> が <code>struct sockaddr*</code> を要求しても、<code>struct sockaddr_in</code> を使用して、最後の最後でキャストすることができるのです！</p>
 <pre><code class="language-c">// (IPv4 only--see struct sockaddr_in6 for IPv6)

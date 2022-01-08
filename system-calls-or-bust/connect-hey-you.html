@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -175,7 +177,7 @@ sockfd = socket(res-&gt;ai_family, res-&gt;ai_socktype, res-&gt;ai_protocol);
 
 connect(sockfd, res-&gt;ai_addr, res-&gt;ai_addrlen);
 </code></pre>
-<p>繰り返しになりますが、古いタイプのプログラムでは、独自の <code>struct sockaddr_ins</code> を作成して <code>connect()</code> に渡していました。必要であれば、そうすることができます。上の <a href="docs/system-calls-or-bust/#bind"><code>bind()</code></a> の節で同様のことを書いています。</p>
+<p>繰り返しになりますが、古いタイプのプログラムでは、独自の <code>struct sockaddr_ins</code> を作成して <code>connect()</code> に渡していました。必要であれば、そうすることができます。上の <a href="..//system-calls-or-bust/bind-what-port-am-i-on.html"><code>bind()</code></a> の章で同様のことを書いています。</p>
 <p><code>connect()</code> の戻り値を必ず確認してください。エラー時に <code>-1</code> が返され、<code>errno</code> という変数がセットされます。</p>
 <p>また、<code>bind()</code> を呼んでいないことに注意してください。基本的に、私たちはローカルのポート番号には関心がありません。カーネルは私たちのためにローカルポートを選択し、接続先のサイトは自動的にこの情報を取得します。心配はいりません。</p>
 

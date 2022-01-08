@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -154,7 +156,7 @@
 </figure>
 <p>クライアントとサーバ間の情報のやりとりは、上の図のようにまとめられます。</p>
 <p>クライアントとサーバのペアは、<code>SOCK_STREAM</code>、<code>SOCK_DGRAM</code>、その他（同じことを話している限り）何でも話すことができることに注意してください。クライアントとサーバのペアの良い例としては、<code>telnet</code>/<code>telnetd</code>、<code>ftp</code>/<code>ftpd</code>、<code>Firefox</code>/<code>Apache</code> などがあります。<code>ftp</code> を使うときはいつも、リモートプログラム <code>ftpd</code> があなたにサービスを提供します。</p>
-<p>多くの場合、1つのマシンには1つのサーバしかなく、そのサーバは <code>fork()</code> を使用して複数のクライアントを処理します。基本的なルーチンは、サーバが接続を待ち、それを <code>accept()</code> し、それを処理するために子プロセスを <code>fork()</code> する、というものです。これが、次の節で紹介するサンプルサーバが行っていることです。</p>
+<p>多くの場合、1つのマシンには1つのサーバしかなく、そのサーバは <code>fork()</code> を使用して複数のクライアントを処理します。基本的なルーチンは、サーバが接続を待ち、それを <code>accept()</code> し、それを処理するために子プロセスを <code>fork()</code> する、というものです。これが、次の章で紹介するサンプルサーバが行っていることです。</p>
 
                     </main>
 

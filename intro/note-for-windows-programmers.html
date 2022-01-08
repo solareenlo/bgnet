@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -152,7 +154,7 @@
 <p>Windows 用の Unix ツールの集合体である <a href="https://cygwin.com/">Cygwin</a> をインストールするのもいい方法です。そうすると、これらのプログラムはすべて修正なしでコンパイルできるようになると、人づてに聞いたことがあります。</p>
 <p>もうひとつ、<a href="https://docs.microsoft.com/en-us/windows/wsl/about">Windows Subsystem for Linux</a> も検討してみてください。これは基本的に、Windows 10 に Linux の VM 的なものをインストールすることができます。これもまた、間違いなく位置づけられるでしょう。</p>
 <p>しかし、中には純粋な Windows のやり方で物事を進めたいと思う人もいるかもしれません。それはとてもガッツのあることで、こうすればいいんです。すぐに Unix を買ってきてください! いやいや---冗談です。最近は Windows フレンドリー(笑)なはずなんですが...。</p>
-<p>これは、あなたがしなければならないことです（<a href="">Cygwin</a>をインストールしない限り！）：まず、ここで私が言及するシステムヘッダーファイルのほとんどを無視してください。あなたがインクルードする必要があるのは、以下のものだけです。</p>
+<p>これは、あなたがしなければならないことです（<a href="https://cygwin.com/">Cygwin</a>をインストールしない限り！）：まず、ここで私が言及するシステムヘッダーファイルのほとんどを無視してください。あなたがインクルードする必要があるのは、以下のものだけです。</p>
 <pre><code class="language-c">#include &lt;winsock.h&gt;
 </code></pre>
 <p>待ってください！ソケットライブラリで何かする前に <code>WSAStartup()</code> を呼び出す必要があります。これを行うためのコードは以下のようなものです。</p>

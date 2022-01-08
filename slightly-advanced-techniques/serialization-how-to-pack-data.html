@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -164,7 +166,7 @@
 <p>（この章を本格的に始める前に、これを行うためのライブラリは世の中に存在し、自分でローリングして移植性とエラーのない状態を維持することはかなり困難であることをお伝えしておきます。ですから、自分で実装することを決める前に、いろいろと調べて下調べをしてください。私は、このようなことがどのように機能するのかに興味がある人のために、ここに情報を記載します。）</p>
 <p>実は、上記の方法はどれも欠点と利点があるのですが、一般的には、先ほど言ったように、私は3番目の方法を好みます。しかし、まず、他の2つの方法の欠点と利点について説明しましょう。</p>
 <p>最初の方法は、数字をテキストとしてエンコードしてから送信するもので、電線を伝わってくるデータを簡単に印刷して読むことができるという利点があります。<a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">インターネットリレーチャット（IRC）</a>のように、帯域幅を必要としない状況で使用するには、人間が読めるプロトコルが優れている場合もあります。しかし、変換に時間がかかるという欠点があり、その結果はほとんど常に元の数値よりも多くのスペースを取ってしまいます。</p>
-<p>方法2：生データを渡します。これは非常に簡単です（しかし危険です！）。送信するデータへのポインタを取り、それを使って send を呼び出すだけです。</p>
+<p>方法2：生データを渡します。これは非常に簡単です（しかし危険です！）。送信するデータへのポインタを取り、それを使って <code>send()</code> を呼び出すだけです。</p>
 <pre><code class="language-c">double d = 3490.15926535;
 
 send(s, &amp;d, sizeof d, 0);  /* DANGER--non-portable! */
@@ -227,7 +229,7 @@ int main(void)
 </code></pre>
 <p>プラス面は、小さくてシンプル、そして速いことです。32767 より大きい数を格納しようとすると、とても満足できるものではありません！マイナス面は、スペースを有効活用できないことと、範囲が大きく制限されることです。上の例では、小数点以下の桁数が正しく保存されていないこともおわかりいただけると思います。</p>
 <p>代わりに何ができるのか？浮動小数点数を保存するための標準規格は <a href="https://en.wikipedia.org/wiki/IEEE_754">IEEE-754</a> として知られています。ほとんどのコンピュータは内部でこのフォーマットを使って浮動小数点演算を行っているので、厳密に言えば変換する必要はないのです。しかし、ソースコードの移植性を重視するのであれば、必ずしもそのような前提は成り立ちません。（一方、高速に動作させたいのであれば、変換を行う必要のないプラットフォームでは最適化すべきです！それが <code>htons()</code> やその類いの処理です。）</p>
-<p>以下は、浮動小数点と倍数を IEEE-754 フォーマットにエンコードするコードです。（ほとんど--- NaN や Infinity はエンコードしませんが、そのように修正することができます。）</p>
+<p>以下は、<a href="https://beej.us/guide/bgnet/examples/ieee754.c">浮動小数点と倍数を IEEE-754 フォーマットにエンコードするコード</a>です。（ほとんど--- NaN や Infinity はエンコードしませんが、そのように修正することができます。）</p>
 <pre><code class="language-c">#define pack754_32(f) (pack754((f), 32, 8))
 #define pack754_64(f) (pack754((f), 64, 11))
 #define unpack754_32(i) (unpack754((i), 32, 8))
@@ -334,7 +336,7 @@ double after  : 3.14159265358979311600
 <p>Kernighan と Pike の <a href="https://www.amazon.com/gp/product/020161586X/ref=as_li_tl?ie=UTF8&amp;tag=beejus0c-20&amp;camp=1789&amp;creative=9325&amp;linkCode=as2&amp;creativeASIN=020161586X&amp;linkId=b3ac9370d2df122adcce0316aed99924">The Practice of Programming</a> という本の中で、彼らは <code>printf()</code> に似た関数である <code>pack()</code> と <code>unpack()</code> を実装し、まさにこのようなことをやっています。リンクしたいのですが、どうやらこれらの関数はこの本の他のソースと一緒にオンラインにないようです。</p>
 <p>（The Practice of Programming は素晴らしい読み物です。ゼウスは私が勧めるたびに子猫を救ってくれます。）</p>
 <p>この時点で、私は使ったことはありませんが、完全に立派に見える <a href="https://github.com/protobuf-c/protobuf-c">Protocol Buffers implementation in C</a> へのポインタを落とすつもりです。Python や Perl のプログラマは、同じことを実現するために、それぞれの言語の <code>pack()</code> と <code>unpack()</code> 関数をチェックアウトしたいと思うでしょう。また、Java には大きな Serializable インターフェースがあり、同じような方法で使用することができます。</p>
-<p>しかし、C言語で独自のパッキングユーティリティを書きたい場合、K&amp;P のトリックは、変数の引数リストを使って <code>printf()</code> 風の関数を作り、パケットを構築することです。 以下は、それを元に[<a href="https://beej.us/guide/bgnet/examples/pack2.c">私が自作したバージョン</a>ですが、うまくいけば、このようなものがどのように動作するかのアイデアを与えるのに十分なものです。</p>
+<p>しかし、C言語で独自のパッキングユーティリティを書きたい場合、K&amp;P のトリックは、変数の引数リストを使って <code>printf()</code> 風の関数を作り、パケットを構築することです。 以下は、それを元に<a href="https://beej.us/guide/bgnet/examples/pack2.c">私が自作したバージョン</a>ですが、うまくいけば、このようなものがどのように動作するかのアイデアを与えるのに十分なものです。</p>
 <p>（このコードは、上記の <code>pack754()</code> 関数を参照しています。<code>packi*()</code> 関数はおなじみの <code>htons()</code> ファミリーと同じように動作しますが、別の整数の代わりに <code>char</code> 配列にパックする点が異なります。）</p>
 <pre><code class="language-c">#include &lt;stdio.h&gt;
 #include &lt;ctype.h&gt;

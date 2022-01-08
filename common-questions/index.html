@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -148,7 +150,7 @@
 <h3 id="81-ヘッダーファイルはどこで入手できますか"><a class="header" href="#81-ヘッダーファイルはどこで入手できますか">8.1 ヘッダーファイルはどこで入手できますか？</a></h3>
 <p>もし、あなたのシステムに既にないのであれば、おそらく必要ないでしょう。あなたのプラットフォームのマニュアルを参照してください。Windows 用にビルドする場合は、<code>#include &lt;winsock.h&gt;</code> だけが必要です。</p>
 <h3 id="82-bind-が-address-already-in-use-と報告した場合どうすればよいのでしょうか"><a class="header" href="#82-bind-が-address-already-in-use-と報告した場合どうすればよいのでしょうか">8.2 <code>bind()</code> が &quot;Address already in use&quot; と報告した場合、どうすればよいのでしょうか？</a></h3>
-<p>リスニングしているソケットで <code>SO_REUSEADDR</code> オプションを指定して <code>setsockopt()</code> を使用する必要があります。例として、<a href="docs/system-calls-or-bust/#bind"><code>bind()</code></a> の章と <a href="docs/slightly-advanced-techniques/#select"><code>select()</code></a> の章をチェックしてみてください。</p>
+<p>リスニングしているソケットで <code>SO_REUSEADDR</code> オプションを指定して <code>setsockopt()</code> を使用する必要があります。例として、<a href="../system-calls-or-bust/bind-what-port-am-i-on.html"><code>bind()</code> の章</a>と <a href="../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.html"><code>select()</code> の章</a>をチェックしてみてください。</p>
 <h3 id="83-システム上のオープンソケットのリストを取得するにはどうすればよいですか"><a class="header" href="#83-システム上のオープンソケットのリストを取得するにはどうすればよいですか">8.3 システム上のオープンソケットのリストを取得するにはどうすればよいですか？</a></h3>
 <p><code>netstat</code> を使用します。詳しくは <code>man</code> ページをチェックしてください。しかし、タイプするだけで良い出力が得られるはずです。</p>
 <pre><code>$ netstat
@@ -163,17 +165,17 @@
 <h3 id="86-リモート側が接続を閉じたかどうかを判断するにはどうすればよいですか"><a class="header" href="#86-リモート側が接続を閉じたかどうかを判断するにはどうすればよいですか">8.6 リモート側が接続を閉じたかどうかを判断するにはどうすればよいですか？</a></h3>
 <p><code>recv()</code> が <code>0</code> を返すのでわかります。</p>
 <h3 id="87-ping-ユーティリティを実装するにはicmp-とは何ですか生ソケットと-sock_raw-についてもっと詳しく知りたいのですがどこに行けばよいですか"><a class="header" href="#87-ping-ユーティリティを実装するにはicmp-とは何ですか生ソケットと-sock_raw-についてもっと詳しく知りたいのですがどこに行けばよいですか">8.7 &quot;ping&quot; ユーティリティを実装するには？ICMP とは何ですか？生ソケットと <code>SOCK_RAW</code> についてもっと詳しく知りたいのですが、どこに行けばよいですか?</a></h3>
-<p>生ソケットに関するすべての疑問は、<a href="#books">W. Richard Stevens の UNIX Network Programming books</a> で解決されるでしょう。また、<a href="http://www.unpbook.com/src.html">オンラインの Stevens の UNIX Network Programming</a> のソースコードの <code>ping/</code> サブディレクトリも見てみてください。</p>
+<p>生ソケットに関するすべての疑問は、<a href="../more-references/books.html">W. Richard Stevens の UNIX Network Programming books</a> で解決されるでしょう。また、<a href="http://www.unpbook.com/src.html">オンラインの Stevens の UNIX Network Programming</a> のソースコードの <code>ping/</code> サブディレクトリも見てみてください。</p>
 <h3 id="88-connect-の呼び出しのタイムアウトを変更または短縮するにはどうすればよいですか"><a class="header" href="#88-connect-の呼び出しのタイムアウトを変更または短縮するにはどうすればよいですか">8.8 <code>connect()</code> の呼び出しのタイムアウトを変更または短縮するにはどうすればよいですか？</a></h3>
 <p>W. Richard Stevens と全く同じ答えを出すのではなく、<a href="http://www.unpbook.com/src.html">UNIX Network Programming のソースコードにある <code>lib/connect_nonb.c</code></a> を参照することにしましょう。</p>
-<p>その要点は、<code>socket()</code> でソケットディスクリプタを作成し、<a href="docs/slightly-advanced-techniques/#blocking">それをノンブロッキングに設定</a>して <code>connect()</code> を呼び、すべてがうまくいけば <code>connect()</code> は直ちに <code>-1</code> を返して <code>errno</code> は <code>EINPROGRESS</code> に設定されるということです。その後、好きなタイムアウトで <a href="docs/slightly-advanced-techniques/#select"><code>select()</code></a> を呼び出し、ソケットディスクリプタをリードとライトの両方で渡します。タイムアウトしなければ、<code>connect()</code> の呼び出しが完了したことになります。このとき、<code>getsockopt()</code> に <code>SO_ERROR</code> オプションをつけて <code>connect()</code> 呼び出しからの戻り値を取得する必要があります（エラーがなければ <code>0</code> になるはずです）。</p>
+<p>その要点は、<code>socket()</code> でソケットディスクリプタを作成し、<a href="../slightly-advanced-techniques/blocking.html">それをノンブロッキングに設定</a>して <code>connect()</code> を呼び、すべてがうまくいけば <code>connect()</code> は直ちに <code>-1</code> を返して <code>errno</code> は <code>EINPROGRESS</code> に設定されるということです。その後、好きなタイムアウトで <a href="../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.html"><code>select()</code></a> を呼び出し、ソケットディスクリプタをリードとライトの両方で渡します。タイムアウトしなければ、<code>connect()</code> の呼び出しが完了したことになります。このとき、<code>getsockopt()</code> に <code>SO_ERROR</code> オプションをつけて <code>connect()</code> 呼び出しからの戻り値を取得する必要があります（エラーがなければ <code>0</code> になるはずです）。</p>
 <p>最後に、データ転送を開始する前に、ソケットを再びブロッキングに設定する必要があります。</p>
 <p>この方法には、接続中に何か他のことをすることができるという利点もあることに注意してください。例えば、タイムアウトを 500ms のような低い値に設定し、タイムアウトするたびに画面上のインジケータを更新し、それから再び <code>select() </code> を呼び出すことができます。例えば、<code>select()</code> を20回ほど呼び出してタイムアウトしたら、そろそろ接続をあきらめる時期だとわかるでしょう。</p>
 <p>私が言ったように、スティーブンスのソースに完璧に優れた例があるので、チェックしてみてください。</p>
 <h3 id="89-windows-用にビルドするにはどうしたらいいですか"><a class="header" href="#89-windows-用にビルドするにはどうしたらいいですか">8.9 Windows 用にビルドするにはどうしたらいいですか？</a></h3>
-<p>まず、Windows を削除し、Linux または BSD をインストールします。<code>};-)</code>。いや、実際には、導入部の <a href="docs/intro/#windows">Windows 用のビルドの章</a>を見ればいいんですけどね。</p>
+<p>まず、Windows を削除し、Linux または BSD をインストールします。<code>};-)</code>。いや、実際には、導入部の <a href="../intro/note-for-windows-programmers.html">Windows 用のビルドの章</a>を見ればいいんですけどね。</p>
 <h3 id="810-solarissunos-用にビルドするにはどうしたらいいですかコンパイルしようとするとリンカエラーが出ます"><a class="header" href="#810-solarissunos-用にビルドするにはどうしたらいいですかコンパイルしようとするとリンカエラーが出ます">8.10 Solaris/SunOS 用にビルドするにはどうしたらいいですか？コンパイルしようとするとリンカエラーが出ます！</a></h3>
-<p>リンカーエラーは、Sun ボックスがソケットライブラリを自動的にコンパイルしないために起こります。この方法の例については、導入部の <a href="docs/intro/#solaris">Solaris/SunOS 用のビルドに関する章</a> を参照してください。</p>
+<p>リンカーエラーは、Sun ボックスがソケットライブラリを自動的にコンパイルしないために起こります。この方法の例については、導入部の <a href="../intro/note-for-solaris-sunos-programmers.html">Solaris/SunOS 用のビルドに関する章</a> を参照してください。</p>
 <h3 id="811-select-がシグナルで落ち続けるのはなぜか"><a class="header" href="#811-select-がシグナルで落ち続けるのはなぜか">8.11 <code>select()</code> がシグナルで落ち続けるのはなぜか？</a></h3>
 <p>シグナルはブロックされたシステムコールに <code>-1</code> を返し、<code>errno</code> に <code>EINTR</code> をセットする傾向があります。<code>sigaction()</code> でシグナルハンドラをセットアップするときに、フラグ <code>SA_RESTART</code> を設定することができます。これは、システムコールが中断された後に再開することを想定したものです。</p>
 <p>当然ながら、いつもうまくいくわけではありません。</p>
@@ -190,7 +192,7 @@ if ((err = select(fdmax+1, &amp;readfds, NULL, NULL, NULL)) == -1) {
 </code></pre>
 <p>もちろん、この場合は <code>goto</code> を使う必要はありません。他の構造体を使用して制御することができます。しかし、私は <code>goto</code> 文の方が実際きれいだと思うんです。</p>
 <h3 id="812-recv-の呼び出しにタイムアウトを実装するにはどうすればよいですか"><a class="header" href="#812-recv-の呼び出しにタイムアウトを実装するにはどうすればよいですか">8.12 <code>recv()</code> の呼び出しにタイムアウトを実装するにはどうすればよいですか？</a></h3>
-<p><a href="docs/slightly-advanced-techniques/#select"><code>select()</code></a>を使いましょう！これは、読み込みたいソケットディスクリプタに対して、タイムアウトパラメータを指定することができます。あるいは、このように関数全体を一つの関数で包むこともできます。</p>
+<p><a href="../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.html"><code>select()</code></a>を使いましょう！これは、読み込みたいソケットディスクリプタに対して、タイムアウトパラメータを指定することができます。あるいは、このように関数全体を一つの関数で包むこともできます。</p>
 <pre><code class="language-c">#include &lt;unistd.h&gt;
 #include &lt;sys/time.h&gt;
 #include &lt;sys/types.h&gt;
@@ -256,7 +258,7 @@ else if (n == -2) {
 <p>ただ、サーバがやったことをクライアントがきちんと元に戻してくれれば、いくら中間ステップを追加しても、最終的にはデータは大丈夫です。</p>
 <p>つまり、私のコードを使うために必要なことは、データが読み込まれる場所と、ネットワーク上で（<code>send()</code> を使って）データが送信される場所の間にある場所を見つけ、そこに暗号化を行うコードを貼り付けるだけです。</p>
 <h3 id="814-pf_inet-をずっと見ているのですがこれは何ですかaf_inetと関係があるのでしょうか"><a class="header" href="#814-pf_inet-をずっと見ているのですがこれは何ですかaf_inetと関係があるのでしょうか">8.14 &quot;<code>PF_INET</code>&quot; をずっと見ているのですが、これは何ですか？<code>AF_INET</code>と関係があるのでしょうか？</a></h3>
-<p>はい、そうです。詳しくは <a href="docs/system-calls-or-bust/#socket"><code>socket()</code> の項</a>を参照してください。</p>
+<p>はい、そうです。詳しくは <a href="../system-calls-or-bust/socket-get-the-file-descriptor.html"><code>socket()</code> の章</a>を参照してください。</p>
 <h3 id="815-クライアントからシェルコマンドを受け取って実行するサーバを書くにはどうしたらいいでしょうか"><a class="header" href="#815-クライアントからシェルコマンドを受け取って実行するサーバを書くにはどうしたらいいでしょうか">8.15 クライアントからシェルコマンドを受け取って実行するサーバを書くにはどうしたらいいでしょうか？</a></h3>
 <p>簡単のために、クライアントが <code>connect()</code>s, <code>send()</code>s, <code>close()</code>s で接続したとしましょう（つまり、クライアントが再び接続しない限り、その後のシステムコールはありません）。</p>
 <p>クライアントがたどるプロセスはこうです。</p>
@@ -283,8 +285,8 @@ else if (n == -2) {
 <p>このように、クライアントが送信したものをサーバが実行し始めると、セキュリティはかなり大きな問題になります。</p>
 <h3 id="816-slew-でデータを送っているのですがrecv-すると一度に-536-バイトか-1460-バイトしか受信できませんしかし私のローカルマシンで実行するとすべてのデータを同時に受信することができますどうなっているのでしょうか"><a class="header" href="#816-slew-でデータを送っているのですがrecv-すると一度に-536-バイトか-1460-バイトしか受信できませんしかし私のローカルマシンで実行するとすべてのデータを同時に受信することができますどうなっているのでしょうか">8.16 slew でデータを送っているのですが、<code>recv()</code> すると、一度に 536 バイトか 1460 バイトしか受信できません。しかし、私のローカルマシンで実行すると、すべてのデータを同時に受信することができます。どうなっているのでしょうか？</a></h3>
 <p>物理媒体が処理できる最大サイズであるMTUに当たっています。ローカルマシンでは、8K 以上を問題なく処理できるループバックデバイスを使用しています。しかし、Ethernet では、ヘッダーを含めて 1500 バイトしか扱えないので、その限界にぶつかってしまうのです。モデムでは、576 MTU（これもヘッダ付き）で、さらに低い制限にぶつかります。</p>
-<p>まず、すべてのデータが送信されていることを確認する必要があります。（詳しくは <a href="docs/slightly-advanced-techniques/#sendall"><code>sendall()</code></a> 関数の実装を参照してください。）それが確認できたら、すべてのデータが読み込まれるまで、ループで <code>recv()</code> を呼び出す必要があります。</p>
-<p><code>recv()</code> を複数回呼び出して完全なデータパケットを受信する方法については、<a href="docs/slightly-advanced-techniques/#sonofdataencap">7.6 Son of Data Encapsulation</a> の節を読んでください。</p>
+<p>まず、すべてのデータが送信されていることを確認する必要があります。（詳しくは <a href="../slightly-advanced-techniques/handling-partial-sends.html"><code>sendall()</code></a> 関数の実装を参照してください。）それが確認できたら、すべてのデータが読み込まれるまで、ループで <code>recv()</code> を呼び出す必要があります。</p>
+<p><code>recv()</code> を複数回呼び出して完全なデータパケットを受信する方法については、<a href="../slightly-advanced-techniques/son-of-data-encapsulation.html">7.6 データカプセル化の子</a> の章を読んでください。</p>
 <h3 id="817-私は-windows-マシンを使っていますがfork-システムコールも-struct-sigaction-のようなものも持っていませんどうしたらいいでしょうか"><a class="header" href="#817-私は-windows-マシンを使っていますがfork-システムコールも-struct-sigaction-のようなものも持っていませんどうしたらいいでしょうか">8.17 私は Windows マシンを使っていますが、<code>fork()</code> システムコールも <code>struct sigaction</code> のようなものも持っていません。どうしたらいいでしょうか？</a></h3>
 <p>もし、どこかにあるとすれば、コンパイラに同梱されているであろう POSIX ライブラリでしょう。私は Windows を持っていないので、答えようがないのですが、Microsoft には POSIX 互換性レイヤーがあり、そこに <code>fork()</code> があるように記憶しています。（そして多分、<code>sigaction</code> も。）</p>
 <p>VC++ 付属のヘルプで &quot;fork&quot; または &quot;POSIX&quot; を検索して、何か手がかりがないか見てみてください。</p>
@@ -296,7 +298,7 @@ else if (n == -2) {
 <p>ファイアウォールの穴は、決して軽視できないものであることを認識しておいてください。悪い人が内部ネットワークにアクセスできないようにしなければなりません。初心者の場合、ソフトウェアを安全にするのは想像以上に難しいのです。</p>
 <p>シスアドを怒らせないようにね。<code>;-)</code></p>
 <h3 id="819-パケットスニファーの書き方を教えてくださいイーサネットインタフェースをプロミスキャスモードにするにはどうしたらよいですか"><a class="header" href="#819-パケットスニファーの書き方を教えてくださいイーサネットインタフェースをプロミスキャスモードにするにはどうしたらよいですか">8.19 パケットスニファーの書き方を教えてください。イーサネットインタフェースをプロミスキャスモードにするにはどうしたらよいですか?</a></h3>
-<p>ネットワークカードが&quot;プロミスカスモード&quot;の場合、このマシン宛のパケットだけでなく、すべてのパケットをオペレーティングシステムに転送することをご存じない方のために説明します。（しかし、イーサネットは IP より下位の層なので、すべての IP アドレスは効果的に転送されます。より詳しくは、<a href="docs/what-is-a-socket/#lowlevel">Low Level Nonsense and Network Theory</a> の章をご覧ください)。</p>
+<p>ネットワークカードが&quot;プロミスカスモード&quot;の場合、このマシン宛のパケットだけでなく、すべてのパケットをオペレーティングシステムに転送することをご存じない方のために説明します。（しかし、イーサネットは IP より下位の層なので、すべての IP アドレスは効果的に転送されます。より詳しくは、<a href="../what-is-a-socket/low-level-nonsense-and-network-theory.html">2.2 低レベルのナンセンスとネットワーク理論</a> の章をご覧ください。）</p>
 <p>これは、パケットスニファーの仕組みの基本です。インターフェイスをプロミスカスモードにし、OSはワイヤー上を通過するすべてのパケットを取得します。 このデータを読むために、ある種のソケットを持っているはずです。</p>
 <p>残念ながら、その答えはプラットフォームによって異なりますが、例えば &quot;windows promiscuous ioctl&quot; でググれば、おそらくどこかにたどり着けるはずです。Linux の場合は、<a href="https://stackoverflow.com/questions/21323023/sniffing-an-ethernet-interface-on-linux">Stack Overflow のスレッド</a>にも有用そうなものがあります。</p>
 <h3 id="820-tcpudp-ソケットにカスタムタイムアウト値を設定するにはどうすればよいですか"><a class="header" href="#820-tcpudp-ソケットにカスタムタイムアウト値を設定するにはどうすればよいですか">8.20 TCP/UDP ソケットにカスタムタイムアウト値を設定するにはどうすればよいですか？</a></h3>

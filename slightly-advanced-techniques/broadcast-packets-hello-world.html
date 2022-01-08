@@ -27,6 +27,8 @@
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/solarized-light-hljs.css">
         <link rel="stylesheet" href="../theme/solarized-dark-hljs.css">
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -158,7 +160,7 @@
 <p>&quot;グローバル&quot;ブロードキャストアドレスにデータを送信します。これは <code>255.255.255.255</code> で、別名 <code>INADDR_BROADCAST</code> と呼ばれるものです。多くのマシンはこれをネットワーク番号と自動的にビット演算して、ネットワークブロードキャストアドレスに変換しますが、そうでないものもあります。ルータは、皮肉なことに、この種のブロードキャストパケットをローカルネットワークから転送しません。</p>
 </li>
 </ol>
-<p>では、ソケットオプション <code>SO_BROADCAST</code> を設定せずに、ブロードキャストアドレスでデータを送信しようとするとどうなるでしょうか。それでは、古き良き時代の <a href="docs/client-server-background/#datagram"><code>talker</code> and <code>listener</code></a> を起動し、何が起こるか見てみましょう。</p>
+<p>では、ソケットオプション <code>SO_BROADCAST</code> を設定せずに、ブロードキャストアドレスでデータを送信しようとするとどうなるでしょうか。それでは、古き良き時代の <a href="../client-server-background/datagram-sockets.html"><code>talker</code> と <code>listener</code></a> を起動し、何が起こるか見てみましょう。</p>
 <pre><code>$ talker 192.168.1.2 foo
 sent 3 bytes to 192.168.1.2
 $ talker 192.168.1.255 foo
@@ -236,7 +238,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 </code></pre>
-<p>&quot;通常の&quot; UDP クライアント/サーバーの状況と何が違うのでしょうか？何もありません。（この場合、クライアントがブロードキャストパケットの送信を許可されていることを除けば。）このように、古い UDP <a href="docs/client-server-background/#datagram"><code>listener</code></a> プログラムを1つのウィンドウで実行し、<code>broadcaster</code> を別のウィンドウで実行してみてください。これで、上で失敗した送信をすべて行うことができるはずです。</p>
+<p>&quot;通常の&quot; UDP クライアント/サーバーの状況と何が違うのでしょうか？何もありません。（この場合、クライアントがブロードキャストパケットの送信を許可されていることを除けば。）このように、古い UDP <a href="../client-server-background/datagram-sockets.html"><code>listener</code></a> プログラムを1つのウィンドウで実行し、<code>broadcaster</code> を別のウィンドウで実行してみてください。これで、上で失敗した送信をすべて行うことができるはずです。</p>
 <pre><code>$ broadcaster 192.168.1.2 foo
 sent 3 bytes to 192.168.1.2
 $ broadcaster 192.168.1.255 foo
