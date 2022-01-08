@@ -69,4 +69,5 @@ sendto(dgram_socket, secret_message, strlen(secret_message)+1, 0,
 
 ### 9.21.5 参照
 
-[`recv()`](#recvman), [`recvfrom()`](#recvman)
+[`recv()`](./recv-recvfrom.md),
+[`recvfrom()`](./recv-recvfrom.md)

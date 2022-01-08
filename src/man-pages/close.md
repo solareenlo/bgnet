@@ -38,4 +38,5 @@ close(s);  // not much to it, really.
 
 ### 9.4.5 参照
 
-[`socket()`](#socketman), [`shutdown()`](#shutdownman)
+[`socket()`](./socket.md),
+[`shutdown()`](./shutdown.md)

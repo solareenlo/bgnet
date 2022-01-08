@@ -46,4 +46,5 @@ printf("service: %s\n", service); // e.g. "http"
 
 ### 9.8.5 参照
 
-[`getaddrinfo()`](#getaddrinfoman), [`gethostbyaddr()`](#gethostbynameman)
+[`getaddrinfo()`](./getaddrinfo-freeaddrinfo-gai_strerror.md),
+[`gethostbyaddr()`](./gethostbyname-gethostbyaddr.md)

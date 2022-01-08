@@ -40,7 +40,7 @@ sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 connect(sockfd, res->ai_addr, res->ai_addrlen);
 ```
 
-繰り返しになりますが、古いタイプのプログラムでは、独自の `struct sockaddr_ins` を作成して `connect()` に渡していました。必要であれば、そうすることができます。上の [`bind()`](docs/system-calls-or-bust/#bind) の節で同様のことを書いています。
+繰り返しになりますが、古いタイプのプログラムでは、独自の `struct sockaddr_ins` を作成して `connect()` に渡していました。必要であれば、そうすることができます。上の [`bind()`](..//system-calls-or-bust/bind-what-port-am-i-on.md) の章で同様のことを書いています。
 
 `connect()` の戻り値を必ず確認してください。エラー時に `-1` が返され、`errno` という変数がセットされます。
 

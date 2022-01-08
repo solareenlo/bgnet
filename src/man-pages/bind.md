@@ -75,5 +75,7 @@ bind(s, (struct sockaddr*)&myaddr, sizeof myaddr);
 
 ### 9.2.5 参照
 
-[`getaddrinfo()`](#getaddrinfoman), [`socket()`](#socketman), [`struct
-sockaddr_in`](#sockaddr_inman), [`struct in_addr`](#sockaddr_inman)
+[`getaddrinfo()`](./getaddrinfo-freeaddrinfo-gai_strerror.md),
+[`socket()`](./socket.md),
+[`struct sockaddr_in`](./struct-sockaddr-and-pals.md),
+[`struct in_addr`](./struct-sockaddr-and-pals.md)

@@ -110,5 +110,8 @@ bind(s, (struct sockaddr*)&ip6addr, sizeof ip6addr);
 
 ### 9.24.4 参照
 
-[`accept()`](#acceptman), [`bind()`](#bindman), [`connect()`](#connectman),
-[`inet_aton()`](#inet_ntoaman), [`inet_ntoa()`](#inet_ntoaman)
+[`accept()`](./accept.md),
+[`bind()`](./bind.md),
+[`connect()`](./connect.md),
+[`inet_aton()`](./inet_ntoa-inet_aton-inet_addr.md),
+[`inet_ntoa()`](./inet_ntoa-inet_aton-inet_addr.md)

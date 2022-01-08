@@ -47,4 +47,4 @@ if (listen(s, 10) == -1) {
 
 ### 9.16.5 参照
 
-[`errno`](#errnoman)
+[`errno`](./errno.md)

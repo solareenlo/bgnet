@@ -39,4 +39,5 @@ fcntl(s, F_SETFL, O_ASYNC);     // set to asynchronous I/O
 
 ### 9.11.5 参照
 
-[Blocking](#blocking), [`send()`](#sendman)
+[Blocking](../slightly-advanced-techniques/blocking.md),
+[`send()`](./send-sendto.md)

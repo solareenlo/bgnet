@@ -47,4 +47,5 @@ if (select(n, &readfds, NULL, NULL) == -1) {
 
 ### 9.10.5 参照
 
-[`perror()`](#perrorman), [`strerror()`](#perrorman)
+[`perror()`](./perror-strerror.md),
+[`strerror()`](./perror-strerror.md)

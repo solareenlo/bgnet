@@ -56,4 +56,5 @@ connect(sockfd, res->ai_addr, res->ai_addrlen);
 
 ### 9.3.5 参照
 
-[`socket()`](#socketman), [`bind()`](#bindman)
+[`socket()`](./socket.md),
+[`bind()`](./bind.md)

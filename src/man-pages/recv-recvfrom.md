@@ -96,5 +96,8 @@ printf("from IP address %s\n",
 
 ### 9.18.5 参照
 
-[`send()`](#sendman), [`sendto()`](#sendman), [`select()`](#selectman),
-[`poll()`](#pollman), [Blocking](#blocking)
+[`send()`](./send-sendto.md),
+[`sendto()`](./send-sendto.md),
+[`select()`](./select.md),
+[`poll()`](./poll.md),
+[Blocking](../slightly-advanced-techniques/blocking.md)

@@ -97,4 +97,4 @@ char *get_ip_str(const struct sockaddr *sa, char *s, size_t maxlen)
 
 ### 9.14.5 参照
 
-[`getaddrinfo()`](#getaddrinfoman)
+[`getaddrinfo()`](./getaddrinfo-freeaddrinfo-gai_strerror.md)

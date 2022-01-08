@@ -39,4 +39,4 @@ shutdown(s, SHUT_WR);
 
 ### 9.22.5 参照
 
-[`close()`](#closeman)
+[`close()`](./close.md)

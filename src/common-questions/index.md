@@ -7,7 +7,7 @@
 
 ### 8.2 `bind()` が "Address already in use" と報告した場合、どうすればよいのでしょうか？
 
-リスニングしているソケットで `SO_REUSEADDR` オプションを指定して `setsockopt()` を使用する必要があります。例として、[`bind()`](docs/system-calls-or-bust/#bind) の章と [`select()`](docs/slightly-advanced-techniques/#select) の章をチェックしてみてください。
+リスニングしているソケットで `SO_REUSEADDR` オプションを指定して `setsockopt()` を使用する必要があります。例として、[`bind()` の章](../system-calls-or-bust/bind-what-port-am-i-on.md)と [`select()` の章](../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.md)をチェックしてみてください。
 
 
 ### 8.3 システム上のオープンソケットのリストを取得するにはどうすればよいですか？
@@ -42,14 +42,14 @@ $ netstat
 
 ### 8.7 "ping" ユーティリティを実装するには？ICMP とは何ですか？生ソケットと `SOCK_RAW` についてもっと詳しく知りたいのですが、どこに行けばよいですか?
 
-生ソケットに関するすべての疑問は、[W. Richard Stevens の UNIX Network Programming books](#books) で解決されるでしょう。また、[オンラインの Stevens の UNIX Network Programming](http://www.unpbook.com/src.html) のソースコードの `ping/` サブディレクトリも見てみてください。
+生ソケットに関するすべての疑問は、[W. Richard Stevens の UNIX Network Programming books](../more-references/books.md) で解決されるでしょう。また、[オンラインの Stevens の UNIX Network Programming](http://www.unpbook.com/src.html) のソースコードの `ping/` サブディレクトリも見てみてください。
 
 
 ### 8.8 `connect()` の呼び出しのタイムアウトを変更または短縮するにはどうすればよいですか？
 
 W. Richard Stevens と全く同じ答えを出すのではなく、[UNIX Network Programming のソースコードにある `lib/connect_nonb.c`](http://www.unpbook.com/src.html) を参照することにしましょう。
 
-その要点は、`socket()` でソケットディスクリプタを作成し、[それをノンブロッキングに設定](docs/slightly-advanced-techniques/#blocking)して `connect()` を呼び、すべてがうまくいけば `connect()` は直ちに `-1` を返して `errno` は `EINPROGRESS` に設定されるということです。その後、好きなタイムアウトで [`select()`](docs/slightly-advanced-techniques/#select) を呼び出し、ソケットディスクリプタをリードとライトの両方で渡します。タイムアウトしなければ、`connect()` の呼び出しが完了したことになります。このとき、`getsockopt()` に `SO_ERROR` オプションをつけて `connect()` 呼び出しからの戻り値を取得する必要があります（エラーがなければ `0` になるはずです）。
+その要点は、`socket()` でソケットディスクリプタを作成し、[それをノンブロッキングに設定](../slightly-advanced-techniques/blocking.md)して `connect()` を呼び、すべてがうまくいけば `connect()` は直ちに `-1` を返して `errno` は `EINPROGRESS` に設定されるということです。その後、好きなタイムアウトで [`select()`](../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.md) を呼び出し、ソケットディスクリプタをリードとライトの両方で渡します。タイムアウトしなければ、`connect()` の呼び出しが完了したことになります。このとき、`getsockopt()` に `SO_ERROR` オプションをつけて `connect()` 呼び出しからの戻り値を取得する必要があります（エラーがなければ `0` になるはずです）。
 
 最後に、データ転送を開始する前に、ソケットを再びブロッキングに設定する必要があります。
 
@@ -60,12 +60,12 @@ W. Richard Stevens と全く同じ答えを出すのではなく、[UNIX Network
 
 ### 8.9 Windows 用にビルドするにはどうしたらいいですか？
 
-まず、Windows を削除し、Linux または BSD をインストールします。`};-)`。いや、実際には、導入部の [Windows 用のビルドの章](docs/intro/#windows)を見ればいいんですけどね。
+まず、Windows を削除し、Linux または BSD をインストールします。`};-)`。いや、実際には、導入部の [Windows 用のビルドの章](../intro/note-for-windows-programmers.md)を見ればいいんですけどね。
 
 
 ### 8.10 Solaris/SunOS 用にビルドするにはどうしたらいいですか？コンパイルしようとするとリンカエラーが出ます！
 
-リンカーエラーは、Sun ボックスがソケットライブラリを自動的にコンパイルしないために起こります。この方法の例については、導入部の [Solaris/SunOS 用のビルドに関する章](docs/intro/#solaris) を参照してください。
+リンカーエラーは、Sun ボックスがソケットライブラリを自動的にコンパイルしないために起こります。この方法の例については、導入部の [Solaris/SunOS 用のビルドに関する章](../intro/note-for-solaris-sunos-programmers.md) を参照してください。
 
 
 ### 8.11 `select()` がシグナルで落ち続けるのはなぜか？
@@ -93,7 +93,7 @@ if ((err = select(fdmax+1, &readfds, NULL, NULL, NULL)) == -1) {
 
 ### 8.12 `recv()` の呼び出しにタイムアウトを実装するにはどうすればよいですか？
 
-[`select()`](docs/slightly-advanced-techniques/#select)を使いましょう！これは、読み込みたいソケットディスクリプタに対して、タイムアウトパラメータを指定することができます。あるいは、このように関数全体を一つの関数で包むこともできます。
+[`select()`](../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.md)を使いましょう！これは、読み込みたいソケットディスクリプタに対して、タイムアウトパラメータを指定することができます。あるいは、このように関数全体を一つの関数で包むこともできます。
 
 ```c
 #include <unistd.h>
@@ -171,7 +171,7 @@ else if (n == -2) {
 
 ### 8.14 "`PF_INET`" をずっと見ているのですが、これは何ですか？`AF_INET`と関係があるのでしょうか？
 
-はい、そうです。詳しくは [`socket()` の項](docs/system-calls-or-bust/#socket)を参照してください。
+はい、そうです。詳しくは [`socket()` の章](../system-calls-or-bust/socket-get-the-file-descriptor.md)を参照してください。
 
 
 ### 8.15 クライアントからシェルコマンドを受け取って実行するサーバを書くにはどうしたらいいでしょうか？
@@ -211,9 +211,9 @@ if (!strncmp(str, "foobar", 6)) {
 
 物理媒体が処理できる最大サイズであるMTUに当たっています。ローカルマシンでは、8K 以上を問題なく処理できるループバックデバイスを使用しています。しかし、Ethernet では、ヘッダーを含めて 1500 バイトしか扱えないので、その限界にぶつかってしまうのです。モデムでは、576 MTU（これもヘッダ付き）で、さらに低い制限にぶつかります。
 
-まず、すべてのデータが送信されていることを確認する必要があります。（詳しくは [`sendall()`](docs/slightly-advanced-techniques/#sendall) 関数の実装を参照してください。）それが確認できたら、すべてのデータが読み込まれるまで、ループで `recv()` を呼び出す必要があります。
+まず、すべてのデータが送信されていることを確認する必要があります。（詳しくは [`sendall()`](../slightly-advanced-techniques/handling-partial-sends.md) 関数の実装を参照してください。）それが確認できたら、すべてのデータが読み込まれるまで、ループで `recv()` を呼び出す必要があります。
 
-`recv()` を複数回呼び出して完全なデータパケットを受信する方法については、[7.6 Son of Data Encapsulation](docs/slightly-advanced-techniques/#sonofdataencap) の節を読んでください。
+`recv()` を複数回呼び出して完全なデータパケットを受信する方法については、[7.6 データカプセル化の子](../slightly-advanced-techniques/son-of-data-encapsulation.md) の章を読んでください。
 
 
 ### 8.17 私は Windows マシンを使っていますが、`fork()` システムコールも `struct sigaction` のようなものも持っていません。どうしたらいいでしょうか？
@@ -240,7 +240,7 @@ VC++ 付属のヘルプで "fork" または "POSIX" を検索して、何か手�
 
 ### 8.19 パケットスニファーの書き方を教えてください。イーサネットインタフェースをプロミスキャスモードにするにはどうしたらよいですか?
 
-ネットワークカードが"プロミスカスモード"の場合、このマシン宛のパケットだけでなく、すべてのパケットをオペレーティングシステムに転送することをご存じない方のために説明します。（しかし、イーサネットは IP より下位の層なので、すべての IP アドレスは効果的に転送されます。より詳しくは、[Low Level Nonsense and Network Theory](docs/what-is-a-socket/#lowlevel) の章をご覧ください)。
+ネットワークカードが"プロミスカスモード"の場合、このマシン宛のパケットだけでなく、すべてのパケットをオペレーティングシステムに転送することをご存じない方のために説明します。（しかし、イーサネットは IP より下位の層なので、すべての IP アドレスは効果的に転送されます。より詳しくは、[2.2 低レベルのナンセンスとネットワーク理論](../what-is-a-socket/low-level-nonsense-and-network-theory.md) の章をご覧ください。）
 
 これは、パケットスニファーの仕組みの基本です。インターフェイスをプロミスカスモードにし、OSはワイヤー上を通過するすべてのパケットを取得します。 このデータを読むために、ある種のソケットを持っているはずです。
 

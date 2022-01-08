@@ -6,7 +6,7 @@ Ok! Ok!
 
 ここに書かれていることはほとんどすべて、私が上で説明したことですが、せっかちな人のためのショートバージョンです。（もちろん、これ以外にもありますが、このガイドに該当するのはこれです。）
 
-1. まず、構造体を手で詰めるのではなく、[`getaddrinfo()`](docs/ip-addresses-structs-and-data-munging/#structs) を使ってすべての `sockaddr` 構造体の情報を取得するようにしてください。こうすることで、IP のバージョンに左右されず、また、その後の多くのステップを省くことができます。
+1. まず、構造体を手で詰めるのではなく、[`getaddrinfo()`](../ip-addresses-structs-and-data-munging/structs.md) を使ってすべての `sockaddr` 構造体の情報を取得するようにしてください。こうすることで、IP のバージョンに左右されず、また、その後の多くのステップを省くことができます。
 
 1. IP バージョンに関連する何かをハードコーディングしていることが分かったら、ヘルパー関数でラップするようにします。
 
@@ -24,16 +24,15 @@ Ok! Ok!
    sa6.sin6_addr = in6addr_any; // use my IPv6 address
    ```
 
-   Also, the value `IN6ADDR_ANY_INIT` can be used as an initializer when
-   the `struct in6_addr` is declared, like so:
+   また、`IN6ADDR_ANY_INIT` という値は、`struct in6_addr` を宣言する際にイニシャライザーとして以下のように使用することができます。
 
    ```c
    struct in6_addr ia6 = IN6ADDR_ANY_INIT;
    ```
 
-1. `struct sockaddr_in` の代わりに `struct sockaddr_in6` を使用し、必要に応じてフィールドに "6" を追加してください（上記の [`struct`s](docs/ip-addresses-structs-and-data-munging/#structs) を参照）。`sin6_zero` フィールドはありません。
+1. `struct sockaddr_in` の代わりに `struct sockaddr_in6` を使用し、必要に応じてフィールドに "6" を追加してください（上記の [構造体](../ip-addresses-structs-and-data-munging/structs.md) の章を参照）。`sin6_zero` フィールドはありません。
 
-1. `struct in_addr` の代わりに `struct in6_addr` を使用し、必要に応じてフィールドに "6" を追加してください（上記の [`struct`s](docs/ip-addresses-structs-and-data-munging/#structs) を参照）。
+1. `struct in_addr` の代わりに `struct in6_addr` を使用し、必要に応じてフィールドに "6" を追加してください（上記の [構造体](../ip-addresses-structs-and-data-munging/structs.md) の章を参照）。
 
 1. `inet_aton()` や `inet_addr()` の代わりに、`inet_apton()` を使用してください。
 

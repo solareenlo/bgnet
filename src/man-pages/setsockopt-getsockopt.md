@@ -62,4 +62,4 @@ if (optval != 0) {
 
 ### 9.20.5 参照
 
-[`fcntl()`](#fcntlman)
+[`fcntl()`](./fcntl.md)

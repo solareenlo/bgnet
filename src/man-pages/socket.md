@@ -47,5 +47,7 @@ sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 
 ### 9.23.5 参照
 
-[`accept()`](#acceptman), [`bind()`](#bindman),
-[`getaddrinfo()`](#getaddrinfoman), [`listen()`](#listenman)
+[`accept()`](./accept.md),
+[`bind()`](./bind.md),
+[`getaddrinfo()`](./getaddrinfo-freeaddrinfo-gai_strerror.md),
+[`listen()`](./listen.md)

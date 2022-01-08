@@ -54,5 +54,6 @@ printf("Peer port      : %d\n", port);
 
 ### 9.9.5 参照
 
-[`gethostname()`](#gethostnameman), [`gethostbyname()`](#gethostbynameman),
-[`gethostbyaddr()`](#gethostbynameman)
+[`gethostname()`](./gethostname.md),
+[`gethostbyname()`](./gethostbyname-gethostbyaddr.md),
+[`gethostbyaddr()`](./gethostbyname-gethostbyaddr.md)

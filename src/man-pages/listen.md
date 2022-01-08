@@ -52,4 +52,6 @@ listen(sockfd, 10); // set s up to be a server (listening) socket
 
 ### 9.15.5 参照
 
-[`accept()`](#acceptman), [`bind()`](#bindman), [`socket()`](#socketman)
+[`accept()`](./accept.md),
+[`bind()`](./bind.md),
+[`socket()`](./socket.md)

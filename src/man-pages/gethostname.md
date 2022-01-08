@@ -33,4 +33,4 @@ printf("My hostname: %s\n", hostname);
 
 ### 9.6.5 参照
 
-[`gethostbyname()`](#gethostbynameman)
+[`gethostbyname()`](./gethostbyname-gethostbyaddr.md)

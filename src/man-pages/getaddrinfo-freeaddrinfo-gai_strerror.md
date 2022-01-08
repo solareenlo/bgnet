@@ -156,4 +156,5 @@ freeaddrinfo(servinfo); // all done with this structure
 
 ### 9.5.5 参照
 
-[`gethostbyname()`](#gethostbynameman), [`getnameinfo()`](#getnameinfoman)
+[`gethostbyname()`](./gethostbyname-gethostbyaddr.md),
+[`getnameinfo()`](./getnameinfo.md)

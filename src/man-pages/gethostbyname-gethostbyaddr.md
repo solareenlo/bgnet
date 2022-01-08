@@ -106,7 +106,10 @@ printf("Host name: %s\n", he->h_name);
 
 ### 9.7.5 参照
 
-[`getaddrinfo()`](#getaddrinfoman), [`getnameinfo()`](#getnameinfoman),
-[`gethostname()`](#gethostnameman), [`errno`](#errnoman),
-[`perror()`](#perrorman), [`strerror()`](#perrorman), [`struct
-in_addr`](#sockaddr_inman)
+[`getaddrinfo()`](./getaddrinfo-freeaddrinfo-gai_strerror.md),
+[`getnameinfo()`](./getnameinfo.md),
+[`gethostname()`](./gethostname.md),
+[`errno`](./errno.md),
+[`perror()`](./perror-strerror.md),
+[`strerror()`](./perror-strerror.md),
+[`struct in_addr`](./struct-sockaddr-and-pals.md)

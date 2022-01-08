@@ -17,6 +17,7 @@ additional-js = [
 git-repository-url = "https://github.com/solareenlo/bgnet"
 git-repository-icon = "fa-github"
 edit-url-template = "https://github.com/solareenlo/bgnet/edit/main/{path}"
+mathjax-support = true
 
 [output.html.playground]
 editable = false

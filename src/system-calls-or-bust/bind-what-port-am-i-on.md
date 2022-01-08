@@ -59,7 +59,7 @@ memset(my_addr.sin_zero, '\0', sizeof my_addr.sin_zero);
 bind(sockfd, (struct sockaddr *)&my_addr, sizeof my_addr);
 ```
 
-上記のコードでは、ローカルの IP アドレスにバインドしたい場合、`s_addr` フィールドに `INADDR_ANY` を代入することもできます（上記の `AI_PASSIVE` フラグのようなものです）。`INADDR_ANY` の IPv6 バージョンはグローバル変数 `in6addr_any` で、`struct sockaddr_in6` の `sin6_addr` フィールドに代入されます。(変数の初期化で使用できるマクロ `IN6ADDR_ANY_INIT` も存在します。)また、`IN6ADDR_ANY_INIT` を使用することで、IPv6 の IP アドレスにバインドできます。
+上記のコードでは、ローカルの IP アドレスにバインドしたい場合、`s_addr` フィールドに `INADDR_ANY` を代入することもできます（上記の `AI_PASSIVE` フラグのようなものです）。`INADDR_ANY` の IPv6 バージョンはグローバル変数 `in6addr_any` で、`struct sockaddr_in6` の `sin6_addr` フィールドに代入されます。（変数の初期化で使用できるマクロ `IN6ADDR_ANY_INIT` も存在します。）また、`IN6ADDR_ANY_INIT` を使用することで、IPv6 の IP アドレスにバインドできます。
 
 `bind()` を呼ぶときにもうひとつ気をつけなければならないのは、ポート番号で下手を打たないことです。1024 以下のポートはすべて予約済みです（あなたがスーパーユーザでない限り）！それ以上のポート番号は、（他のプログラムによってすでに使われていなければ） 65535 までの任意のポート番号を使用することができます。
 

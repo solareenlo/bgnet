@@ -53,5 +53,7 @@ antelope.sin_addr.s_addr = inet_addr("10.0.0.1");
 
 ### 9.13.5 参照
 
-[`inet_ntop()`](#inet_ntopman), [`inet_pton()`](#inet_ntopman),
-[`gethostbyname()`](#gethostbynameman), [`gethostbyaddr()`](#gethostbynameman)
+[`inet_ntop()`](./inet_ntop-inet-pton.md),
+[`inet_pton()`](./inet_ntop-inet-pton.md),
+[`gethostbyname()`](./gethostbyname-gethostbyaddr.md),
+[`gethostbyaddr()`](./gethostbyname-gethostbyaddr.md)

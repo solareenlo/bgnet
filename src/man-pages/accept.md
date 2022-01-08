@@ -64,5 +64,7 @@ new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &addr_size);
 
 ### 9.1.5 参照
 
-[`socket()`](#socketman), [`getaddrinfo()`](#getaddrinfoman),
-[`listen()`](#listenman), [`struct sockaddr_in`](#sockaddr_inman)
+[`socket()`](./socket.md),
+[`getaddrinfo()`](./getaddrinfo-freeaddrinfo-gai_strerror.md),
+[`listen()`](./listen.md),
+[`struct sockaddr_in`](./struct-sockaddr-and-pals.md)
