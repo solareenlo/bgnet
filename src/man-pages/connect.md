@@ -2,7 +2,7 @@
 
 サーバーにソケットを接続します。
 
-### 書式
+### 9.3.1 書式
 
 ```c
 #include <sys/types.h>
@@ -12,7 +12,7 @@ int connect(int sockfd, const struct sockaddr *serv_addr,
             socklen_t addrlen);
 ```
 
-### 解説
+### 9.3.2 解説
 
 `socket()` コールでソケットディスクリプタを構築したら、`connect()` システムコールを使って、そのソケットをリモートサーバに接続することができます。必要なことは、ソケットディスクリプタと、もっとよく知りたいと思うサーバのアドレスを渡すだけです。(それと、このような関数によく渡されるアドレスの長さも。)
 
@@ -24,11 +24,11 @@ int connect(int sockfd, const struct sockaddr *serv_addr,
 
 特記事項：`SOCK_DGRAM` UDP ソケットをリモートホストに `connect()` した場合、`send()` と `recv()` だけでなく、`sendto()` と `recvfrom()` も使用できるようになります。もし必要なら。
 
-### 返り値
+### 9.3.3 返り値
 
 成功した場合は `0` を、エラーの場合は `-1` を返す（それに応じて `errno` が設定されます）。
 
-### 例
+### 9.3.4 例
 
 ```c
 // connect to www.example.com port 80 (http)
@@ -54,6 +54,6 @@ sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 connect(sockfd, res->ai_addr, res->ai_addrlen);
 ```
 
-### 参照
+### 9.3.5 参照
 
 [`socket()`](#socketman), [`bind()`](#bindman)

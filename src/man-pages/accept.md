@@ -2,7 +2,7 @@
 
 リスニング中のソケットで着信接続を承認します。
 
-### 書式
+### 9.1.1 書式
 
 ```c
 #include <sys/types.h>
@@ -11,7 +11,7 @@
 int accept(int s, struct sockaddr *addr, socklen_t *addrlen);
 ```
 
-### 解説
+### 9.1.2 解説
 
 一旦、 `SOCK_STREAM` ソケットを取得して、 `listen()` で着信接続のための設定を行うという手間をかけると、そのソケットを使用することができます。次に `accept()` を呼び出して、新しく接続したクライアントとの通信に使用する新しいソケットディスクリプタを実際に取得します。
 
@@ -27,11 +27,11 @@ int accept(int s, struct sockaddr *addr, socklen_t *addrlen);
 
 `accept()` が返すソケットディスクリプタは、正真正銘のソケットディスクリプタであり、リモートホストに開いて接続されています。それを使い終わったら `close()` しなければなりません。
 
-### 返り値
+### 9.1.3 返り値
 
 `accept()` は新しく接続されたソケットディスクリプタを返すが、エラーの場合は `-1` を返し、 `errno` は適切に設定されます。
 
-### 例
+### 9.1.4 例
 
 ```c
 struct sockaddr_storage their_addr;
@@ -62,7 +62,7 @@ new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &addr_size);
 // ready to communicate on socket descriptor new_fd!
 ```
 
-### 参照
+### 9.1.5 参照
 
 [`socket()`](#socketman), [`getaddrinfo()`](#getaddrinfoman),
 [`listen()`](#listenman), [`struct sockaddr_in`](#sockaddr_inman)
