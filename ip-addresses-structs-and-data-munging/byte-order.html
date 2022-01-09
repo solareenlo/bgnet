@@ -164,9 +164,9 @@
 <p>コンピュータはホストバイトオーダーで数字を記憶しています。インテル 80x86 であれば、ホストバイト順はリトルエンディアンです。モトローラ 68K の場合は、ビッグエンディアンです。PowerPC なら、ホストバイトの並びは......まあ、人それぞれですね。</p>
 <p>パケットを作成するときやデータ構造を埋めるときに、2バイトや4バイトの数値がネットワークバイトオーダーになっていることを確認する必要があることがよくあります。しかし、ネイティブなホストバイトオーダーがわからない場合、どのようにすればよいのでしょうか。</p>
 <p>朗報です。ホストのバイトオーダーが正しくないと仮定して、値をネットワークバ イトオーダーに設定するための関数を常に実行するようにすればよいのです。この関数は、必要であれば魔法のような変換を行い、エンディアンが異なるマシンにもコードを移植することができます。</p>
-<p>よしよし。変換できる数値は、<code>short</code>（2バイト）と <code>long</code>（4バイト）の2種類です。これらの関数は、符号なしのバリエーションでも動作します。例えば、<code>short</code> をホストバイトオーダーからネットワークバイトオーダーに変換したいとします。まず &quot;h&quot; でホスト、その後に &quot;to&quot; をつけます。そして、&quot;n&quot; は &quot;network&quot;、&quot;s&quot; は &quot;short&quot; を表します。h-to-n-s または htons() (読み方: &quot;ホストからネットワークへのショート&quot;) です。</p>
+<p>よしよし。変換できる数値は、<code>short</code>（2バイト）と <code>long</code>（4バイト）の2種類です。これらの関数は、符号なしのバリエーションでも動作します。例えば、<code>short</code> をホストバイトオーダーからネットワークバイトオーダーに変換したいとします。まず &quot;h&quot; でホスト、その後に &quot;to&quot; をつけます。そして、&quot;n&quot; は &quot;network&quot;、&quot;s&quot; は &quot;short&quot; を表します。h-to-n-s または htons()（読み方: &quot;ホストからネットワークへのショート&quot;）です。</p>
 <p>簡単すぎるくらいに...。</p>
-<p>&quot;n&quot;、&quot;h&quot;、&quot;s&quot;、&quot;l&quot; の組み合わせは、本当にくだらないものを除いて、すべて使うことができるのです。たとえば、<code>stolh()</code> (&quot;Short to Long Host&quot;) という関数はありません---とにかく、このパーティーでは。しかし、あるのです。</p>
+<p>&quot;n&quot;、&quot;h&quot;、&quot;s&quot;、&quot;l&quot; の組み合わせは、本当にくだらないものを除いて、すべて使うことができるのです。たとえば、<code>stolh()</code>（&quot;Short to Long Host&quot;）という関数はありません---とにかく、このパーティーでは。しかし、あるのです。</p>
 <table><thead><tr><th>関数</th><th>説明</th></tr></thead><tbody>
 <tr><td><code>htons()</code></td><td><code>h</code>ost <code>to</code> <code>n</code>etwork <code>s</code>hort</td></tr>
 <tr><td><code>htonl()</code></td><td><code>h</code>ost <code>to</code> <code>n</code>etwork <code>l</code>ong</td></tr>
