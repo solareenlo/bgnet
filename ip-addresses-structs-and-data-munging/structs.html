@@ -199,7 +199,7 @@ struct sockaddr_in {
     unsigned char      sin_zero[8]; // Same size as struct sockaddr
 };
 </code></pre>
-<p>この構造体により、ソケットアドレスの要素を簡単に参照することができます。<code>sin_zero</code> (構造体を <code>struct sockaddr</code> の長さに合わせるために含まれます) は、関数 <code>memset()</code> ですべて 0 に設定する必要があることに注意すること。また、<code>sin_family</code> は <code>struct sockaddr</code> の <code>sa_family</code> に相当し、&quot;<code>AF_INET</code>&quot; に設定されることに注意します。最後に、<code>sin_port</code> はネットワークバイトオーダーでなければなりません（<code>htons()</code> を使用することで！）。</p>
+<p>この構造体により、ソケットアドレスの要素を簡単に参照することができます。<code>sin_zero</code>（構造体を <code>struct sockaddr</code> の長さに合わせるために含まれます）は、関数 <code>memset()</code> ですべて <code>0</code> に設定する必要があることに注意すること。また、<code>sin_family</code> は <code>struct sockaddr</code> の <code>sa_family</code> に相当し、&quot;<code>AF_INET</code>&quot; に設定されることに注意します。最後に、<code>sin_port</code> はネットワークバイトオーダーでなければなりません（<code>htons()</code> を使用することで！）。</p>
 <p>もっと掘り下げましょう！<code>sin_addr</code> フィールドは <code>in_addr</code> 構造体であることがわかりますね。あれは何なんだ？まあ、大げさではなく、史上最も恐ろしい組合せの1つです。</p>
 <pre><code class="language-c">// (IPv4 only--see struct in6_addr for IPv6)
 

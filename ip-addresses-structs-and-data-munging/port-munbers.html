@@ -155,11 +155,11 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="312-ポート番号"><a class="header" href="#312-ポート番号">3.1.2 ポート番号</a></h1>
-<p>以前、インターネット層（IP）とホスト間トランスポート層（TCPとUDP）を分離した<a href="docs/what-is-a-socket/#lowlevel">レイヤードネットワークモデル</a>をご紹介しましたが、覚えていらっしゃいますか？次の段落の前に、そのことをしっかり覚えておいてください。</p>
-<p>IP アドレス（IP 層で使われる）の他に、TCP（ストリームソケット）や、偶然にも UDP（データグラムソケット）で使われるアドレスがあることが判明したのです。それは、ポート番号です。これは16ビットの数字で、接続のためのローカルアドレスのようなものです。</p>
+<p>以前、インターネット層（IP）とホスト間トランスポート層（TCP と UDP）を分離した<a href="../what-is-a-socket/low-level-nonsense-and-network-theory.html">レイヤードネットワークモデル</a>をご紹介しましたが、覚えていらっしゃいますか？次の段落の前に、そのことをしっかり覚えておいてください。</p>
+<p>IP アドレス（IP 層で使われる）の他に、TCP（ストリームソケット）や、同時に UDP（データグラムソケット）で使われるアドレスがあることが判明したのです。それは、ポート番号です。これは16ビットの数字で、接続のためのローカルアドレスのようなものです。</p>
 <p>IP アドレスはホテルの番地、ポート番号は部屋番号だと思ってください。後で自動車業界の例も考えてみましょう。</p>
-<p>例えば、受信メールとウェブサービスの両方を扱うコンピュータを用意したい場合、1つのIPアドレスを持つコンピュータでその2つを区別する方法はあるでしょうか？</p>
-<p>さて、インターネット上のサービスには、それぞれ異なるウェルノウン・ポート番号が設定されています。 <a href="https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml">IANA のポート一覧</a>か、Unix であれば <code>/etc/services</code> ファイルで確認することができます。HTTP（ウェブ）はポート80、telnet はポート23、SMTP はポート25、ゲーム <a href="https://en.wikipedia.org/wiki/Doom_(1993_video_game)">DOOM</a> はポート666、などなど。1024以下のポートはしばしば特殊とみなされ、通常、使用するには OS の特別な権限が必要です。</p>
+<p>例えば、受信メールとウェブサービスの両方を扱うコンピュータを用意したい場合、1つの IP アドレスを持つコンピュータでその2つを区別する方法はあるでしょうか？</p>
+<p>さて、インターネット上のサービスには、それぞれ異なるウェルノウン・ポート番号が設定されています。<a href="https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml">IANA のポート一覧</a>か、Unix であれば <code>/etc/services</code> ファイルで確認することができます。HTTP（ウェブ）はポート80、telnet はポート23、SMTP はポート25、ゲーム <a href="https://en.wikipedia.org/wiki/Doom_(1993_video_game)">DOOM</a> はポート666、などなど。1024以下のポートはしばしば特殊とみなされ、通常、使用するには OS の特別な権限が必要です。</p>
 <p>といったところでしょうか。</p>
 
                     </main>
