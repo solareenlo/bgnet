@@ -1,6 +1,13 @@
 <!DOCTYPE HTML>
 <html lang="{{ language }}" class="sidebar-visible no-js {{ default_theme }}">
     <head>
+        <link rel="preload" as="font" type="../font/woff2" href="fonts/noto-serif-jp-v15-japanese-200.woff2" crossorigin>
+        <link rel="preload" as="font" type="../font/woff2" href="fonts/noto-serif-jp-v15-japanese-300.woff2" crossorigin>
+        <link rel="preload" as="font" type="../font/woff2" href="fonts/noto-serif-jp-v15-japanese-500.woff2" crossorigin>
+        <link rel="preload" as="font" type="../font/woff2" href="fonts/noto-serif-jp-v15-japanese-600.woff2" crossorigin>
+        <link rel="preload" as="font" type="../font/woff2" href="fonts/noto-serif-jp-v15-japanese-700.woff2" crossorigin>
+        <link rel="preload" as="font" type="../font/woff2" href="fonts/noto-serif-jp-v15-japanese-900.woff2" crossorigin>
+        <link rel="preload" as="font" type="../font/woff2" href="fonts/noto-serif-jp-v15-japanese-regular.woff2" crossorigin>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>{{ title }}</title>
@@ -37,6 +44,7 @@
         <link rel="stylesheet" href="{{ path_to_root }}FontAwesome/css/font-awesome.css">
         {{#if copy_fonts}}
         <link rel="stylesheet" href="{{ path_to_root }}fonts/fonts.css">
+        <link rel="stylesheet" href="{{ path_to_root }}fonts/font.css">
         {{/if}}
 
         <!-- Highlight.js Stylesheets -->

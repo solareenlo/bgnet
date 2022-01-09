@@ -1,23 +1,25 @@
 [book]
 authors = ["solareenlo"]
-language = "en"
+language = "ja"
 multilingual = false
 src = "src"
 title = "Beej のネットワークプログラミング入門"
 
 [output.html]
+theme = "src/theme"
 additional-css = [
-  "theme/solarized-light-hljs.css",
-  "theme/solarized-dark-hljs.css",
+  "src/theme/solarized-light-hljs.css",
+  "src/theme/solarized-dark-hljs.css",
 ]
 additional-js = [
-  "theme/theme-solarized_dark.js",
-  "theme/theme-solarized_light.js",
+  "src/theme/theme-solarized_dark.js",
+  "src/theme/theme-solarized_light.js",
 ]
 git-repository-url = "https://github.com/solareenlo/bgnet"
 git-repository-icon = "fa-github"
 edit-url-template = "https://github.com/solareenlo/bgnet/edit/main/{path}"
 mathjax-support = true
+copy-fonts = true
 
 [output.html.playground]
 editable = false
