@@ -28,7 +28,7 @@
 - [IPv4 から IPv6 へのジャンプ](./jumping-from-ipv4-to-ipv6/index.md)
 - [システムコールかバスト](./system-calls-or-bust/index.md)
   - [`getaddrinfo()`---起動の準備をしよう！](./system-calls-or-bust/getaddrinfo-prepare-to-launch.md)
-  - [`socket()`---ファイルディスクリプターを取得しよう！](./system-calls-or-bust/socket-get-the-file-descriptor.md)
+  - [`socket()`---ファイル記述子を取得しよう！](./system-calls-or-bust/socket-get-the-file-descriptor.md)
   - [`bind()`---私はどのポートにいるのでしょうか？](./system-calls-or-bust/bind-what-port-am-i-on.md)
   - [`connect()`---やあ、こんにちは！](./system-calls-or-bust/connect-hey-you.md)
   - [`listen()`---誰かコールしてくれない？](./system-calls-or-bust/listen-will-somebody-please-call-me.md)

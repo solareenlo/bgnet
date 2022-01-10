@@ -12,7 +12,7 @@
 int getpeername(int sockfd, struct sockaddr *addr, int *addrlen);
 ```
 
-`sockfd` は接続したストリームソケットのディスクリプタ、`addr` は接続の相手側の情報を保持する `struct sockaddr`（または `struct sockaddr_in`）へのポインタ、`addrlen` は `int` へのポインタであり、 `sizeof *addr` または `sizeof(struct sockaddr)` で初期化される必要があります。
+`sockfd` は接続したストリームソケットの記述子、`addr` は接続の相手側の情報を保持する `struct sockaddr`（または `struct sockaddr_in`）へのポインタ、`addrlen` は `int` へのポインタであり、 `sizeof *addr` または `sizeof(struct sockaddr)` で初期化される必要があります。
 
 この関数は，エラーが発生すると `-1` を返し，それに応じて `errno` を設定します。
 

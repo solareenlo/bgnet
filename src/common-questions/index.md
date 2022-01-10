@@ -49,7 +49,7 @@ $ netstat
 
 W. Richard Stevens と全く同じ答えを出すのではなく、[UNIX Network Programming のソースコードにある `lib/connect_nonb.c`](http://www.unpbook.com/src.html) を参照することにしましょう。
 
-その要点は、`socket()` でソケットディスクリプタを作成し、[それをノンブロッキングに設定](../slightly-advanced-techniques/blocking.md)して `connect()` を呼び、すべてがうまくいけば `connect()` は直ちに `-1` を返して `errno` は `EINPROGRESS` に設定されるということです。その後、好きなタイムアウトで [`select()`](../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.md) を呼び出し、ソケットディスクリプタをリードとライトの両方で渡します。タイムアウトしなければ、`connect()` の呼び出しが完了したことになります。このとき、`getsockopt()` に `SO_ERROR` オプションをつけて `connect()` 呼び出しからの戻り値を取得する必要があります（エラーがなければ `0` になるはずです）。
+その要点は、`socket()` でソケット記述子を作成し、[それをノンブロッキングに設定](../slightly-advanced-techniques/blocking.md)して `connect()` を呼び、すべてがうまくいけば `connect()` は直ちに `-1` を返して `errno` は `EINPROGRESS` に設定されるということです。その後、好きなタイムアウトで [`select()`](../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.md) を呼び出し、ソケット記述子をリードとライトの両方で渡します。タイムアウトしなければ、`connect()` の呼び出しが完了したことになります。このとき、`getsockopt()` に `SO_ERROR` オプションをつけて `connect()` 呼び出しからの戻り値を取得する必要があります（エラーがなければ `0` になるはずです）。
 
 最後に、データ転送を開始する前に、ソケットを再びブロッキングに設定する必要があります。
 
@@ -93,7 +93,7 @@ if ((err = select(fdmax+1, &readfds, NULL, NULL, NULL)) == -1) {
 
 ### 8.12 `recv()` の呼び出しにタイムアウトを実装するにはどうすればよいですか？
 
-[`select()`](../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.md)を使いましょう！これは、読み込みたいソケットディスクリプタに対して、タイムアウトパラメータを指定することができます。あるいは、このように関数全体を一つの関数で包むこともできます。
+[`select()`](../slightly-advanced-techniques/select-synchronous-io-multiplexing-old-school.md)を使いましょう！これは、読み込みたいソケット記述子に対して、タイムアウトパラメータを指定することができます。あるいは、このように関数全体を一つの関数で包むこともできます。
 
 ```c
 #include <unistd.h>

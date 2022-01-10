@@ -8,7 +8,7 @@
 int send(int sockfd, const void *msg, int len, int flags);
 ```
 
-`sockfd` はデータを送信したいソケットディスクリプタ（`socket()` で返されたものでも `accept()` で取得したものでも可）、`msg` は送信したいデータへのポインタ、`len` はそのデータの長さ(バイト数)です。`flags` を `0` に設定するだけです（フラグに関する詳しい情報は `send()` の man ページを参照してください）。
+`sockfd` はデータを送信したいソケット記述子（`socket()` で返されたものでも `accept()` で取得したものでも可）、`msg` は送信したいデータへのポインタ、`len` はそのデータの長さ(バイト数)です。`flags` を `0` に設定するだけです（フラグに関する詳しい情報は `send()` の man ページを参照してください）。
 
 サンプルコードとしては、以下のようなものがあります。
 
@@ -33,7 +33,7 @@ bytes_sent = send(sockfd, msg, len, 0);
 int recv(int sockfd, void *buf, int len, int flags);
 ```
 
-`sockfd` は読み込むソケットディスクリプタ、`buf` は情報を読み込むバッファ、`len` はバッファの最大長、`flags` は再び `0` に設定できます（フラグについては [`recv()` の man ページ](../man-pages/recv-recvfrom.md)を参照してください）。
+`sockfd` は読み込むソケット記述子、`buf` は情報を読み込むバッファ、`len` はバッファの最大長、`flags` は再び `0` に設定できます（フラグについては [`recv()` の man ページ](../man-pages/recv-recvfrom.md)を参照してください）。
 
 `recv()` は、実際にバッファに読み込まれたバイト数を返し、エラーの場合は `-1` を返します（それに応じて `errno` が設定されます）。
 

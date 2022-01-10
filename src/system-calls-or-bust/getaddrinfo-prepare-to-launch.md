@@ -25,7 +25,7 @@ int getaddrinfo(const char *node,     // e.g. "www.example.com" or IP
 
 次にパラメータ `service` ですが、これは "80" のようなポート番号か、"http", "ftp", "telnet", "smtp" などの特定のサービスの名前（[IANAポートリスト](https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml)や Unix マシンの `/etc/services` ファイルで見つけることができます）であることができます。
 
-最後に、`hints` パラメータは、関連情報をすでに記入した `addrinfo` 構造体を指します。
+最後に、`hints` パラメータは、関連情報をすでに記入した `struct addrinfo` を指します。
 
 以下は、自分のホストの IP アドレス、ポート 3490 をリッスンしたいサーバの場合の呼び出し例です。これは実際にはリスニングやネットワークの設定を行っていないことに注意してください。
 
@@ -55,9 +55,9 @@ freeaddrinfo(servinfo); // free the linked-list
 
 また、`AI_PASSIVE` フラグがあるのがわかると思いますが、これは `getaddrinfo()` にローカルホストのアドレスをソケット構造体に割り当てるように指示しています。これは、ハードコードする必要がないのがいいところです。(あるいは、`getaddrinfo()` の最初のパラメータとして特定のアドレスを入れることもできます。私は現在 `NULL` を持っています。)
 
-そして、呼び出しを行います。エラー（`getaddrinfo()` が `0` 以外を返します）があれば、ご覧のように関数 `gai_strerror()` を使ってそれを表示することができます。しかし、すべてがうまくいけば、`servinfo` は `struct addrinfos` のリンクリストを指し、それぞれのリストには後で使用できる何らかの `sockaddr` 構造体が含まれています！素晴らしい！
+そして、呼び出しを行います。エラー（`getaddrinfo()` が `0` 以外を返します）があれば、ご覧のように関数 `gai_strerror()` を使ってそれを表示することができます。しかし、すべてがうまくいけば、`servinfo` は `struct addrinfos` のリンクリストを指し、それぞれのリストには後で使用できる何らかの `sturct sockaddr` が含まれています！素晴らしい！
 
-最後に、`getaddrinfo()` が快く割り当ててくれたリンクリストをすべて使い終わったら、`freeaddrinfo()` を呼び出してすべてを解放することができます（そうすべき）です。
+最後に、`getaddrinfo()` が快く割り当ててくれたリンクリストをすべて使い終わったら、`freeaddrinfo()` を呼び出してすべてを解放することができます（そうすべきです）。
 
 ここでは、クライアントが特定のサーバ、例えば "www.example.net" ポート 3490 に接続したい場合のサンプルコールを紹介します。繰り返しますが、これは実際には接続しませんが、後で使用する構造をセットアップしています。
 
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 
     printf("IP addresses for %s:\n\n", argv[1]);
 
-    for(p = res;p != NULL; p = p->ai_next) {
+    for(p = res; p != NULL; p = p->ai_next) {
         void *addr;
         char *ipver;
 

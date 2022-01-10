@@ -6,7 +6,7 @@ Ok! Ok!
 
 ここに書かれていることはほとんどすべて、私が上で説明したことですが、せっかちな人のためのショートバージョンです。（もちろん、これ以外にもありますが、このガイドに該当するのはこれです。）
 
-1. まず、構造体を手で詰めるのではなく、[`getaddrinfo()`](../ip-addresses-structs-and-data-munging/structs.md) を使ってすべての `sockaddr` 構造体の情報を取得するようにしてください。こうすることで、IP のバージョンに左右されず、また、その後の多くのステップを省くことができます。
+1. まず、構造体を手動で詰めるのではなく、[`getaddrinfo()`](../ip-addresses-structs-and-data-munging/structs.md) を使ってすべての `struct sockaddr` の情報を取得するようにしてください。こうすることで、IP のバージョンに左右されず、また、その後の多くのステップを省くことができます。
 
 1. IP バージョンに関連する何かをハードコーディングしていることが分かったら、ヘルパー関数でラップするようにします。
 
@@ -30,9 +30,9 @@ Ok! Ok!
    struct in6_addr ia6 = IN6ADDR_ANY_INIT;
    ```
 
-1. `struct sockaddr_in` の代わりに `struct sockaddr_in6` を使用し、必要に応じてフィールドに "6" を追加してください（上記の [構造体](../ip-addresses-structs-and-data-munging/structs.md) の章を参照）。`sin6_zero` フィールドはありません。
+1. `struct sockaddr_in` の代わりに `struct sockaddr_in6` を使用し、必要に応じてフィールドに "6" を追加してください（上記の [構造体の章](../ip-addresses-structs-and-data-munging/structs.md)を参照）。`sin6_zero` フィールドはありません。
 
-1. `struct in_addr` の代わりに `struct in6_addr` を使用し、必要に応じてフィールドに "6" を追加してください（上記の [構造体](../ip-addresses-structs-and-data-munging/structs.md) の章を参照）。
+1. `struct in_addr` の代わりに `struct in6_addr` を使用し、必要に応じてフィールドに "6" を追加してください（上記の [構造体の章](../ip-addresses-structs-and-data-munging/structs.md)を参照）。
 
 1. `inet_aton()` や `inet_addr()` の代わりに、`inet_apton()` を使用してください。
 
@@ -40,7 +40,7 @@ Ok! Ok!
 
 1. `gethostbyname()` の代わりに、優れた `getaddrinfo()` を使用してください。
 
-1. `gethostbyaddr()` の代わりに、優れた `getnameinfo()` を使用してください（`gethostbyaddr()`は IPv6 でも動作可能です）。
+1. `gethostbyaddr()` の代わりに、優れた `getnameinfo()` を使用してください（`gethostbyaddr()` は IPv6 でも動作可能です）。
 
 1. `INADDR_BROADCAST` は動作しなくなりました。代わりに IPv6 マルチキャストを使用してください。
 

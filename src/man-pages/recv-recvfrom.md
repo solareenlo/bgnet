@@ -17,7 +17,7 @@ ssize_t recvfrom(int s, void *buf, size_t len, int flags,
 
 ソケットを立ち上げて接続したら、`recv()`（TCP `SOCK_STREAM` ソケットの場合）と `recvfrom()`（UDP `SOCK_DGRAM` ソケットの場合）を使ってリモート側から受信したデータを読み込むことができるようになります。
 
-どちらの関数も、ソケットディスクリプタ `s`、バッファへのポインタ `buf`、バッファのサイズ（バイト数）`len`、そして関数の動作を制御するための `flags` を受け取ります。
+どちらの関数も、ソケット記述子 `s`、バッファへのポインタ `buf`、バッファのサイズ（バイト数）`len`、そして関数の動作を制御するための `flags` を受け取ります。
 
 さらに、`recvfrom()` は `struct sockaddr*` を受け取り、`from` はデータがどこから来たかを示し、 `fromlen` には `struct sockaddr` のサイズを記入することになります。（また、`fromlen` を `from` または `struct sockaddr` のサイズに初期化する必要があります。）
 

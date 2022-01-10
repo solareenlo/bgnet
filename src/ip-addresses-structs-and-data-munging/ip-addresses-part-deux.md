@@ -2,7 +2,7 @@
 
 幸いなことに、IP アドレスを操作するための関数がたくさんあります。手書きで把握して `<<` 演算子で `long` に詰め込む必要はありません。
 
-まず、`struct sockaddr_in ina` があり、そこに格納したい IP アドレスが `10.12.110.57` または `2001:db8:63b3:1::3490` だとしましょう。`inet_pton()` という関数は、数字とドットで表記された IP アドレスを、`AF_INET` か `AF_INET6` の指定によって、`in_addr` 構造体か `in6_addr` 構造体に変換する関数です。（"`pton`" は "presentation to network" の略で、覚えやすければ "printable to network" と呼んでも構いません。）変換は次のように行うことができます。
+まず、`struct sockaddr_in ina` があり、そこに格納したい IP アドレスが `10.12.110.57` または `2001:db8:63b3:1::3490` だとしましょう。`inet_pton()` という関数は、数字とドットで表記された IP アドレスを、`AF_INET` か `AF_INET6` の指定によって、`struct in_addr` か `sturct in6_addr` に変換する関数です。（"`pton`" は "presentation to network" の略で、覚えやすければ "printable to network" と呼んでも構いません。）変換は次のように行うことができます。
 
 ```c
 struct sockaddr_in sa; // IPv4
