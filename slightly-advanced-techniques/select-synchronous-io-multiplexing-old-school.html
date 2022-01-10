@@ -156,12 +156,12 @@
                     <main>
                         <h1 id="73-select---同期式-io-多重化旧式"><a class="header" href="#73-select---同期式-io-多重化旧式">7.3 <code>select()</code>---同期式 I/O 多重化、旧式</a></h1>
 <p>この関数、ちょっと不思議なんですが、とても便利なんです。次のような状況を考えてみましょう。あなたはサーバで、入ってくるコネクションをリッスンするだけでなく、すでに持っているコネクションを読み続けたいのです。</p>
-<p>問題ありません。<code>accept()</code> と <code>recv()</code> を数回実行するだけです。そうはいかないよ、バスター！もし <code>accept()</code> の呼び出しがブロックされていたらどうでしょう？どうやって <code>recv()</code> を同時に行うんだ？&quot;ノンブロッキングソケットを使いましょう！&quot;まさか！CPU を占有するようなことはしない方がいい。じゃあ、何？</p>
+<p>問題ありません。<code>accept()</code> と <code>recv()</code> を数回実行するだけです。そうはいかないよ、バスター！もし <code>accept()</code> の呼び出しがブロックされていたらどうでしょう？どうやって <code>recv()</code> を同時に行うんだ？&quot;ノンブロッキングソケットを使いましょう！&quot; まさか！CPU を占有するようなことはしない方がいい。じゃあ、何？</p>
 <p><code>select()</code> は同時に複数のソケットを監視する力を与えてくれます。どのソケットが読み込み可能で、どのソケットが書き込み可能か、そしてどのソケットが例外を発生させたか、本当に知りたければ教えてくれるでしょう。</p>
 <blockquote>
-<p>警告: <code>select()</code> は非常にポータブルですが、巨大な数の接続が発生した場合には恐ろしく遅くなります。そのような状況では、<a href="https://libevent.org/">libevent</a> のようなイベントライブラリの方が、あなたのシステムで利用可能な最も高速なメソッドを使用しようとするため、より良いパフォーマンスを得ることができることでしょう。</p>
+<p>警告：<code>select()</code> は非常にポータブルですが、巨大な数の接続が発生した場合には恐ろしく遅くなります。そのような状況では、<a href="https://libevent.org/">libevent</a> のようなイベントライブラリの方が、あなたのシステムで利用可能な最も高速なメソッドを使用しようとするため、より良いパフォーマンスを得ることができることでしょう。</p>
 </blockquote>
-<p>さっそくですが、<code>select()</code>の概要を説明します。</p>
+<p>さっそくですが、<code>select()</code> の概要を説明します。</p>
 <pre><code class="language-c">#include &lt;sys/time.h&gt;
 #include &lt;sys/types.h&gt;
 #include &lt;unistd.h&gt;
@@ -169,7 +169,7 @@
 int select(int numfds, fd_set *readfds, fd_set *writefds,
            fd_set *exceptfds, struct timeval *timeout);
 </code></pre>
-<p>この関数は、ファイル記述子の&quot;集合&quot;、特に <code>readfds</code>、<code>writefds</code>、<code>exceptfds</code> を監視します。標準入力とソケット記述子 <code>sockfd</code> から読み込めるかどうかを確認したい場合、ファイル記述子 <code>0</code> と <code>sockfd</code> を <code>readfds</code> の集合に追加するだけでよいです。パラメータ <code>numfds</code> には、最も大きいファイル記述子の値に <code>1</code> を足した値を設定する必要があります。この例では、標準入力 (<code>0</code>) よりも確実に大きいので、<code>sockfd+1</code> に設定する必要があります。</p>
+<p>この関数は、ファイル記述子の &quot;集合&quot;、特に <code>readfds</code>、<code>writefds</code>、<code>exceptfds</code> を監視します。標準入力とソケット記述子 <code>sockfd</code> から読み込めるかどうかを確認したい場合、ファイル記述子 <code>0</code> と <code>sockfd</code> を <code>readfds</code> の集合に追加するだけでよいです。パラメータ <code>numfds</code> には、最も大きいファイル記述子の値に <code>1</code> を足した値を設定する必要があります。この例では、標準入力（<code>0</code>）よりも確実に大きいので、<code>sockfd+1</code> に設定する必要があります。</p>
 <p><code>select()</code> が戻ると、<code>readfds</code> は、選択したファイル記述子のうち、どれが読み込める状態にあるかを反映するように変更されます。以下のマクロ <code>FD_ISSET()</code> を用いて、それらをテストすることができます。</p>
 <p>この先に進む前に、これらのセットを操作する方法について説明します。各セットは <code>fd_set</code> 型です。以下のマクロはこの型を操作します。</p>
 <table><thead><tr><th>Function</th><th>説明</th></tr></thead><tbody>
@@ -185,7 +185,7 @@ int select(int numfds, fd_set *readfds, fd_set *writefds,
     int tv_usec;    // microseconds
 };
 </code></pre>
-<p><code>tv_sec</code> に待ち時間の秒数を、<code>tv_usec</code> に待ち時間のマイクロ秒数を設定するだけです。そう、これはミリ秒ではなくマイクロ秒なのです。ミリ秒の中には 1000 マイクロ秒があり、1 秒の中には 1000 ミリ秒があります。したがって、1 秒の中には 1,000,000 マイクロ秒があることになります。なぜ &quot;usec&quot;なのか？&quot;u&quot;は、私たちが&quot;マイクロ&quot;に使っているギリシャ文字の μ（ミュー）に似ていると思われるからです。また、関数が戻ってきたとき、<code>timeout</code> はまだ残っている時間を表示するように更新されるかもしれません。これは、あなたが使っている Unix のフレーバーに依存します。</p>
+<p><code>tv_sec</code> に待ち時間の秒数を、<code>tv_usec</code> に待ち時間のマイクロ秒数を設定するだけです。そう、これはミリ秒ではなくマイクロ秒なのです。ミリ秒の中には 1000 マイクロ秒があり、1 秒の中には 1000 ミリ秒があります。したがって、1 秒の中には 1,000,000 マイクロ秒があることになります。なぜ &quot;usec&quot; なのか？&quot;u&quot; は、私たちが &quot;マイクロ&quot; に使っているギリシャ文字の μ（ミュー）に似ていると思われるからです。また、関数が戻ってきたとき、<code>timeout</code> はまだ残っている時間を表示するように更新されるかもしれません。これは、あなたが使っている Unix のフレーバーに依存します。</p>
 <p>やったー！マイクロ秒の分解能のタイマーを手に入れたぞ！まあ、当てにしない方がいいです。どんなに小さな <code>struct timeval</code> を設定しても、おそらく標準的な Unix のタイムスライスの一部を待つ必要があります。</p>
 <p>その他、気になること。もし <code>struct timeval</code> のフィールドを <code>0</code> に設定すると、<code>select()</code> は直ちにタイムアウトし、セット内のすべてのファイル記述子を効率よくポーリングします。パラメータ <code>timeout</code> を <code>NULL</code> に設定すると、決してタイムアウトせず、最初のファイル記述子が準備できるまで待ちます。最後に、特定のセットを待つことを気にしないのであれば、<code>select()</code> のコールでそれを <code>NULL</code> に設定することができます。</p>
 <p><a href="https://beej.us/guide/bgnet/examples/select.c">次のコード</a>では、標準入力に何か表示されるまで 2.5 秒待ちます。</p>

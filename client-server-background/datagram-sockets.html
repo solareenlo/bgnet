@@ -155,7 +155,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="63-データグラムソケット"><a class="header" href="#63-データグラムソケット">6.3 データグラムソケット</a></h1>
-<p>UDP データグラムソケットの基本は、上記の <a href="../system-calls-or-bust/sendto-and-recvfrom-talk-to-me-GDRAM-style.html">5.8 sendto() and recvfrom()</a> ですでに説明しましたので、ここでは <code>talker.c</code> と <code>listener.c</code> という2つのサンプルプログラムのみを紹介します。</p>
+<p>UDP データグラムソケットの基本は、上記の <a href="../system-calls-or-bust/sendto-and-recvfrom-talk-to-me-GDRAM-style.html">5.8 sendto() と recvfrom()</a> ですでに説明したので、ここでは <code>talker.c</code> と <code>listener.c</code> という2つのサンプルプログラムのみを紹介します。</p>
 <p><code>listener</code> は、ポート 4950 で入ってくるパケットを待つマシンに座っています。<code>talker</code> は、指定されたマシンのそのポートに、ユーザがコマンドラインに入力したものを含むパケットを送信します。</p>
 <p>データグラムソケットはコネクションレス型であり、パケットを無慈悲に発射するだけなので、クライアントとサーバには IPv6 を使用するように指示することにしています。こうすることで、サーバが IPv6 でリッスンしていて、クライアントが IPv4 で送信するような状況を避けることができます。（接続された TCP ストリームソケットの世界では、まだ不一致があるかもしれませんが、一方のアドレスファミリーの <code>connect()</code> でエラーが発生すると、他方のアドレスファミリーの再試行が行われます。）</p>
 <p><a href="https://beej.us/guide/bgnet/examples/listener.c">listener.c ソースコード</a></p>

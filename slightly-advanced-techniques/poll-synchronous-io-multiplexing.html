@@ -161,13 +161,13 @@
 </blockquote>
 <p>では、どうすればポーリングを回避できるのでしょうか。少し皮肉なことに、<code>poll()</code> システムコールを使えばポーリングを避けることができます。簡単に言うと、オペレーティングシステムにすべての汚い仕事を代行してもらい、どのソケットでデータが読めるようになったかだけを知らせてもらうのです。その間、我々のプロセスはスリープして、システムリソースを節約することができます。</p>
 <p>一般的なゲームプランは、どのソケット記述子を監視したいか、どのような種類のイベントを監視したいかという情報を <code>struct pollfd</code> の配列として保持することです。OS は、これらのイベントのいずれかが発生するか（例えば &quot;socket ready to read!&quot;）またはユーザが指定したタイムアウトが発生するまで <code>poll()</code> 呼び出しでブロックします。</p>
-<p>便利なことに、 <code>listen()</code>しているソケットは、新しい接続が <code>accept()</code> される準備ができたときに &quot;ready to read&quot; を返します。</p>
+<p>便利なことに、<code>listen()</code> しているソケットは、新しい接続が <code>accept()</code> される準備ができたときに &quot;ready to read&quot; を返します。</p>
 <p>雑談はこのくらいにして。これをどう使うかです？</p>
 <pre><code class="language-c">#include &lt;poll.h&gt;
 
 int poll(struct pollfd fds[], nfds_t nfds, int timeout);
 </code></pre>
-<p><code>fds</code> は情報の配列（どのソケットの何を監視するか）、<code>nfds</code> は配列の要素数、そして <code>timeout</code> はミリ秒単位のタイムアウトです。<code>timeout</code> はミリ秒単位のタイムアウトで、<code>poll</code> はイベントが発生した配列の要素数を返します。</p>
+<p><code>fds</code> は情報の配列（どのソケットの何を監視するか）、<code>nfds</code> は配列の要素数、そして <code>timeout</code> はミリ秒単位のタイムアウトです。<code>poll</code> はイベントが発生した配列の要素数を返します。</p>
 <p><code>struct pollfd</code> を見てみましょう。</p>
 <pre><code class="language-c">struct pollfd {
     int fd;         // the socket descriptor
@@ -178,7 +178,7 @@ int poll(struct pollfd fds[], nfds_t nfds, int timeout);
 <p>そして、その配列を用意するんだ。各要素の <code>fd</code> フィールドに、監視したいソケット記述子を指定します。そして、<code>events</code> フィールドには、監視するイベントの種類を指定します。</p>
 <p><code>events</code> フィールドは、以下のビット単位の OR です。</p>
 <table><thead><tr><th>Macro</th><th>説明</th></tr></thead><tbody>
-<tr><td><code>POLLIN</code></td><td>このソケットで <code>recv()</code> のためのデータが準備できたときに警告を出す。</td></tr>
+<tr><td><code>POLLIN</code></td><td>このソケットで <code>recv()</code> のためのデータが準備できたときに警告します。</td></tr>
 <tr><td><code>POLLOUT</code></td><td>このソケットにブロックせずにデータを <code>send()</code> できるようになったら警告します。</td></tr>
 </tbody></table>
 <p>一旦 <code>struct pollfd</code> の配列を整えたら、それを <code>poll()</code> に渡すことができます。配列のサイズと、ミリ秒単位のタイムアウト値も一緒に渡してください。（タイムアウトに負の値を指定すると、永遠に待つことができます。）</p>
@@ -218,7 +218,7 @@ int main(void)
     return 0;
 }
 </code></pre>
-<p><code>poll()</code> が <code>pfds</code> 配列の中でイベントが発生した要素の数を返していることに再度注目してください。これは配列のどの要素かを教えてくれるわけではありませんが（そのためにはまだスキャンしなければなりません）、<code>revents</code> フィールドが <code>0</code> 以外のエントリがいくつあるかを教えてくれます（したがって、その数がわかったらスキャンをやめることができます。）</p>
+<p><code>poll()</code> が <code>pfds</code> 配列の中でイベントが発生した要素の数を返していることに再度注目してください。これは配列のどの要素かを教えてくれるわけではありませんが（そのためにはまだスキャンしなければなりません）、<code>revents</code> フィールドが <code>0</code> 以外のエントリがいくつあるかを教えてくれます（したがって、その数がわかったらスキャンをやめることができます）。</p>
 <p>ここで、いくつかの疑問が出てくるかもしれません。<code>poll()</code> に渡したセットに新しいファイル記述子を追加するにはどうしたらいいのでしょうか？これについては、単に配列に必要なだけのスペースがあることを確認するか、必要に応じて <code>realloc()</code> でスペースを追加してください。</p>
 <p>セットから項目を削除する場合はどうすればよいのでしょうか。この場合は、配列の最後の要素をコピーして、削除する要素の上に置くことができます。そして、その数をひとつ減らして <code>poll()</code> に渡します。もうひとつの方法として、<code>fd</code> フィールドに負の数を設定すると、<code>poll()</code> はそれを無視します。</p>
 <p>どうすれば、<code>telnet</code> できるチャットサーバにまとめることができるのでしょうか？</p>

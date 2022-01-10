@@ -976,9 +976,9 @@ int getpeername(int sockfd, struct sockaddr *addr, int *addrlen);
 int gethostname(char *hostname, size_t size);
 </code></pre>
 <p>引数は単純で、<code>hostname</code> はこの関数が戻ったときにホスト名を格納する文字列の配列へのポインタ、<code>size</code> はホスト名配列のバイト長です。</p>
-<p>この関数は，正常に終了した場合は <code>0</code> を，エラーの場合は <code>-1</code> を返し，通常通り <code>errno</code> を設定します。</p>
+<p>この関数は、正常に終了した場合は <code>0</code> を、エラーの場合は <code>-1</code> を返し、通常通り <code>errno</code> を設定します。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="6-クライアント-サーバの背景"><a class="header" href="#6-クライアント-サーバの背景">6 クライアント-サーバの背景</a></h1>
-<p>クライアント-サーバの世界なのです。ネットワーク上のあらゆることが、クライアント・プロセスとサーバ・プロセスとの対話、またはその逆を扱っています。たとえば、<code>telnet</code> を考えてみよう。ポート 23 のリモートホストに <code>telnet</code> で接続すると（クライアント）、そのホスト上のプログラム（telnetd と呼ばれるサーバ）が起動します。このプログラムは、送られてきた <code>telnet</code> 接続を処理し、ログインプロンプトを表示するなどの設定を行います。</p>
+<p>クライアント-サーバの世界なのです。ネットワーク上のあらゆることが、クライアント・プロセスとサーバ・プロセスとの対話、またはその逆を扱っています。たとえば、<code>telnet</code> を考えてみましょう。ポート 23 のリモートホストに <code>telnet</code> で接続すると（クライアント）、そのホスト上のプログラム（telnetd と呼ばれるサーバ）が起動します。このプログラムは、送られてきた <code>telnet</code> 接続を処理し、ログインプロンプトを表示するなどの設定を行います。</p>
 <figure>
   <img
   src="images/cs.svg"
@@ -987,7 +987,7 @@ int gethostname(char *hostname, size_t size);
 </figure>
 <p>クライアントとサーバ間の情報のやりとりは、上の図のようにまとめられます。</p>
 <p>クライアントとサーバのペアは、<code>SOCK_STREAM</code>、<code>SOCK_DGRAM</code>、その他（同じことを話している限り）何でも話すことができることに注意してください。クライアントとサーバのペアの良い例としては、<code>telnet</code>/<code>telnetd</code>、<code>ftp</code>/<code>ftpd</code>、<code>Firefox</code>/<code>Apache</code> などがあります。<code>ftp</code> を使うときはいつも、リモートプログラム <code>ftpd</code> があなたにサービスを提供します。</p>
-<p>多くの場合、1つのマシンには1つのサーバしかなく、そのサーバは <code>fork()</code> を使用して複数のクライアントを処理します。基本的なルーチンは、サーバが接続を待ち、それを <code>accept()</code> し、それを処理するために子プロセスを <code>fork()</code> する、というものです。これが、次の章で紹介するサンプルサーバが行っていることです。</p>
+<p>多くの場合、1つのマシンには1つのサーバしかなく、そのサーバは <code>fork()</code> を使用して複数のクライアントを処理します。基本的なルーチンは、サーバが接続を待ち、それを <code>accept()</code> し、それを処理するために子プロセスを <code>fork()</code> する、というものです。これが、<a href="client-server-background/./a-simple-stream-client.html">次の章</a>で紹介するサンプルサーバが行っていることです。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="61-シンプルなストリームサーバ"><a class="header" href="#61-シンプルなストリームサーバ">6.1 シンプルなストリームサーバ</a></h1>
 <p>このサーバがすることは、ストリーム接続で <code>Hello, world!</code> という文字列を送り出すだけです。このサーバをテストするために必要なことは、あるウィンドウでこのサーバを実行し、別のウィンドウからこのサーバに telnet でアクセスすることだけです。</p>
 <pre><code>$ telnet remotehostname 3490
@@ -1230,7 +1230,7 @@ int main(int argc, char *argv[])
 </code></pre>
 <p>クライアントを実行する前にサーバを実行しない場合、<code>connect()</code> は &quot;Connection refused&quot; を返すことに注意してください。非常に便利です。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="63-データグラムソケット"><a class="header" href="#63-データグラムソケット">6.3 データグラムソケット</a></h1>
-<p>UDP データグラムソケットの基本は、上記の <a href="client-server-background/../system-calls-or-bust/sendto-and-recvfrom-talk-to-me-GDRAM-style.html">5.8 sendto() and recvfrom()</a> ですでに説明しましたので、ここでは <code>talker.c</code> と <code>listener.c</code> という2つのサンプルプログラムのみを紹介します。</p>
+<p>UDP データグラムソケットの基本は、上記の <a href="client-server-background/../system-calls-or-bust/sendto-and-recvfrom-talk-to-me-GDRAM-style.html">5.8 sendto() と recvfrom()</a> ですでに説明したので、ここでは <code>talker.c</code> と <code>listener.c</code> という2つのサンプルプログラムのみを紹介します。</p>
 <p><code>listener</code> は、ポート 4950 で入ってくるパケットを待つマシンに座っています。<code>talker</code> は、指定されたマシンのそのポートに、ユーザがコマンドラインに入力したものを含むパケットを送信します。</p>
 <p>データグラムソケットはコネクションレス型であり、パケットを無慈悲に発射するだけなので、クライアントとサーバには IPv6 を使用するように指示することにしています。こうすることで、サーバが IPv6 でリッスンしていて、クライアントが IPv4 で送信するような状況を避けることができます。（接続された TCP ストリームソケットの世界では、まだ不一致があるかもしれませんが、一方のアドレスファミリーの <code>connect()</code> でエラーが発生すると、他方のアドレスファミリーの再試行が行われます。）</p>
 <p><a href="https://beej.us/guide/bgnet/examples/listener.c">listener.c ソースコード</a></p>
@@ -1407,7 +1407,7 @@ int main(int argc, char *argv[])
 <p>これらは本当に高度なものではありませんが、私たちがすでにカバーしたより基本的なレベルから抜け出したものです。実際、ここまでくれば、Unix ネットワークプログラミングの基本をかなり習得したと考えてよいでしょう！おめでとうございます！</p>
 <p>さて、ここからは、より難解な事柄の勇敢な新世界に突入します。ソケットについて学ぶことができます。どうぞお楽しみに！</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="71-ブロッキング"><a class="header" href="#71-ブロッキング">7.1 ブロッキング</a></h1>
-<p>ブロッキング。聞いたことがあると思います---さて、一体何でしょう？一言で言えば、&quot;ブロック&quot;は技術用語で&quot;スリープ&quot;のことです。上で <code>listener</code> を実行したとき、パケットが到着するまでただそこに座っていることに気付いたと思います。何が起こったかというと、<code>recvfrom()</code> を呼び出したのですが、データがなかったので、<code>recvfrom()</code> はデータが到着するまで &quot;block&quot;（つまり、そこで眠る）と言われているのです。</p>
+<p>ブロッキング。聞いたことがあると思います---さて、一体何でしょう？一言で言えば、&quot;ブロック&quot; は技術用語で &quot;スリープ&quot; のことです。上で <code>listener</code> を実行したとき、パケットが到着するまでただそこに座っていることに気付いたと思います。何が起こったかというと、<code>recvfrom()</code> を呼び出したのですが、データがなかったので、<code>recvfrom()</code> はデータが到着するまで &quot;block&quot;（つまり、そこで眠る）と言われているのです。</p>
 <p>多くの関数がブロックします。<code>accept()</code> がブロックします。すべての <code>recv()</code> 関数がブロックします。このようなことができるのは、ブロックすることが許されているからです。最初に <code>socket()</code> でソケット記述子を作成するとき、カーネルはそれをブロッキングに設定します。もし、ソケットをブロッキングさせたくなければ、<code>fcntl()</code> を呼び出す必要があります。</p>
 <pre><code class="language-c">#include &lt;unistd.h&gt;
 #include &lt;fcntl.h&gt;
@@ -1420,9 +1420,9 @@ fcntl(sockfd, F_SETFL, O_NONBLOCK);
 .
 .
 </code></pre>
-<p>ソケットをノンブロッキングに設定することで、効果的にソケットの情報を&quot;ポーリング&quot;することができます。ノンブロッキングソケットから読み込もうとしたときに、そこにデータがない場合、ブロックすることは許されません---その際には <code>-1</code> が返り、<code>errno</code> には <code>EAGAIN</code> または <code>EWOULDBLOCK</code> がセットされます。</p>
+<p>ソケットをノンブロッキングに設定することで、効果的にソケットの情報を &quot;ポーリング&quot; することができます。ノンブロッキングソケットから読み込もうとしたときに、そこにデータがない場合、ブロックすることは許されません---その際には <code>-1</code> が返り、<code>errno</code> には <code>EAGAIN</code> または <code>EWOULDBLOCK</code> がセットされます。</p>
 <p>（待てよ--<code>EAGAIN</code> や <code>EWOULDBLOCK</code> を返すこともあるのか？どちらをチェックする？仕様では実際にあなたのシステムがどちらを返すかは指定されていないので、移植性のために両方チェックしましょう。）</p>
-<p>しかし、一般的に言って、この種のポーリングは悪い考えです。ソケットのデータを探すためにプログラムをビジーウェイト状態にすると、流行遅れのように CPU 時間を吸い取られてしまうからです。読み込み待ちのデータがあるかどうかを確認するための、よりエレガントなソリューションが、次の <a href="slightly-advanced-techniques/./poll-synchronous-io-multiplexing.html"><code>poll()</code></a> の章で紹介されています。</p>
+<p>しかし、一般的に言って、この種のポーリングは悪い考えです。ソケットのデータを探すためにプログラムをビジーウェイト状態にすると、流行遅れのように CPU 時間を吸い取られてしまうからです。読み込み待ちのデータがあるかどうかを確認するための、よりエレガントなソリューションが、次の <a href="slightly-advanced-techniques/./poll-synchronous-io-multiplexing.html"><code>poll()</code> の章</a>で紹介されています。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="72-poll---同期式-io-多重化"><a class="header" href="#72-poll---同期式-io-多重化">7.2 <code>poll()</code>---同期式 I/O 多重化</a></h1>
 <p>本当にやりたいことは、一度にたくさんのソケットを監視して、データの準備ができたものを処理することです。そうすれば、すべてのソケットを継続的にポーリングして、どれが読み込み可能な状態にあるかを確認する必要がなくなります。</p>
 <blockquote>
@@ -1430,13 +1430,13 @@ fcntl(sockfd, F_SETFL, O_NONBLOCK);
 </blockquote>
 <p>では、どうすればポーリングを回避できるのでしょうか。少し皮肉なことに、<code>poll()</code> システムコールを使えばポーリングを避けることができます。簡単に言うと、オペレーティングシステムにすべての汚い仕事を代行してもらい、どのソケットでデータが読めるようになったかだけを知らせてもらうのです。その間、我々のプロセスはスリープして、システムリソースを節約することができます。</p>
 <p>一般的なゲームプランは、どのソケット記述子を監視したいか、どのような種類のイベントを監視したいかという情報を <code>struct pollfd</code> の配列として保持することです。OS は、これらのイベントのいずれかが発生するか（例えば &quot;socket ready to read!&quot;）またはユーザが指定したタイムアウトが発生するまで <code>poll()</code> 呼び出しでブロックします。</p>
-<p>便利なことに、 <code>listen()</code>しているソケットは、新しい接続が <code>accept()</code> される準備ができたときに &quot;ready to read&quot; を返します。</p>
+<p>便利なことに、<code>listen()</code> しているソケットは、新しい接続が <code>accept()</code> される準備ができたときに &quot;ready to read&quot; を返します。</p>
 <p>雑談はこのくらいにして。これをどう使うかです？</p>
 <pre><code class="language-c">#include &lt;poll.h&gt;
 
 int poll(struct pollfd fds[], nfds_t nfds, int timeout);
 </code></pre>
-<p><code>fds</code> は情報の配列（どのソケットの何を監視するか）、<code>nfds</code> は配列の要素数、そして <code>timeout</code> はミリ秒単位のタイムアウトです。<code>timeout</code> はミリ秒単位のタイムアウトで、<code>poll</code> はイベントが発生した配列の要素数を返します。</p>
+<p><code>fds</code> は情報の配列（どのソケットの何を監視するか）、<code>nfds</code> は配列の要素数、そして <code>timeout</code> はミリ秒単位のタイムアウトです。<code>poll</code> はイベントが発生した配列の要素数を返します。</p>
 <p><code>struct pollfd</code> を見てみましょう。</p>
 <pre><code class="language-c">struct pollfd {
     int fd;         // the socket descriptor
@@ -1447,7 +1447,7 @@ int poll(struct pollfd fds[], nfds_t nfds, int timeout);
 <p>そして、その配列を用意するんだ。各要素の <code>fd</code> フィールドに、監視したいソケット記述子を指定します。そして、<code>events</code> フィールドには、監視するイベントの種類を指定します。</p>
 <p><code>events</code> フィールドは、以下のビット単位の OR です。</p>
 <table><thead><tr><th>Macro</th><th>説明</th></tr></thead><tbody>
-<tr><td><code>POLLIN</code></td><td>このソケットで <code>recv()</code> のためのデータが準備できたときに警告を出す。</td></tr>
+<tr><td><code>POLLIN</code></td><td>このソケットで <code>recv()</code> のためのデータが準備できたときに警告します。</td></tr>
 <tr><td><code>POLLOUT</code></td><td>このソケットにブロックせずにデータを <code>send()</code> できるようになったら警告します。</td></tr>
 </tbody></table>
 <p>一旦 <code>struct pollfd</code> の配列を整えたら、それを <code>poll()</code> に渡すことができます。配列のサイズと、ミリ秒単位のタイムアウト値も一緒に渡してください。（タイムアウトに負の値を指定すると、永遠に待つことができます。）</p>
@@ -1487,7 +1487,7 @@ int main(void)
     return 0;
 }
 </code></pre>
-<p><code>poll()</code> が <code>pfds</code> 配列の中でイベントが発生した要素の数を返していることに再度注目してください。これは配列のどの要素かを教えてくれるわけではありませんが（そのためにはまだスキャンしなければなりません）、<code>revents</code> フィールドが <code>0</code> 以外のエントリがいくつあるかを教えてくれます（したがって、その数がわかったらスキャンをやめることができます。）</p>
+<p><code>poll()</code> が <code>pfds</code> 配列の中でイベントが発生した要素の数を返していることに再度注目してください。これは配列のどの要素かを教えてくれるわけではありませんが（そのためにはまだスキャンしなければなりません）、<code>revents</code> フィールドが <code>0</code> 以外のエントリがいくつあるかを教えてくれます（したがって、その数がわかったらスキャンをやめることができます）。</p>
 <p>ここで、いくつかの疑問が出てくるかもしれません。<code>poll()</code> に渡したセットに新しいファイル記述子を追加するにはどうしたらいいのでしょうか？これについては、単に配列に必要なだけのスペースがあることを確認するか、必要に応じて <code>realloc()</code> でスペースを追加してください。</p>
 <p>セットから項目を削除する場合はどうすればよいのでしょうか。この場合は、配列の最後の要素をコピーして、削除する要素の上に置くことができます。そして、その数をひとつ減らして <code>poll()</code> に渡します。もうひとつの方法として、<code>fd</code> フィールドに負の数を設定すると、<code>poll()</code> はそれを無視します。</p>
 <p>どうすれば、<code>telnet</code> できるチャットサーバにまとめることができるのでしょうか？</p>
@@ -1713,12 +1713,12 @@ int main(void)
 <p>次の章では、似たような古い関数である <code>select()</code> について見ていきます。<code>select()</code> と <code>poll()</code> はどちらも似たような機能とパフォーマンスを持っており、どのように使うかが違うだけです。<code>select()</code> の方が若干移植性が高いかもしれませんが、使い勝手は少し悪いかもしれません。あなたのシステムでサポートされている限り、一番好きなものを選んでください。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="73-select---同期式-io-多重化旧式"><a class="header" href="#73-select---同期式-io-多重化旧式">7.3 <code>select()</code>---同期式 I/O 多重化、旧式</a></h1>
 <p>この関数、ちょっと不思議なんですが、とても便利なんです。次のような状況を考えてみましょう。あなたはサーバで、入ってくるコネクションをリッスンするだけでなく、すでに持っているコネクションを読み続けたいのです。</p>
-<p>問題ありません。<code>accept()</code> と <code>recv()</code> を数回実行するだけです。そうはいかないよ、バスター！もし <code>accept()</code> の呼び出しがブロックされていたらどうでしょう？どうやって <code>recv()</code> を同時に行うんだ？&quot;ノンブロッキングソケットを使いましょう！&quot;まさか！CPU を占有するようなことはしない方がいい。じゃあ、何？</p>
+<p>問題ありません。<code>accept()</code> と <code>recv()</code> を数回実行するだけです。そうはいかないよ、バスター！もし <code>accept()</code> の呼び出しがブロックされていたらどうでしょう？どうやって <code>recv()</code> を同時に行うんだ？&quot;ノンブロッキングソケットを使いましょう！&quot; まさか！CPU を占有するようなことはしない方がいい。じゃあ、何？</p>
 <p><code>select()</code> は同時に複数のソケットを監視する力を与えてくれます。どのソケットが読み込み可能で、どのソケットが書き込み可能か、そしてどのソケットが例外を発生させたか、本当に知りたければ教えてくれるでしょう。</p>
 <blockquote>
-<p>警告: <code>select()</code> は非常にポータブルですが、巨大な数の接続が発生した場合には恐ろしく遅くなります。そのような状況では、<a href="https://libevent.org/">libevent</a> のようなイベントライブラリの方が、あなたのシステムで利用可能な最も高速なメソッドを使用しようとするため、より良いパフォーマンスを得ることができることでしょう。</p>
+<p>警告：<code>select()</code> は非常にポータブルですが、巨大な数の接続が発生した場合には恐ろしく遅くなります。そのような状況では、<a href="https://libevent.org/">libevent</a> のようなイベントライブラリの方が、あなたのシステムで利用可能な最も高速なメソッドを使用しようとするため、より良いパフォーマンスを得ることができることでしょう。</p>
 </blockquote>
-<p>さっそくですが、<code>select()</code>の概要を説明します。</p>
+<p>さっそくですが、<code>select()</code> の概要を説明します。</p>
 <pre><code class="language-c">#include &lt;sys/time.h&gt;
 #include &lt;sys/types.h&gt;
 #include &lt;unistd.h&gt;
@@ -1726,7 +1726,7 @@ int main(void)
 int select(int numfds, fd_set *readfds, fd_set *writefds,
            fd_set *exceptfds, struct timeval *timeout);
 </code></pre>
-<p>この関数は、ファイル記述子の&quot;集合&quot;、特に <code>readfds</code>、<code>writefds</code>、<code>exceptfds</code> を監視します。標準入力とソケット記述子 <code>sockfd</code> から読み込めるかどうかを確認したい場合、ファイル記述子 <code>0</code> と <code>sockfd</code> を <code>readfds</code> の集合に追加するだけでよいです。パラメータ <code>numfds</code> には、最も大きいファイル記述子の値に <code>1</code> を足した値を設定する必要があります。この例では、標準入力 (<code>0</code>) よりも確実に大きいので、<code>sockfd+1</code> に設定する必要があります。</p>
+<p>この関数は、ファイル記述子の &quot;集合&quot;、特に <code>readfds</code>、<code>writefds</code>、<code>exceptfds</code> を監視します。標準入力とソケット記述子 <code>sockfd</code> から読み込めるかどうかを確認したい場合、ファイル記述子 <code>0</code> と <code>sockfd</code> を <code>readfds</code> の集合に追加するだけでよいです。パラメータ <code>numfds</code> には、最も大きいファイル記述子の値に <code>1</code> を足した値を設定する必要があります。この例では、標準入力（<code>0</code>）よりも確実に大きいので、<code>sockfd+1</code> に設定する必要があります。</p>
 <p><code>select()</code> が戻ると、<code>readfds</code> は、選択したファイル記述子のうち、どれが読み込める状態にあるかを反映するように変更されます。以下のマクロ <code>FD_ISSET()</code> を用いて、それらをテストすることができます。</p>
 <p>この先に進む前に、これらのセットを操作する方法について説明します。各セットは <code>fd_set</code> 型です。以下のマクロはこの型を操作します。</p>
 <table><thead><tr><th>Function</th><th>説明</th></tr></thead><tbody>
@@ -1742,7 +1742,7 @@ int select(int numfds, fd_set *readfds, fd_set *writefds,
     int tv_usec;    // microseconds
 };
 </code></pre>
-<p><code>tv_sec</code> に待ち時間の秒数を、<code>tv_usec</code> に待ち時間のマイクロ秒数を設定するだけです。そう、これはミリ秒ではなくマイクロ秒なのです。ミリ秒の中には 1000 マイクロ秒があり、1 秒の中には 1000 ミリ秒があります。したがって、1 秒の中には 1,000,000 マイクロ秒があることになります。なぜ &quot;usec&quot;なのか？&quot;u&quot;は、私たちが&quot;マイクロ&quot;に使っているギリシャ文字の μ（ミュー）に似ていると思われるからです。また、関数が戻ってきたとき、<code>timeout</code> はまだ残っている時間を表示するように更新されるかもしれません。これは、あなたが使っている Unix のフレーバーに依存します。</p>
+<p><code>tv_sec</code> に待ち時間の秒数を、<code>tv_usec</code> に待ち時間のマイクロ秒数を設定するだけです。そう、これはミリ秒ではなくマイクロ秒なのです。ミリ秒の中には 1000 マイクロ秒があり、1 秒の中には 1000 ミリ秒があります。したがって、1 秒の中には 1,000,000 マイクロ秒があることになります。なぜ &quot;usec&quot; なのか？&quot;u&quot; は、私たちが &quot;マイクロ&quot; に使っているギリシャ文字の μ（ミュー）に似ていると思われるからです。また、関数が戻ってきたとき、<code>timeout</code> はまだ残っている時間を表示するように更新されるかもしれません。これは、あなたが使っている Unix のフレーバーに依存します。</p>
 <p>やったー！マイクロ秒の分解能のタイマーを手に入れたぞ！まあ、当てにしない方がいいです。どんなに小さな <code>struct timeval</code> を設定しても、おそらく標準的な Unix のタイムスライスの一部を待つ必要があります。</p>
 <p>その他、気になること。もし <code>struct timeval</code> のフィールドを <code>0</code> に設定すると、<code>select()</code> は直ちにタイムアウトし、セット内のすべてのファイル記述子を効率よくポーリングします。パラメータ <code>timeout</code> を <code>NULL</code> に設定すると、決してタイムアウトせず、最初のファイル記述子が準備できるまで待ちます。最後に、特定のセットを待つことを気にしないのであれば、<code>select()</code> のコールでそれを <code>NULL</code> に設定することができます。</p>
 <p><a href="https://beej.us/guide/bgnet/examples/select.c">次のコード</a>では、標準入力に何か表示されるまで 2.5 秒待ちます。</p>
