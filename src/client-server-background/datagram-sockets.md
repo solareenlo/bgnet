@@ -1,6 +1,6 @@
 # 6.3 データグラムソケット
 
-UDP データグラムソケットの基本は、上記の [5.8 sendto() and recvfrom()](../system-calls-or-bust/sendto-and-recvfrom-talk-to-me-GDRAM-style.md) ですでに説明しましたので、ここでは `talker.c` と `listener.c` という2つのサンプルプログラムのみを紹介します。
+UDP データグラムソケットの基本は、上記の [5.8 sendto() と recvfrom()](../system-calls-or-bust/sendto-and-recvfrom-talk-to-me-GDRAM-style.md) ですでに説明したので、ここでは `talker.c` と `listener.c` という2つのサンプルプログラムのみを紹介します。
 
 `listener` は、ポート 4950 で入ってくるパケットを待つマシンに座っています。`talker` は、指定されたマシンのそのポートに、ユーザがコマンドラインに入力したものを含むパケットを送信します。
 
