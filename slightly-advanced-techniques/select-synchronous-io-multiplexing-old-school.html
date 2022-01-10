@@ -161,7 +161,7 @@
 <blockquote>
 <p>警告：<code>select()</code> は非常にポータブルですが、巨大な数の接続が発生した場合には恐ろしく遅くなります。そのような状況では、<a href="https://libevent.org/">libevent</a> のようなイベントライブラリの方が、あなたのシステムで利用可能な最も高速なメソッドを使用しようとするため、より良いパフォーマンスを得ることができることでしょう。</p>
 </blockquote>
-<p>さっそくですが、<code>select()</code> の概要を説明します。</p>
+<p>さっそくですが、<code>select()</code> の書式を説明します。</p>
 <pre><code class="language-c">#include &lt;sys/time.h&gt;
 #include &lt;sys/types.h&gt;
 #include &lt;unistd.h&gt;
@@ -169,7 +169,7 @@
 int select(int numfds, fd_set *readfds, fd_set *writefds,
            fd_set *exceptfds, struct timeval *timeout);
 </code></pre>
-<p>この関数は、ファイル記述子の &quot;集合&quot;、特に <code>readfds</code>、<code>writefds</code>、<code>exceptfds</code> を監視します。標準入力とソケット記述子 <code>sockfd</code> から読み込めるかどうかを確認したい場合、ファイル記述子 <code>0</code> と <code>sockfd</code> を <code>readfds</code> の集合に追加するだけでよいです。パラメータ <code>numfds</code> には、最も大きいファイル記述子の値に <code>1</code> を足した値を設定する必要があります。この例では、標準入力（<code>0</code>）よりも確実に大きいので、<code>sockfd+1</code> に設定する必要があります。</p>
+<p>この関数は、ファイル記述子の &quot;セット&quot;、特に <code>readfds</code>、<code>writefds</code>、<code>exceptfds</code> を監視します。標準入力とソケット記述子 <code>sockfd</code> から読み込めるかどうかを確認したい場合、ファイル記述子 <code>0</code> と <code>sockfd</code> を <code>readfds</code> の集合に追加するだけでよいです。パラメータ <code>numfds</code> には、最も大きいファイル記述子の値に <code>1</code> を足した値を設定する必要があります。この例では、標準入力（<code>0</code>）よりも確実に大きいので、<code>sockfd+1</code> に設定する必要があります。</p>
 <p><code>select()</code> が戻ると、<code>readfds</code> は、選択したファイル記述子のうち、どれが読み込める状態にあるかを反映するように変更されます。以下のマクロ <code>FD_ISSET()</code> を用いて、それらをテストすることができます。</p>
 <p>この先に進む前に、これらのセットを操作する方法について説明します。各セットは <code>fd_set</code> 型です。以下のマクロはこの型を操作します。</p>
 <table><thead><tr><th>Function</th><th>説明</th></tr></thead><tbody>
@@ -185,9 +185,9 @@ int select(int numfds, fd_set *readfds, fd_set *writefds,
     int tv_usec;    // microseconds
 };
 </code></pre>
-<p><code>tv_sec</code> に待ち時間の秒数を、<code>tv_usec</code> に待ち時間のマイクロ秒数を設定するだけです。そう、これはミリ秒ではなくマイクロ秒なのです。ミリ秒の中には 1000 マイクロ秒があり、1 秒の中には 1000 ミリ秒があります。したがって、1 秒の中には 1,000,000 マイクロ秒があることになります。なぜ &quot;usec&quot; なのか？&quot;u&quot; は、私たちが &quot;マイクロ&quot; に使っているギリシャ文字の μ（ミュー）に似ていると思われるからです。また、関数が戻ってきたとき、<code>timeout</code> はまだ残っている時間を表示するように更新されるかもしれません。これは、あなたが使っている Unix のフレーバーに依存します。</p>
+<p><code>tv_sec</code> に待ち時間の秒数を、<code>tv_usec</code> に待ち時間のマイクロ秒数を設定するだけです。そう、これはミリ秒ではなくマイクロ秒なのです。ミリ秒の中には 1000 マイクロ秒があり、1 秒の中には 1000 ミリ秒があります。したがって、1 秒の中には 1,000,000 マイクロ秒があることになります。なぜ &quot;usec&quot; なのか？&quot;u&quot; は、私たちが &quot;マイクロ&quot; に使っているギリシャ文字の \(\mu\)（ミュー）に似ていると思われるからです。また、関数が戻ってきたとき、<code>timeout</code> はまだ残っている時間を表示するように更新されるかもしれません。これは、あなたが使っている Unix のフレーバーに依存します。</p>
 <p>やったー！マイクロ秒の分解能のタイマーを手に入れたぞ！まあ、当てにしない方がいいです。どんなに小さな <code>struct timeval</code> を設定しても、おそらく標準的な Unix のタイムスライスの一部を待つ必要があります。</p>
-<p>その他、気になること。もし <code>struct timeval</code> のフィールドを <code>0</code> に設定すると、<code>select()</code> は直ちにタイムアウトし、セット内のすべてのファイル記述子を効率よくポーリングします。パラメータ <code>timeout</code> を <code>NULL</code> に設定すると、決してタイムアウトせず、最初のファイル記述子が準備できるまで待ちます。最後に、特定のセットを待つことを気にしないのであれば、<code>select()</code> のコールでそれを <code>NULL</code> に設定することができます。</p>
+<p>その他、気になること。もし <code>struct timeval</code> のフィールドを <code>0</code> に設定すると、<code>select()</code> は直ちにタイムアウトし、セット内のすべてのファイル記述子を効率よくポーリングします。パラメータ <code>timeout</code> を <code>NULL</code> に設定すると、決してタイムアウトせず、最初のファイル記述子が準備できるまで待ちます。最後に、特定のセットを待つことを気にしないのであれば、<code>select()</code> の呼び出しの際に <code>NULL</code> を設定すればよいでしょう。</p>
 <p><a href="https://beej.us/guide/bgnet/examples/select.c">次のコード</a>では、標準入力に何か表示されるまで 2.5 秒待ちます。</p>
 <pre><code class="language-c">/*
 ** select.c -- a select() demo
@@ -223,13 +223,13 @@ int main(void)
 }
 </code></pre>
 <p>ラインバッファ端末の場合、押すキーは RETURN でないと、とにかくタイムアウトしてしまいます。</p>
-<p>さて、この方法はデータグラムソケットでデータを待つのに最適な方法だと思う人もいるかもしれませんね。Unice の中にはこの方法で select を使えるものもあれば、使えないものもあります。試してみたいなら、ローカルの man ページに何が書いてあるか見てみるといいです。</p>
-<p>Unices の中には、タイムアウトまでの残り時間を反映して、<code>struct timeval</code> の時間を更新するものがあります。しかし、そうでないものもあります。ポータブルにしたいのであれば、そのようなことが起こることを当てにしないでください。（経過時間を追跡する必要がある場合は、<code>gettimeofday()</code> を使ってください。残念なことですが、それが現実なのです。）</p>
-<p>リードセット内のソケットがコネクションをクローズした場合はどうなるのでしょうか？その場合、<code>select()</code> はそのソケット記述子を &quot;ready to read&quot; に設定して返す。実際にそこから <code>recv()</code> を実行すると、<code>recv()</code> は <code>0</code> を返します。これが、クライアントが接続を閉じたことを知るための方法です。</p>
+<p>さて、この方法はデータグラムソケットでデータを待つのに最適な方法だと思う人もいるかもしれませんね。Unix の中にはこの方法で select を使えるものもあれば、使えないものもあります。試してみたいなら、ローカルの man ページに何が書いてあるか見てみるといいです。</p>
+<p>Unix の中には、タイムアウトまでの残り時間を反映して、<code>struct timeval</code> の時間を更新するものがあります。しかし、そうでないものもあります。ポータブルにしたいのであれば、そのようなことが起こることを当てにしないでください。（経過時間を追跡する必要がある場合は、<code>gettimeofday()</code> を使ってください。残念なことですが、それが現実なのです。）</p>
+<p>リードセット内のソケットがコネクションをクローズした場合はどうなるのでしょうか？その場合、<code>select()</code> はそのソケット記述子を &quot;ready to read&quot; に設定して返します。実際にそこから <code>recv()</code> を実行すると、<code>recv()</code> は <code>0</code> を返します。これが、クライアントが接続を閉じたことを知るための方法です。</p>
 <p>もうひとつ <code>select()</code> について書いておくと、<code>listen()</code> しているソケットがある場合、そのソケットのファイル記述子を <code>readfds</code> セットに入れておけば、新しい接続があるかどうかチェックすることができます。</p>
 <p>以上、全能の関数 <code>select()</code> の概要を簡単に説明しました。</p>
 <p>しかし、ご要望の多かった、より詳細な例をご紹介します。残念ながら、上記のごく簡単な例と、こちらの例では、大きな違いがあります。しかし、ご覧になってから、その後に続く説明をお読みください。</p>
-<p><a href="https://beej.us/guide/bgnet/examples/selectserver.c">このプログラム</a>は、簡単なマルチユーザチャットサーバのように動作します。一つのウィンドウで起動し、他の複数のウィンドウから <code>telnet</code> (&quot;<code>telnet hostname 9034</code>&quot;) で接続してください。ある <code>telnet</code> セッションで何かを入力すると、他のすべてのウィンドウに表示されるはずです。</p>
+<p><a href="https://beej.us/guide/bgnet/examples/selectserver.c">このプログラム</a>は、簡単なマルチユーザチャットサーバのように動作します。一つのウィンドウで起動し、他の複数のウィンドウから <code>telnet</code>（&quot;<code>telnet hostname 9034</code>&quot;）で接続してください。ある <code>telnet</code> セッションで何かを入力すると、他のすべてのウィンドウに表示されるはずです。</p>
 <pre><code class="language-c">/*
 ** selectserver.c -- a cheezy multiperson chat server
 */
@@ -400,7 +400,7 @@ int main(void)
 <p>しかし、クライアントの <code>recv()</code> がゼロ以外を返した場合、何らかのデータを受信したことが分かります。そこで私はそれを取得し、<code>master</code> リストを経由して、接続されている残りのすべてのクライアントにそのデータを送信します。</p>
 <p>以上が、全能の関数 <code>select()</code> の簡単でない概要です。</p>
 <p>Linux ファンの皆さんへ：まれに、Linux の <code>select()</code> が &quot;ready-to-read&quot; を返した後、実際には読み込む準備ができていないことがあります！これは、Linux の <code>select()</code> が &quot;ready-to-read&quot; を返した後、実際には読み込む準備ができていないことを意味します。これはつまり、<code>select()</code> が読まないと言っているのに、<code>read()</code> でブロックしてしまうということです！なぜだ、この野郎---！とにかく、回避策は受信側のソケットで <code>O_NONBLOCK</code> フラグをセットして、 <code>EWOULDBLOCK</code> でエラーにすることです（これは発生しても無視しても大丈夫です）。ソケットをノンブロッキングに設定する方法については、<a href="../man-pages/fcntl.html"><code>fcntl()</code> のリファレンスページ</a>を参照してください。</p>
-<p>さらに、ここでボーナス的な余談ですが、<code>poll()</code> という別の関数があります。これは <code>select()</code> とほぼ同じ動作をしますが、ファイル記述子集合を管理するシステムが異なります。<a href="#pollman">チェックしてみてください！</a></p>
+<p>さらに、ここでボーナス的な余談ですが、<code>poll()</code> という別の関数があります。これは <code>select()</code> とほぼ同じ動作をしますが、ファイル記述子集合を管理するシステムが異なります。<a href="../man-pages/poll.html">チェックしてみてください！</a></p>
 
                     </main>
 

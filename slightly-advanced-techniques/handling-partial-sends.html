@@ -155,9 +155,9 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="74-部分的な-sends-の処理"><a class="header" href="#74-部分的な-sends-の処理">7.4 部分的な <code>send()</code>s の処理</a></h1>
-<p>上の <a href="../system-calls-or-bust/send-and-recv-talk-to-me-baby.html"><code>send()</code> の章</a>で、<code>send()</code> はあなたが頼んだバイトをすべて送らないかもしれない、と言ったのを覚えていますか？つまり、512バイト送って欲しいのに、412バイトが返ってきたとします。残りの100バイトはどうなったのでしょうか？</p>
+<p>上の <a href="../system-calls-or-bust/send-and-recv-talk-to-me-baby.html"><code>send()</code> の章</a>で、<code>send()</code> はあなたが頼んだバイトをすべて送らないかもしれない、と言ったのを覚えていますか？つまり、512 バイト送って欲しいのに、412 バイトが返ってきたとします。残りの 100 バイトはどうなったのでしょうか？</p>
 <p>さて、それらはまだあなたの小さなバッファの中で送信されるのを待っています。あなたがコントロールできない状況のために、カーネルはすべてのデータを1つのチャンクで送信しないことを決定しました、そして今、私の友人は、データを外に出すのはあなた次第です。</p>
-<p>このような関数を書いてやってもいいんじゃないでしょうか。</p>
+<p>このような関数を書いてもいいんじゃないでしょうか。</p>
 <pre><code class="language-c">#include &lt;sys/types.h&gt;
 #include &lt;sys/socket.h&gt;
 
