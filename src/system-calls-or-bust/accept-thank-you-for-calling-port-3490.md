@@ -11,7 +11,7 @@
 int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 ```
 
-`sockfd` は `listen()` するソケット記述子です。簡単ですね。`addr` は通常、ローカルの `struct sockaddr_storage` へのポインタになります。この構造体には、着信接続に関する情報が格納されます（これにより、どのホストがどのポートからコールをかけてきたかを判断することができます）。`addrlen` はローカルの整数型変数で、そのアドレスが `accept()` に渡される前に `sizeof(struct sockaddr_storage)` に設定されなければなりません。`accept()` は、`addr` に `sizeof(struct sockaddr_storage)` 以上のバイト数を入れることはありません。もし、それ以下のバイト数であれば、それを反映するように `addrlen` の値を変更します。
+`sockfd` は `listen()` するソケット記述子です。簡単ですね。`addr` は通常、ローカルの `struct sockaddr_storage` へのポインタになります。この構造体には、着信接続に関する情報が格納されます（これにより、どのホストがどのポートからコールをかけてきたかを判断することができます）。`addrlen` はローカルの整数型変数で、そのアドレスが `accept()` に渡される前に `sizeof(struct sockaddr_storage)` に設定されなければなりません。`accept()` は、`addr` に `addrlen` 以上のバイト数を入れることはありません。もし、それ以下のバイト数であれば、それを反映するように `addrlen` の値を変更します。
 
 何だと思いますか？`accept()` はエラーが発生した場合は `-1` を返し、`errno` をセットします。そうだったんですか。
 
