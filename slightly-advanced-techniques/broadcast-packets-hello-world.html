@@ -246,7 +246,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 </code></pre>
-<p>&quot;通常の&quot; UDP クライアント/サーバーの状況と何が違うのでしょうか？何もありません。（この場合、クライアントがブロードキャストパケットの送信を許可されていることを除けば。）このように、古い UDP <a href="../client-server-background/datagram-sockets.html"><code>listener</code></a> プログラムを1つのウィンドウで実行し、<code>broadcaster</code> を別のウィンドウで実行してみてください。これで、上で失敗した送信をすべて行うことができるはずです。</p>
+<p>&quot;通常の&quot; UDP クライアント/サーバの状況と何が違うのでしょうか？何もありません。（この場合、クライアントがブロードキャストパケットの送信を許可されていることを除けば。）このように、古い UDP <a href="../client-server-background/datagram-sockets.html"><code>listener</code></a> プログラムを1つのウィンドウで実行し、<code>broadcaster</code> を別のウィンドウで実行してみてください。これで、上で失敗した送信をすべて行うことができるはずです。</p>
 <pre><code>$ broadcaster 192.168.1.2 foo
 sent 3 bytes to 192.168.1.2
 $ broadcaster 192.168.1.255 foo

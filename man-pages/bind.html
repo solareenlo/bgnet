@@ -163,7 +163,7 @@
 int bind(int sockfd, struct sockaddr *my_addr, socklen_t addrlen);
 </code></pre>
 <h3 id="922-解説"><a class="header" href="#922-解説">9.2.2 解説</a></h3>
-<p>リモートマシンがあなたのサーバープログラムに接続しようとするとき、IPアドレスとポート番号という2つの情報が必要です。<code>bind()</code>の呼び出しによって、まさにそれが可能になります。</p>
+<p>リモートマシンがあなたのサーバプログラムに接続しようとするとき、IPアドレスとポート番号という2つの情報が必要です。<code>bind()</code>の呼び出しによって、まさにそれが可能になります。</p>
 <p>まず、<code>getaddrinfo()</code> を呼び出して、宛先アドレスとポート情報を持つ <code>struct sockaddr</code> をロードします。それから <code>socket()</code> を呼んでソケット記述子を取得し、ソケットとアドレスを <code>bind()</code> に渡すと、IP アドレスとポートが魔法のように（実際の魔法を使って）ソケットにバインドされるのです！</p>
 <p>IP アドレスを知らない場合、あるいはマシンに IP アドレスが 1 つしかないことが分かっている場合、あるいはマシンの IP アドレスがどれでも構わない場合は、<code>getaddrinfo()</code> の <code>hints</code> パラメータに <code>AI_PASSIVE</code> フラグを渡すだけでよいでしょう。これは <code>struct sockaddr</code> の IP アドレス部分を特別な値で埋めるもので、<code>bind()</code> に対して、このホストの IP アドレスを自動的に埋めるように指示するものです。</p>
 <p>何、何？現在のホストのアドレスを自動入力するために、<code>struct sockaddr</code> の IP アドレスにどんな特別な値が読み込まれているのでしょうか？もしそうでなければ、上記のように <code>getaddrinfo()</code> からの結果を使用してください。IPv4 では、<code>struct sockaddr_in</code> 構造体の <code>sin_addr.s_addr</code> フィールドは <code>INADDR_ANY</code> に設定されます。IPv6 では、<code>struct sockaddr_in6</code> 構造体の <code>sin6_addr</code> フィールドは、グローバル変数 <code>in6addr_any</code> から代入されます。また、新しい <code>struct in6_addr</code> を宣言する場合は、<code>IN6ADDR_ANY_INIT</code> で初期化することができます。</p>

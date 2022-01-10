@@ -155,7 +155,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="93-connect"><a class="header" href="#93-connect">9.3 <code>connect()</code></a></h1>
-<p>サーバーにソケットを接続します。</p>
+<p>サーバにソケットを接続します。</p>
 <h3 id="931-書式"><a class="header" href="#931-書式">9.3.1 書式</a></h3>
 <pre><code class="language-c">#include &lt;sys/types.h&gt;
 #include &lt;sys/socket.h&gt;
@@ -166,7 +166,7 @@ int connect(int sockfd, const struct sockaddr *serv_addr,
 <h3 id="932-解説"><a class="header" href="#932-解説">9.3.2 解説</a></h3>
 <p><code>socket()</code> コールでソケット記述子を構築したら、<code>connect()</code> システムコールを使って、そのソケットをリモートサーバに接続することができます。必要なことは、ソケット記述子と、もっとよく知りたいと思うサーバのアドレスを渡すだけです。(それと、このような関数によく渡されるアドレスの長さも。)</p>
 <p>通常、この情報は <code>getaddrinfo()</code> を呼び出した結果として得られますが、必要であれば自分自身で <code>struct sockaddr</code> を埋めることもできます。</p>
-<p>ソケット記述子の <code>bind()</code> をまだ呼んでいない場合、ソケットは自動的にあなたの IP アドレスとランダムなローカルポートに束縛されます。サーバーでない場合は、ローカルポートを気にする必要はなく、リモートポートを気にして <code>serv_addr</code> パラメータに設定するだけなので、通常はこれで十分です。クライアントソケットを特定の IP アドレスとポートにしたい場合は、<code>bind()</code> を呼び出すことができますが、これはかなりまれなケースです。</p>
+<p>ソケット記述子の <code>bind()</code> をまだ呼んでいない場合、ソケットは自動的にあなたの IP アドレスとランダムなローカルポートに束縛されます。サーバでない場合は、ローカルポートを気にする必要はなく、リモートポートを気にして <code>serv_addr</code> パラメータに設定するだけなので、通常はこれで十分です。クライアントソケットを特定の IP アドレスとポートにしたい場合は、<code>bind()</code> を呼び出すことができますが、これはかなりまれなケースです。</p>
 <p>ソケットを <code>connect()</code> したら、あとは自由に <code>send()</code> や <code>recv()</code> をして、好きなだけデータを取り込めます。</p>
 <p>特記事項：<code>SOCK_DGRAM</code> UDP ソケットをリモートホストに <code>connect()</code> した場合、<code>send()</code> と <code>recv()</code> だけでなく、<code>sendto()</code> と <code>recvfrom()</code> も使用できるようになります。もし必要なら。</p>
 <h3 id="933-返り値"><a class="header" href="#933-返り値">9.3.3 返り値</a></h3>

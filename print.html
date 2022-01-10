@@ -848,7 +848,7 @@ listen();
 
 int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 </code></pre>
-<p><code>sockfd</code> は <code>listen()</code> するソケット記述子です。<code>addr</code> は通常、ローカルの<code>struct sockaddr_storage</code> へのポインタになります。この構造体には、着信接続に関する情報が格納されます（これにより、どのホストがどのポートから電話をかけてきたかを判断することができます。）<code>addrlen</code> はローカルの整数型変数で、そのアドレスが <code>accept()</code> に渡される前に <code>sizeof(struct sockaddr_storage)</code> に設定されなければなりません。<code>accept()</code> は、<code>addr</code> にそれ以上のバイト数を入れることはありません。もし、それ以下のバイト数であれば、<code>addrlen</code> の値を変更します。</p>
+<p><code>sockfd</code> は <code>listen()</code> するソケット記述子です。簡単ですね。<code>addr</code> は通常、ローカルの <code>struct sockaddr_storage</code> へのポインタになります。この構造体には、着信接続に関する情報が格納されます（これにより、どのホストがどのポートからコールをかけてきたかを判断することができます）。<code>addrlen</code> はローカルの整数型変数で、そのアドレスが <code>accept()</code> に渡される前に <code>sizeof(struct sockaddr_storage)</code> に設定されなければなりません。<code>accept()</code> は、<code>addr</code> に <code>sizeof(struct sockaddr_storage)</code> 以上のバイト数を入れることはありません。もし、それ以下のバイト数であれば、それを反映するように <code>addrlen</code> の値を変更します。</p>
 <p>何だと思いますか？<code>accept()</code> はエラーが発生した場合は <code>-1</code> を返し、<code>errno</code> をセットします。そうだったんですか。</p>
 <p>前回と同様、一度に吸収するのは大変なので、サンプルコードの一部をご覧ください。</p>
 <pre><code class="language-c">#include &lt;string.h&gt;
@@ -2759,7 +2759,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 </code></pre>
-<p>&quot;通常の&quot; UDP クライアント/サーバーの状況と何が違うのでしょうか？何もありません。（この場合、クライアントがブロードキャストパケットの送信を許可されていることを除けば。）このように、古い UDP <a href="slightly-advanced-techniques/../client-server-background/datagram-sockets.html"><code>listener</code></a> プログラムを1つのウィンドウで実行し、<code>broadcaster</code> を別のウィンドウで実行してみてください。これで、上で失敗した送信をすべて行うことができるはずです。</p>
+<p>&quot;通常の&quot; UDP クライアント/サーバの状況と何が違うのでしょうか？何もありません。（この場合、クライアントがブロードキャストパケットの送信を許可されていることを除けば。）このように、古い UDP <a href="slightly-advanced-techniques/../client-server-background/datagram-sockets.html"><code>listener</code></a> プログラムを1つのウィンドウで実行し、<code>broadcaster</code> を別のウィンドウで実行してみてください。これで、上で失敗した送信をすべて行うことができるはずです。</p>
 <pre><code>$ broadcaster 192.168.1.2 foo
 sent 3 bytes to 192.168.1.2
 $ broadcaster 192.168.1.255 foo
@@ -3011,7 +3011,7 @@ new_fd = accept(sockfd, (struct sockaddr *)&amp;their_addr, &amp;addr_size);
 int bind(int sockfd, struct sockaddr *my_addr, socklen_t addrlen);
 </code></pre>
 <h3 id="922-解説"><a class="header" href="#922-解説">9.2.2 解説</a></h3>
-<p>リモートマシンがあなたのサーバープログラムに接続しようとするとき、IPアドレスとポート番号という2つの情報が必要です。<code>bind()</code>の呼び出しによって、まさにそれが可能になります。</p>
+<p>リモートマシンがあなたのサーバプログラムに接続しようとするとき、IPアドレスとポート番号という2つの情報が必要です。<code>bind()</code>の呼び出しによって、まさにそれが可能になります。</p>
 <p>まず、<code>getaddrinfo()</code> を呼び出して、宛先アドレスとポート情報を持つ <code>struct sockaddr</code> をロードします。それから <code>socket()</code> を呼んでソケット記述子を取得し、ソケットとアドレスを <code>bind()</code> に渡すと、IP アドレスとポートが魔法のように（実際の魔法を使って）ソケットにバインドされるのです！</p>
 <p>IP アドレスを知らない場合、あるいはマシンに IP アドレスが 1 つしかないことが分かっている場合、あるいはマシンの IP アドレスがどれでも構わない場合は、<code>getaddrinfo()</code> の <code>hints</code> パラメータに <code>AI_PASSIVE</code> フラグを渡すだけでよいでしょう。これは <code>struct sockaddr</code> の IP アドレス部分を特別な値で埋めるもので、<code>bind()</code> に対して、このホストの IP アドレスを自動的に埋めるように指示するものです。</p>
 <p>何、何？現在のホストのアドレスを自動入力するために、<code>struct sockaddr</code> の IP アドレスにどんな特別な値が読み込まれているのでしょうか？もしそうでなければ、上記のように <code>getaddrinfo()</code> からの結果を使用してください。IPv4 では、<code>struct sockaddr_in</code> 構造体の <code>sin_addr.s_addr</code> フィールドは <code>INADDR_ANY</code> に設定されます。IPv6 では、<code>struct sockaddr_in6</code> 構造体の <code>sin6_addr</code> フィールドは、グローバル変数 <code>in6addr_any</code> から代入されます。また、新しい <code>struct in6_addr</code> を宣言する場合は、<code>IN6ADDR_ANY_INIT</code> で初期化することができます。</p>
@@ -3065,7 +3065,7 @@ bind(s, (struct sockaddr*)&amp;myaddr, sizeof myaddr);
 <a href="man-pages/./struct-sockaddr-and-pals.html"><code>struct sockaddr_in</code></a>,
 <a href="man-pages/./struct-sockaddr-and-pals.html"><code>struct in_addr</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="93-connect"><a class="header" href="#93-connect">9.3 <code>connect()</code></a></h1>
-<p>サーバーにソケットを接続します。</p>
+<p>サーバにソケットを接続します。</p>
 <h3 id="931-書式"><a class="header" href="#931-書式">9.3.1 書式</a></h3>
 <pre><code class="language-c">#include &lt;sys/types.h&gt;
 #include &lt;sys/socket.h&gt;
@@ -3076,7 +3076,7 @@ int connect(int sockfd, const struct sockaddr *serv_addr,
 <h3 id="932-解説"><a class="header" href="#932-解説">9.3.2 解説</a></h3>
 <p><code>socket()</code> コールでソケット記述子を構築したら、<code>connect()</code> システムコールを使って、そのソケットをリモートサーバに接続することができます。必要なことは、ソケット記述子と、もっとよく知りたいと思うサーバのアドレスを渡すだけです。(それと、このような関数によく渡されるアドレスの長さも。)</p>
 <p>通常、この情報は <code>getaddrinfo()</code> を呼び出した結果として得られますが、必要であれば自分自身で <code>struct sockaddr</code> を埋めることもできます。</p>
-<p>ソケット記述子の <code>bind()</code> をまだ呼んでいない場合、ソケットは自動的にあなたの IP アドレスとランダムなローカルポートに束縛されます。サーバーでない場合は、ローカルポートを気にする必要はなく、リモートポートを気にして <code>serv_addr</code> パラメータに設定するだけなので、通常はこれで十分です。クライアントソケットを特定の IP アドレスとポートにしたい場合は、<code>bind()</code> を呼び出すことができますが、これはかなりまれなケースです。</p>
+<p>ソケット記述子の <code>bind()</code> をまだ呼んでいない場合、ソケットは自動的にあなたの IP アドレスとランダムなローカルポートに束縛されます。サーバでない場合は、ローカルポートを気にする必要はなく、リモートポートを気にして <code>serv_addr</code> パラメータに設定するだけなので、通常はこれで十分です。クライアントソケットを特定の IP アドレスとポートにしたい場合は、<code>bind()</code> を呼び出すことができますが、これはかなりまれなケースです。</p>
 <p>ソケットを <code>connect()</code> したら、あとは自由に <code>send()</code> や <code>recv()</code> をして、好きなだけデータを取り込めます。</p>
 <p>特記事項：<code>SOCK_DGRAM</code> UDP ソケットをリモートホストに <code>connect()</code> した場合、<code>send()</code> と <code>recv()</code> だけでなく、<code>sendto()</code> と <code>recvfrom()</code> も使用できるようになります。もし必要なら。</p>
 <h3 id="933-返り値"><a class="header" href="#933-返り値">9.3.3 返り値</a></h3>

@@ -162,7 +162,7 @@
 
 int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 </code></pre>
-<p><code>sockfd</code> は <code>listen()</code> するソケット記述子です。<code>addr</code> は通常、ローカルの<code>struct sockaddr_storage</code> へのポインタになります。この構造体には、着信接続に関する情報が格納されます（これにより、どのホストがどのポートから電話をかけてきたかを判断することができます。）<code>addrlen</code> はローカルの整数型変数で、そのアドレスが <code>accept()</code> に渡される前に <code>sizeof(struct sockaddr_storage)</code> に設定されなければなりません。<code>accept()</code> は、<code>addr</code> にそれ以上のバイト数を入れることはありません。もし、それ以下のバイト数であれば、<code>addrlen</code> の値を変更します。</p>
+<p><code>sockfd</code> は <code>listen()</code> するソケット記述子です。簡単ですね。<code>addr</code> は通常、ローカルの <code>struct sockaddr_storage</code> へのポインタになります。この構造体には、着信接続に関する情報が格納されます（これにより、どのホストがどのポートからコールをかけてきたかを判断することができます）。<code>addrlen</code> はローカルの整数型変数で、そのアドレスが <code>accept()</code> に渡される前に <code>sizeof(struct sockaddr_storage)</code> に設定されなければなりません。<code>accept()</code> は、<code>addr</code> に <code>sizeof(struct sockaddr_storage)</code> 以上のバイト数を入れることはありません。もし、それ以下のバイト数であれば、それを反映するように <code>addrlen</code> の値を変更します。</p>
 <p>何だと思いますか？<code>accept()</code> はエラーが発生した場合は <code>-1</code> を返し、<code>errno</code> をセットします。そうだったんですか。</p>
 <p>前回と同様、一度に吸収するのは大変なので、サンプルコードの一部をご覧ください。</p>
 <pre><code class="language-c">#include &lt;string.h&gt;
