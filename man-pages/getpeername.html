@@ -164,7 +164,7 @@ int getpeername(int s, struct sockaddr *addr, socklen_t *len);
 <h3 id="992-解説"><a class="header" href="#992-解説">9.9.2 解説</a></h3>
 <p>リモート接続を <code>accept()</code> したり、サーバに <code>connect()</code> したら、今度はピアとして知られるものを手に入れます。ピアとは、単に接続先のコンピュータのことで、IP アドレスとポートで識別されます。つまり...</p>
 <p><code>getpeername()</code> は単に、接続中のマシンに関する情報が詰まった <code>struct sockaddr_in</code> を返します。</p>
-<p>なぜ&quot;名前&quot;なのか？このガイドで使っているようなインターネットソケットだけでなく、さまざまな種類のソケットがあるので、&quot;名前&quot;はすべてのケースをカバーする良い総称だったのです。この場合、相手の&quot;名前&quot;は相手の IP アドレスとポートです。</p>
+<p>なぜ &quot;名前&quot; なのか？このガイドで使っているようなインターネットソケットだけでなく、さまざまな種類のソケットがあるので、&quot;名前&quot;はすべてのケースをカバーする良い総称だったのです。この場合、相手の&quot;名前&quot;は相手の IP アドレスとポートです。</p>
 <p>この関数は結果のアドレスのサイズを <code>len</code> で返しますが、<code>len</code> には <code>addr</code> のサイズをあらかじめ代入しておく必要があります。</p>
 <h3 id="993-返り値"><a class="header" href="#993-返り値">9.9.3 返り値</a></h3>
 <p>成功した場合は <code>0</code> を、エラーの場合は <code>-1</code> を返します（それに応じて <code>errno</code> が設定されます。）</p>

@@ -172,7 +172,7 @@ int setsockopt(int s, int level, int optname, const void *optval,
 <table><thead><tr><th><code>optname</code></th><th>解説</th></tr></thead><tbody>
 <tr><td><code>SO_BINDTODEVICE</code></td><td>このソケットは <code>bind()</code> を使って IP アドレスにバインドするのではなく、 <code>eth0</code> のようなシンボリックなデバイス名にバインドしてください。Unix で <code>ifconfig</code> コマンドを入力すると、デバイス名が表示されます。</td></tr>
 <tr><td><code>SO_REUSEADDR</code></td><td>このポートにバインドしているアクティブなソケットがない限り、他のソケットが <code>bind()</code> を行えるようにします。これにより、クラッシュ後にサーバを再起動しようとしたときに表示される &quot;Address already in use&quot; エラーメッセージを回避することができます。</td></tr>
-<tr><td><code>SOCK_DGRAM</code></td><td>UDP データグラム <a href="%60SOCK_DGRAM%60">SOCK_DGRAM</a> ソケットがブロードキャストアドレスに送信されたパケットを送受信できるようにします。TCP ストリームソケットには何もしません---NOTHING!!---ははは！</td></tr>
+<tr><td><code>SOCK_DGRAM</code></td><td>UDP データグラム（<code>SOCK_DGRAM</code>）ソケットがブロードキャストアドレスに送信されたパケットを送受信できるようにします。TCP ストリームソケットには何もしません---NOTHING!!---ははは！</td></tr>
 </tbody></table>
 <p>パラメータ <code>optval</code> については、通常、問題の値を示す <code>int</code> へのポインタとなります。ブール値の場合、<code>0</code> は偽で、<code>0</code> 以外は真です。そしてそれは、あなたのシステムで異なっていない限り、絶対的な事実です。渡すべきパラメータがない場合、<code>optval</code> は <code>NULL</code> にすることができます。</p>
 <p>最後のパラメータ <code>optlen</code> には、<code>optval</code> の長さ、おそらく <code>sizeof(int)</code> を設定する必要がありますが、オプションによって異なります。<code>getsockopt()</code> の場合、これは <code>socklen_t</code> へのポインタであり、<code>optval</code> に格納される最大サイズのオブジェクトを指定することに注意してください（バッファオーバーフローを防止するためです）。そして <code>getsockopt()</code> は <code>optlen</code> の値を、実際に設定されたバイト数を反映するように変更します。</p>

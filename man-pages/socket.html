@@ -166,7 +166,7 @@ int socket(int domain, int type, int protocol);
 <p>ソケット的なことをするのに使える新しいソケット記述子を返します。これは一般に、ソケットプログラムを書くための膨大なプロセスの最初の呼び出しとなり、その後の <code>listen()</code>, <code>bind()</code>, <code>accept()</code> や他の様々な関数の呼び出しでその結果を利用することができるようになります。</p>
 <p>通常の使い方では、以下の例のように <code>getaddrinfo()</code> を呼び出して、これらのパラメータの値を取得します。しかし、本当に必要であれば、手動でこれらの値を埋めることができます。</p>
 <table><thead><tr><th>Macro</th><th>解説</th></tr></thead><tbody>
-<tr><td><code>domain</code></td><td><code>domain</code> には、どのような種類のソケットに興味があるのかを記述します。これは様々なものがありますが、これはソケットガイドなので、IPv4では <code>PF_INET</code> 、IPv6では <code>PF_INET6</code> となります。</td></tr>
+<tr><td><code>domain</code></td><td><code>domain</code> には、どのような種類のソケットに興味があるのかを記述します。これは様々なものがありますが、これはソケットガイドなので、IPv4 では <code>PF_INET</code> 、IPv6 では <code>PF_INET6</code> となります。</td></tr>
 <tr><td><code>type</code></td><td>また、<code>type</code> パラメータには様々なものを指定できますが、信頼性の高い TCP ソケット（<code>send()</code>, <code>recv()</code>）には <code>SOCK_STREAM</code> を、信頼性の低い高速な UDP ソケット（<code>sendto()</code>, <code>recvfrom()</code>）には <code>SOCK_DGRAM</code> を設定することになると思われます。（もうひとつの興味深いソケットタイプは <code>SOCK_RAW</code> で、これはパケットを手動で構築するために使用することができます。これはかなりクールです。）</td></tr>
 <tr><td><code>protocol</code></td><td>最後に、<code>protocol</code> パラメータは、特定のソケットタイプでどのプロトコルを使用するかを指示します。既に述べたように、例えば <code>SOCK_STREAM</code> は TCP を使用します。幸いなことに、<code>SOCK_STREAM</code> や <code>SOCK_DGRAM</code> を使用する場合は、プロトコルを <code>0</code> に設定すれば、自動的に適切なプロトコルを使用することができます。そうでない場合は、<code>getprotobyname()</code> を使用して適切なプロトコル番号を調べることができます。</td></tr>
 </tbody></table>

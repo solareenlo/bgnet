@@ -166,7 +166,7 @@ int fcntl(int s, int cmd, long arg);
 <p>この関数は通常、ファイルロックやその他のファイル指向の処理を行うために使用されますが、時々見たり使ったりするようなソケット関連の関数もいくつか持っています。</p>
 <p>パラメータ <code>s</code> には操作したいソケット記述子、<code>cmd</code> には <code>F_SETFL</code> を設定し、<code>arg</code> には以下のコマンドのいずれかを指定します。（ここで説明した以外にも <code>fcntl()</code> には様々な機能がありますが、ここではソケットに特化して説明します。）</p>
 <table><thead><tr><th><code>cmd</code></th><th>解説</th></tr></thead><tbody>
-<tr><td><code>O_NONBLOCK</code></td><td>ソケットをノンブロッキングに設定します。詳しくは<a href="#blocking">ブロッキング</a>の項を参照してください。</td></tr>
+<tr><td><code>O_NONBLOCK</code></td><td>ソケットをノンブロッキングに設定します。詳しくは <a href="../slightly-advanced-techniques/blocking.html">7.1 ブロッキング</a>の章を参照してください。</td></tr>
 <tr><td><code>O_ASYNC</code></td><td>非同期 I/O を行うようにソケットを設定します。ソケットでデータを <code>recv()</code> する準備ができたら、シグナル <code>SIGIO</code> を発生させます。これはめったに見られないことであり、ガイドの範囲を超えています。また、特定のシステムでのみ利用可能だと思います。</td></tr>
 </tbody></table>
 <h3 id="9113-返り値"><a class="header" href="#9113-返り値">9.11.3 返り値</a></h3>

@@ -171,7 +171,7 @@ ssize_t sendto(int s, const void *buf, size_t len,
 <table><thead><tr><th>Macro</th><th>解説</th></tr></thead><tbody>
 <tr><td><code>MSG_OOB</code></td><td>&quot;帯域外&quot; データとして送信します。TCP はこれをサポートしており、このデータが通常のデータよりも優先順位が高いことを受信側のシステムに伝える方法です。受信側はシグナル <code>SIGURG</code> を受け取り、キューにある残りの通常のデータをすべて最初に受信することなく、このデータを受信することができます。</td></tr>
 <tr><td><code>MSG_DONTROUTE</code></td><td>このデータはルータで送らず、ローカルに置いてください。</td></tr>
-<tr><td><code>MSG_DONTWAIT</code></td><td>送信トラフィックが詰まっているために <code>send()</code> がブロックされる場合、<code>EAGAIN</code> を返すようにします。これは &quot;この送信のときだけノンブロックを有効にする&quot; ようなものです。詳しくは <a href="#blocking">blocking</a> の章を参照してください。</td></tr>
+<tr><td><code>MSG_DONTWAIT</code></td><td>送信トラフィックが詰まっているために <code>send()</code> がブロックされる場合、<code>EAGAIN</code> を返すようにします。これは &quot;この送信のときだけノンブロックを有効にする&quot; ようなものです。詳しくは <a href="../slightly-advanced-techniques/blocking.html">blocking の章</a>を参照してください。</td></tr>
 <tr><td><code>MSG_NOSIGNAL</code></td><td>もし <code>recv()</code> が終了したリモートホストに <code>send()</code> した場合、通常 <code>SIGPIPE</code> というシグナルを受け取ります。このフラグを追加することで、このシグナルが発生するのを防ぐことができます。</td></tr>
 </tbody></table>
 <h3 id="9213-返り値"><a class="header" href="#9213-返り値">9.21.3 返り値</a></h3>

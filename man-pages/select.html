@@ -179,7 +179,7 @@ FD_ZERO(fd_set *set);
 <tr><td><code>FD_ISSET(int fd, fd_set *set);</code></td><td><code>fd</code> が <code>set</code> に含まれる場合は true を返す。</td></tr>
 <tr><td><code>FD_ZERO(fd_set *set);</code></td><td><code>set</code> からすべてのエントリをクリアします。</td></tr>
 </tbody></table>
-<p>Linux ユーザーへの注意事項：Linux の <code>select()</code> は &quot;ready-to-read&quot; を返すことがありますが、実際には読み込む準備ができていないため、その後の <code>read()</code> 呼び出しがブロックされることがあります。このバグを回避するには、受信側のソケットに <code>O_NONBLOCK</code> フラグを設定し、<code>EWOULDBLOCK</code> でエラーになるようにし、このエラーが発生しても無視します。ソケットをノンブロッキングに設定する方法については、<a href="#fcntlman"><code>fcntl()</code> reference page</a> を参照してください。</p>
+<p>Linux ユーザーへの注意事項：Linux の <code>select()</code> は &quot;ready-to-read&quot; を返すことがありますが、実際には読み込む準備ができていないため、その後の <code>read()</code> 呼び出しがブロックされることがあります。このバグを回避するには、受信側のソケットに <code>O_NONBLOCK</code> フラグを設定し、<code>EWOULDBLOCK</code> でエラーになるようにし、このエラーが発生しても無視します。ソケットをノンブロッキングに設定する方法については、<a href="./fcntl.html"><code>fcntl()</code> の man ページ</a> を参照してください。</p>
 <h3 id="9193-返り値"><a class="header" href="#9193-返り値">9.19.3 返り値</a></h3>
 <p>成功した場合はセットに含まれる記述子の数を、タイムアウトに達した場合は <code>0</code> を、エラーの場合は <code>-1</code> を返します（それに応じて <code>errno</code> が設定されます）。また、どのソケットが準備できているかを示すために、セットも変更されます。</p>
 <h3 id="9194-例"><a class="header" href="#9194-例">9.19.4 例</a></h3>

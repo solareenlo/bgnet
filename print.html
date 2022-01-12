@@ -3011,7 +3011,7 @@ new_fd = accept(sockfd, (struct sockaddr *)&amp;their_addr, &amp;addr_size);
 int bind(int sockfd, struct sockaddr *my_addr, socklen_t addrlen);
 </code></pre>
 <h3 id="922-解説"><a class="header" href="#922-解説">9.2.2 解説</a></h3>
-<p>リモートマシンがあなたのサーバプログラムに接続しようとするとき、IPアドレスとポート番号という2つの情報が必要です。<code>bind()</code>の呼び出しによって、まさにそれが可能になります。</p>
+<p>リモートマシンがあなたのサーバプログラムに接続しようとするとき、IP アドレスとポート番号という2つの情報が必要です。<code>bind()</code> の呼び出しによって、まさにそれが可能になります。</p>
 <p>まず、<code>getaddrinfo()</code> を呼び出して、宛先アドレスとポート情報を持つ <code>struct sockaddr</code> をロードします。それから <code>socket()</code> を呼んでソケット記述子を取得し、ソケットとアドレスを <code>bind()</code> に渡すと、IP アドレスとポートが魔法のように（実際の魔法を使って）ソケットにバインドされるのです！</p>
 <p>IP アドレスを知らない場合、あるいはマシンに IP アドレスが 1 つしかないことが分かっている場合、あるいはマシンの IP アドレスがどれでも構わない場合は、<code>getaddrinfo()</code> の <code>hints</code> パラメータに <code>AI_PASSIVE</code> フラグを渡すだけでよいでしょう。これは <code>struct sockaddr</code> の IP アドレス部分を特別な値で埋めるもので、<code>bind()</code> に対して、このホストの IP アドレスを自動的に埋めるように指示するものです。</p>
 <p>何、何？現在のホストのアドレスを自動入力するために、<code>struct sockaddr</code> の IP アドレスにどんな特別な値が読み込まれているのでしょうか？もしそうでなければ、上記のように <code>getaddrinfo()</code> からの結果を使用してください。IPv4 では、<code>struct sockaddr_in</code> 構造体の <code>sin_addr.s_addr</code> フィールドは <code>INADDR_ANY</code> に設定されます。IPv6 では、<code>struct sockaddr_in6</code> 構造体の <code>sin6_addr</code> フィールドは、グローバル変数 <code>in6addr_any</code> から代入されます。また、新しい <code>struct in6_addr</code> を宣言する場合は、<code>IN6ADDR_ANY_INIT</code> で初期化することができます。</p>
@@ -3161,11 +3161,11 @@ struct addrinfo {
 };
 </code></pre>
 <h3 id="952-解説"><a class="header" href="#952-解説">9.5.2 解説</a></h3>
-<p><code>getaddrinfo()</code> は特定のホスト名に関する情報（IPアドレスなど）を返し、<code>struct sockaddr</code> を読み込んで、細かい部分（IPv4かIPv6か）を処理してくれる優れた関数です。これは、古い関数である <code>gethostbyname()</code> と <code>getservbyname()</code> を置き換えるものです。以下の説明には、少し難しく感じるかもしれない多くの情報が含まれていますが、実際の使い方はとてもシンプルです。まずはサンプルを見てみるのもいいかもしれません。</p>
+<p><code>getaddrinfo()</code> は特定のホスト名に関する情報（IPアドレスなど）を返し、<code>struct sockaddr</code> を読み込んで、細かい部分（IPv4 か IPv6 か）を処理してくれる優れた関数です。これは、古い関数である <code>gethostbyname()</code> と <code>getservbyname()</code> を置き換えるものです。以下の説明には、少し難しく感じるかもしれない多くの情報が含まれていますが、実際の使い方はとてもシンプルです。まずはサンプルを見てみるのもいいかもしれません。</p>
 <p>興味のあるホスト名は <code>nodename</code> パラメータに入れます。アドレスは &quot;www.example.com&quot; のようなホスト名か、IPv4 または IPv6 のアドレス（文字列として渡される）のいずれかになります。このパラメータは、<code>AI_PASSIVE</code> フラグを使用している場合は <code>NULL</code> にすることもできます（下記参照）。</p>
-<p><code>servname</code> パラメータは、基本的にポート番号です。ポート番号（&quot;80 &quot;のような文字列として渡される）、または &quot;http&quot;、&quot;tftp&quot;、&quot;smtp&quot;、&quot;pop&quot; などのサービス名であることができます。よく知られたサービス名は、<a href="https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml">IANA ポートリスト</a>や、<code>/etc/services</code> ファイルで見つけることができます。</p>
+<p><code>servname</code> パラメータは、基本的にポート番号です。ポート番号（&quot;80&quot; のような文字列として渡される）、または &quot;http&quot;、&quot;tftp&quot;、&quot;smtp&quot;、&quot;pop&quot; などのサービス名であることができます。よく知られたサービス名は、<a href="https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml">IANA ポートリスト</a>や、<code>/etc/services</code> ファイルで見つけることができます。</p>
 <p>最後に、入力パラメータとして <code>hints</code> があります。これは <code>getaddrinfo()</code> 関数が何をしようとしているかを定義する場所です。<code>memset()</code> で使用する前に、構造体全体をゼロにします。それでは、使用する前に設定する必要があるフィールドを見てみましょう。</p>
-<p><code>ai_flags</code> には様々なものを設定することができますが、ここでは重要なものをいくつか紹介します。（複数のフラグを指定するには、<code>|</code> 演算子でビット単位の OR を指定します）。フラグの完全なリストについては、man ページをチェックしてください。</p>
+<p><code>ai_flags</code> には様々なものを設定することができますが、ここでは重要なものをいくつか紹介します。（複数のフラグを指定するには、<code>|</code> 演算子でビット単位の OR を指定します。）フラグの完全なリストについては、man ページをチェックしてください。</p>
 <p><code>AI_CANONNAME</code> は、結果の <code>ai_canonname</code> をホストの標準的な（実際の）名前で埋め尽くすようにします。<code>AI_PASSIVE</code> は、結果の IP アドレスを <code>INADDR_ANY</code>（IPv4）または <code>in6addr_any</code>（IPv6）で埋めます。これにより、その後の <code>bind()</code> への呼び出しで、<code>struct sockaddr</code> の IP アドレスが現在のホストのアドレスで自動的に埋められるようになります。これは、アドレスをハードコードしたくない場合に、サーバをセットアップするのに優れています。</p>
 <p>もし、<code>AI_PASSIVE</code> フラグを使用する場合は、<code>nodename</code> に <code>NULL</code> を渡すことができます（<code>bind()</code> が後でそれを埋めてくれるからです）。</p>
 <p>続けて、入力パラメータについてですが、おそらく <code>ai_family</code> を <code>AF_UNSPEC</code> に設定すると、<code>getaddrinfo()</code> に IPv4 と IPv6 の両方のアドレスを検索させることができるようになります。また、<code>AF_INET</code> や <code>AF_INET6</code> でどちらか一方に限定することもできます。</p>
@@ -3288,7 +3288,7 @@ printf(&quot;My hostname: %s\n&quot;, hostname);
 <h3 id="965-参照"><a class="header" href="#965-参照">9.6.5 参照</a></h3>
 <p><a href="man-pages/./gethostbyname-gethostbyaddr.html"><code>gethostbyname()</code></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="97-gethostbyname-gethostbyaddr"><a class="header" href="#97-gethostbyname-gethostbyaddr">9.7 <code>gethostbyname()</code>, <code>gethostbyaddr()</code></a></h1>
-<p>ホスト名に対するIPアドレスの取得、またはその逆を行います。</p>
+<p>ホスト名に対する IP アドレスの取得、またはその逆を行います。</p>
 <h3 id="971-書式"><a class="header" href="#971-書式">9.7.1 書式</a></h3>
 <pre><code class="language-c">#include &lt;sys/socket.h&gt;
 #include &lt;netdb.h&gt;
@@ -3421,7 +3421,7 @@ int getpeername(int s, struct sockaddr *addr, socklen_t *len);
 <h3 id="992-解説"><a class="header" href="#992-解説">9.9.2 解説</a></h3>
 <p>リモート接続を <code>accept()</code> したり、サーバに <code>connect()</code> したら、今度はピアとして知られるものを手に入れます。ピアとは、単に接続先のコンピュータのことで、IP アドレスとポートで識別されます。つまり...</p>
 <p><code>getpeername()</code> は単に、接続中のマシンに関する情報が詰まった <code>struct sockaddr_in</code> を返します。</p>
-<p>なぜ&quot;名前&quot;なのか？このガイドで使っているようなインターネットソケットだけでなく、さまざまな種類のソケットがあるので、&quot;名前&quot;はすべてのケースをカバーする良い総称だったのです。この場合、相手の&quot;名前&quot;は相手の IP アドレスとポートです。</p>
+<p>なぜ &quot;名前&quot; なのか？このガイドで使っているようなインターネットソケットだけでなく、さまざまな種類のソケットがあるので、&quot;名前&quot;はすべてのケースをカバーする良い総称だったのです。この場合、相手の&quot;名前&quot;は相手の IP アドレスとポートです。</p>
 <p>この関数は結果のアドレスのサイズを <code>len</code> で返しますが、<code>len</code> には <code>addr</code> のサイズをあらかじめ代入しておく必要があります。</p>
 <h3 id="993-返り値"><a class="header" href="#993-返り値">9.9.3 返り値</a></h3>
 <p>成功した場合は <code>0</code> を、エラーの場合は <code>-1</code> を返します（それに応じて <code>errno</code> が設定されます。）</p>
@@ -3467,7 +3467,7 @@ int errno;
 <p>あるいは、より一般的には <code>perror()</code> や <code>strerror()</code> を呼び出して、人間が読める形式のエラーを取得することができます。</p>
 <p>マルチスレッドの愛好家のために一つ注意しておきたいのは、ほとんどのシステムで <code>errno</code> はスレッドセーフな方法で定義されているということです。（つまり、実際にはグローバル変数ではないのですが、シングルスレッド環境ではグローバル変数と同じように振る舞います。）</p>
 <h3 id="9103-返り値"><a class="header" href="#9103-返り値">9.10.3 返り値</a></h3>
-<p>この変数の値は、最後に発生したエラーであり、最後のアクションが成功した場合は &quot;success &quot;のコードになるかもしれません。</p>
+<p>この変数の値は、最後に発生したエラーであり、最後のアクションが成功した場合は &quot;success&quot; のコードになるかもしれません。</p>
 <h3 id="9104-例"><a class="header" href="#9104-例">9.10.4 例</a></h3>
 <pre><code class="language-c">s = socket(PF_INET, SOCK_STREAM, 0);
 if (s == -1) {
@@ -3501,7 +3501,7 @@ int fcntl(int s, int cmd, long arg);
 <p>この関数は通常、ファイルロックやその他のファイル指向の処理を行うために使用されますが、時々見たり使ったりするようなソケット関連の関数もいくつか持っています。</p>
 <p>パラメータ <code>s</code> には操作したいソケット記述子、<code>cmd</code> には <code>F_SETFL</code> を設定し、<code>arg</code> には以下のコマンドのいずれかを指定します。（ここで説明した以外にも <code>fcntl()</code> には様々な機能がありますが、ここではソケットに特化して説明します。）</p>
 <table><thead><tr><th><code>cmd</code></th><th>解説</th></tr></thead><tbody>
-<tr><td><code>O_NONBLOCK</code></td><td>ソケットをノンブロッキングに設定します。詳しくは<a href="man-pages/fcntl.html#blocking">ブロッキング</a>の項を参照してください。</td></tr>
+<tr><td><code>O_NONBLOCK</code></td><td>ソケットをノンブロッキングに設定します。詳しくは <a href="man-pages/../slightly-advanced-techniques/blocking.html">7.1 ブロッキング</a>の章を参照してください。</td></tr>
 <tr><td><code>O_ASYNC</code></td><td>非同期 I/O を行うようにソケットを設定します。ソケットでデータを <code>recv()</code> する準備ができたら、シグナル <code>SIGIO</code> を発生させます。これはめったに見られないことであり、ガイドの範囲を超えています。また、特定のシステムでのみ利用可能だと思います。</td></tr>
 </tbody></table>
 <h3 id="9113-返り値"><a class="header" href="#9113-返り値">9.11.3 返り値</a></h3>
@@ -3528,10 +3528,10 @@ uint16_t ntohs(uint16_t netshort);
 </code></pre>
 <h3 id="9122-解説"><a class="header" href="#9122-解説">9.12.2 解説</a></h3>
 <p>不幸なことに、コンピュータによってマルチバイト整数（つまり <code>char</code> より大きな整数）の内部でのバイト順序が異なっています。この結果、2 バイトの <code>short int</code> を Intel のコンピュータから Mac（Intel のコンピュータになる前）に <code>send()</code> すると、一方のコンピュータが <code>1</code> という数字だと思っていても、他方は <code>256</code> という数字だと思い、またその逆もしかりということになるのです。</p>
-<p>この問題を回避する方法は、皆がそれぞれの違いを脇に置き、モトローラと IBM は正しく、インテルは奇妙なやり方をしたのだから、送信する前にバイトオーダーを&quot;ビッグエンディアン&quot;に変換することに同意することです。Intel は&quot;リトルエンディアン&quot;マシンなので、私たちが好むバイト順序を&quot;ネットワークバ イトオーダー&quot;と呼ぶ方が、はるかに政治的に正しいのです。そこで、これらの関数は、ネイティブのバイトオーダーからネットワークバイトオーダーに変換し、また元に戻します。</p>
+<p>この問題を回避する方法は、皆がそれぞれの違いを脇に置き、モトローラと IBM は正しく、インテルは奇妙なやり方をしたのだから、送信する前にバイトオーダーを &quot;ビッグエンディアン&quot; に変換することに同意することです。Intel は &quot;リトルエンディアン&quot; マシンなので、私たちが好むバイト順序を &quot;ネットワークバ イトオーダー&quot; と呼ぶ方が、はるかに政治的に正しいのです。そこで、これらの関数は、ネイティブのバイトオーダーからネットワークバイトオーダーに変換し、また元に戻します。</p>
 <p>（つまり、Intel ではこれらの関数はすべてのバイトを入れ替えますが、PowerPC ではバイトがすでにネットワークバイトオーダーになっているため、何もしません。しかし、Intel マシンでビルドしても正常に動作するようにしたい人がいるかもしれないので、いずれにせよコードでは常にこれらを使用する必要があります。）</p>
 <p>32 ビット（4バイト、おそらく <code>int</code>）と 16 ビット（2バイト、おそらく <code>short</code>）の数値が含まれることに注意してください。64 ビットマシンには 64 ビットの <code>int</code> 用の <code>htonll()</code> があるかもしれませんが、私は見たことがありません。自分で書くしかないでしょう。</p>
-<p>とにかく、これらの関数の動作は、まず、ホスト（あなたのマシン）のバイトオーダーから変換するのか、ネットワークのバイトオーダーから変換するのかを決定することです。もし&quot;ホスト&quot;なら、呼び出す関数の最初の文字は &quot;h&quot; です。そうでなければ、&quot;network&quot; の場合は &quot;n&quot; です。関数名の真ん中は、ある&quot;もの&quot;から別の&quot;もの&quot;に変換するため、常に &quot;to&quot; であり、最後の1文字は何に変換するかを示しています。最後の文字はデータの大きさを表し、sort の場合は &quot;s&quot;、long の場合は &quot;l&quot; です。このように</p>
+<p>とにかく、これらの関数の動作は、まず、ホスト（あなたのマシン）のバイトオーダーから変換するのか、ネットワークのバイトオーダーから変換するのかを決定することです。もし &quot;ホスト&quot; なら、呼び出す関数の最初の文字は &quot;h&quot; です。そうでなければ、&quot;network&quot; の場合は &quot;n&quot; です。関数名の真ん中は、ある &quot;もの&quot; から別の &quot;もの&quot; に変換するため、常に &quot;to&quot; であり、最後の1文字は何に変換するかを示しています。最後の文字はデータの大きさを表し、<code>sort</code> の場合は &quot;s&quot;、<code>long</code> の場合は &quot;l&quot; です。このように</p>
 <table><thead><tr><th>関数</th><th>解説</th></tr></thead><tbody>
 <tr><td><code>htons()</code></td><td><code>h</code>ost <code>to</code> <code>n</code>etwork <code>s</code>hort</td></tr>
 <tr><td><code>htonl()</code></td><td><code>h</code>ost <code>to</code> <code>n</code>etwork <code>l</code>ong</td></tr>
@@ -3676,7 +3676,7 @@ char *get_ip_str(const struct sockaddr *sa, char *s, size_t maxlen)
 int listen(int s, int backlog);
 </code></pre>
 <h3 id="9152-解説"><a class="header" href="#9152-解説">9.15.2 解説</a></h3>
-<p>ソケット記述子（<code>socket()</code>システムコールで作成）を受け取り、着信接続をリッスンするように指示することができます。これがサーバとクライアントを区別するポイントです、みんな。</p>
+<p>ソケット記述子（<code>socket()</code> システムコールで作成）を受け取り、着信接続をリッスンするように指示することができます。これがサーバとクライアントを区別するポイントです、みんな。</p>
 <p><code>backlog</code> パラメータはシステムによって異なる意味を持ちますが、大まかに言うと、カーネルが新しい接続を拒否し始めるまでに保留できる接続の数です。つまり、新しい接続が来たら、バックログがいっぱいにならないように、素早く <code>accept()</code> する必要があります。10 程度に設定してみて、もしクライアントが高負荷で &quot;Connection refused&quot; を受け始めたら、もっと高く設定してみてください。</p>
 <p><code>listen()</code> を呼び出す前に、サーバは <code>bind()</code> を呼び出して特定のポート番号に自分自身をアタッチする必要があります。そのポート番号（サーバの IP アドレス上）は、クライアントが接続するポート番号になります。</p>
 <h3 id="9153-返り値"><a class="header" href="#9153-返り値">9.15.3 返り値</a></h3>
@@ -3930,7 +3930,7 @@ FD_ZERO(fd_set *set);
 <tr><td><code>FD_ISSET(int fd, fd_set *set);</code></td><td><code>fd</code> が <code>set</code> に含まれる場合は true を返す。</td></tr>
 <tr><td><code>FD_ZERO(fd_set *set);</code></td><td><code>set</code> からすべてのエントリをクリアします。</td></tr>
 </tbody></table>
-<p>Linux ユーザーへの注意事項：Linux の <code>select()</code> は &quot;ready-to-read&quot; を返すことがありますが、実際には読み込む準備ができていないため、その後の <code>read()</code> 呼び出しがブロックされることがあります。このバグを回避するには、受信側のソケットに <code>O_NONBLOCK</code> フラグを設定し、<code>EWOULDBLOCK</code> でエラーになるようにし、このエラーが発生しても無視します。ソケットをノンブロッキングに設定する方法については、<a href="man-pages/select.html#fcntlman"><code>fcntl()</code> reference page</a> を参照してください。</p>
+<p>Linux ユーザーへの注意事項：Linux の <code>select()</code> は &quot;ready-to-read&quot; を返すことがありますが、実際には読み込む準備ができていないため、その後の <code>read()</code> 呼び出しがブロックされることがあります。このバグを回避するには、受信側のソケットに <code>O_NONBLOCK</code> フラグを設定し、<code>EWOULDBLOCK</code> でエラーになるようにし、このエラーが発生しても無視します。ソケットをノンブロッキングに設定する方法については、<a href="man-pages/./fcntl.html"><code>fcntl()</code> の man ページ</a> を参照してください。</p>
 <h3 id="9193-返り値"><a class="header" href="#9193-返り値">9.19.3 返り値</a></h3>
 <p>成功した場合はセットに含まれる記述子の数を、タイムアウトに達した場合は <code>0</code> を、エラーの場合は <code>-1</code> を返します（それに応じて <code>errno</code> が設定されます）。また、どのソケットが準備できているかを示すために、セットも変更されます。</p>
 <h3 id="9194-例"><a class="header" href="#9194-例">9.19.4 例</a></h3>
@@ -3995,7 +3995,7 @@ int setsockopt(int s, int level, int optname, const void *optval,
 <table><thead><tr><th><code>optname</code></th><th>解説</th></tr></thead><tbody>
 <tr><td><code>SO_BINDTODEVICE</code></td><td>このソケットは <code>bind()</code> を使って IP アドレスにバインドするのではなく、 <code>eth0</code> のようなシンボリックなデバイス名にバインドしてください。Unix で <code>ifconfig</code> コマンドを入力すると、デバイス名が表示されます。</td></tr>
 <tr><td><code>SO_REUSEADDR</code></td><td>このポートにバインドしているアクティブなソケットがない限り、他のソケットが <code>bind()</code> を行えるようにします。これにより、クラッシュ後にサーバを再起動しようとしたときに表示される &quot;Address already in use&quot; エラーメッセージを回避することができます。</td></tr>
-<tr><td><code>SOCK_DGRAM</code></td><td>UDP データグラム <a href="man-pages/%60SOCK_DGRAM%60">SOCK_DGRAM</a> ソケットがブロードキャストアドレスに送信されたパケットを送受信できるようにします。TCP ストリームソケットには何もしません---NOTHING!!---ははは！</td></tr>
+<tr><td><code>SOCK_DGRAM</code></td><td>UDP データグラム（<code>SOCK_DGRAM</code>）ソケットがブロードキャストアドレスに送信されたパケットを送受信できるようにします。TCP ストリームソケットには何もしません---NOTHING!!---ははは！</td></tr>
 </tbody></table>
 <p>パラメータ <code>optval</code> については、通常、問題の値を示す <code>int</code> へのポインタとなります。ブール値の場合、<code>0</code> は偽で、<code>0</code> 以外は真です。そしてそれは、あなたのシステムで異なっていない限り、絶対的な事実です。渡すべきパラメータがない場合、<code>optval</code> は <code>NULL</code> にすることができます。</p>
 <p>最後のパラメータ <code>optlen</code> には、<code>optval</code> の長さ、おそらく <code>sizeof(int)</code> を設定する必要がありますが、オプションによって異なります。<code>getsockopt()</code> の場合、これは <code>socklen_t</code> へのポインタであり、<code>optval</code> に格納される最大サイズのオブジェクトを指定することに注意してください（バッファオーバーフローを防止するためです）。そして <code>getsockopt()</code> は <code>optlen</code> の値を、実際に設定されたバイト数を反映するように変更します。</p>
@@ -4040,7 +4040,7 @@ ssize_t sendto(int s, const void *buf, size_t len,
 <table><thead><tr><th>Macro</th><th>解説</th></tr></thead><tbody>
 <tr><td><code>MSG_OOB</code></td><td>&quot;帯域外&quot; データとして送信します。TCP はこれをサポートしており、このデータが通常のデータよりも優先順位が高いことを受信側のシステムに伝える方法です。受信側はシグナル <code>SIGURG</code> を受け取り、キューにある残りの通常のデータをすべて最初に受信することなく、このデータを受信することができます。</td></tr>
 <tr><td><code>MSG_DONTROUTE</code></td><td>このデータはルータで送らず、ローカルに置いてください。</td></tr>
-<tr><td><code>MSG_DONTWAIT</code></td><td>送信トラフィックが詰まっているために <code>send()</code> がブロックされる場合、<code>EAGAIN</code> を返すようにします。これは &quot;この送信のときだけノンブロックを有効にする&quot; ようなものです。詳しくは <a href="man-pages/send-sendto.html#blocking">blocking</a> の章を参照してください。</td></tr>
+<tr><td><code>MSG_DONTWAIT</code></td><td>送信トラフィックが詰まっているために <code>send()</code> がブロックされる場合、<code>EAGAIN</code> を返すようにします。これは &quot;この送信のときだけノンブロックを有効にする&quot; ようなものです。詳しくは <a href="man-pages/../slightly-advanced-techniques/blocking.html">blocking の章</a>を参照してください。</td></tr>
 <tr><td><code>MSG_NOSIGNAL</code></td><td>もし <code>recv()</code> が終了したリモートホストに <code>send()</code> した場合、通常 <code>SIGPIPE</code> というシグナルを受け取ります。このフラグを追加することで、このシグナルが発生するのを防ぐことができます。</td></tr>
 </tbody></table>
 <h3 id="9213-返り値"><a class="header" href="#9213-返り値">9.21.3 返り値</a></h3>
@@ -4117,7 +4117,7 @@ int socket(int domain, int type, int protocol);
 <p>ソケット的なことをするのに使える新しいソケット記述子を返します。これは一般に、ソケットプログラムを書くための膨大なプロセスの最初の呼び出しとなり、その後の <code>listen()</code>, <code>bind()</code>, <code>accept()</code> や他の様々な関数の呼び出しでその結果を利用することができるようになります。</p>
 <p>通常の使い方では、以下の例のように <code>getaddrinfo()</code> を呼び出して、これらのパラメータの値を取得します。しかし、本当に必要であれば、手動でこれらの値を埋めることができます。</p>
 <table><thead><tr><th>Macro</th><th>解説</th></tr></thead><tbody>
-<tr><td><code>domain</code></td><td><code>domain</code> には、どのような種類のソケットに興味があるのかを記述します。これは様々なものがありますが、これはソケットガイドなので、IPv4では <code>PF_INET</code> 、IPv6では <code>PF_INET6</code> となります。</td></tr>
+<tr><td><code>domain</code></td><td><code>domain</code> には、どのような種類のソケットに興味があるのかを記述します。これは様々なものがありますが、これはソケットガイドなので、IPv4 では <code>PF_INET</code> 、IPv6 では <code>PF_INET6</code> となります。</td></tr>
 <tr><td><code>type</code></td><td>また、<code>type</code> パラメータには様々なものを指定できますが、信頼性の高い TCP ソケット（<code>send()</code>, <code>recv()</code>）には <code>SOCK_STREAM</code> を、信頼性の低い高速な UDP ソケット（<code>sendto()</code>, <code>recvfrom()</code>）には <code>SOCK_DGRAM</code> を設定することになると思われます。（もうひとつの興味深いソケットタイプは <code>SOCK_RAW</code> で、これはパケットを手動で構築するために使用することができます。これはかなりクールです。）</td></tr>
 <tr><td><code>protocol</code></td><td>最後に、<code>protocol</code> パラメータは、特定のソケットタイプでどのプロトコルを使用するかを指示します。既に述べたように、例えば <code>SOCK_STREAM</code> は TCP を使用します。幸いなことに、<code>SOCK_STREAM</code> や <code>SOCK_DGRAM</code> を使用する場合は、プロトコルを <code>0</code> に設定すれば、自動的に適切なプロトコルを使用することができます。そうでない場合は、<code>getprotobyname()</code> を使用して適切なプロトコル番号を調べることができます。</td></tr>
 </tbody></table>

@@ -181,11 +181,11 @@ struct addrinfo {
 };
 </code></pre>
 <h3 id="952-解説"><a class="header" href="#952-解説">9.5.2 解説</a></h3>
-<p><code>getaddrinfo()</code> は特定のホスト名に関する情報（IPアドレスなど）を返し、<code>struct sockaddr</code> を読み込んで、細かい部分（IPv4かIPv6か）を処理してくれる優れた関数です。これは、古い関数である <code>gethostbyname()</code> と <code>getservbyname()</code> を置き換えるものです。以下の説明には、少し難しく感じるかもしれない多くの情報が含まれていますが、実際の使い方はとてもシンプルです。まずはサンプルを見てみるのもいいかもしれません。</p>
+<p><code>getaddrinfo()</code> は特定のホスト名に関する情報（IPアドレスなど）を返し、<code>struct sockaddr</code> を読み込んで、細かい部分（IPv4 か IPv6 か）を処理してくれる優れた関数です。これは、古い関数である <code>gethostbyname()</code> と <code>getservbyname()</code> を置き換えるものです。以下の説明には、少し難しく感じるかもしれない多くの情報が含まれていますが、実際の使い方はとてもシンプルです。まずはサンプルを見てみるのもいいかもしれません。</p>
 <p>興味のあるホスト名は <code>nodename</code> パラメータに入れます。アドレスは &quot;www.example.com&quot; のようなホスト名か、IPv4 または IPv6 のアドレス（文字列として渡される）のいずれかになります。このパラメータは、<code>AI_PASSIVE</code> フラグを使用している場合は <code>NULL</code> にすることもできます（下記参照）。</p>
-<p><code>servname</code> パラメータは、基本的にポート番号です。ポート番号（&quot;80 &quot;のような文字列として渡される）、または &quot;http&quot;、&quot;tftp&quot;、&quot;smtp&quot;、&quot;pop&quot; などのサービス名であることができます。よく知られたサービス名は、<a href="https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml">IANA ポートリスト</a>や、<code>/etc/services</code> ファイルで見つけることができます。</p>
+<p><code>servname</code> パラメータは、基本的にポート番号です。ポート番号（&quot;80&quot; のような文字列として渡される）、または &quot;http&quot;、&quot;tftp&quot;、&quot;smtp&quot;、&quot;pop&quot; などのサービス名であることができます。よく知られたサービス名は、<a href="https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml">IANA ポートリスト</a>や、<code>/etc/services</code> ファイルで見つけることができます。</p>
 <p>最後に、入力パラメータとして <code>hints</code> があります。これは <code>getaddrinfo()</code> 関数が何をしようとしているかを定義する場所です。<code>memset()</code> で使用する前に、構造体全体をゼロにします。それでは、使用する前に設定する必要があるフィールドを見てみましょう。</p>
-<p><code>ai_flags</code> には様々なものを設定することができますが、ここでは重要なものをいくつか紹介します。（複数のフラグを指定するには、<code>|</code> 演算子でビット単位の OR を指定します）。フラグの完全なリストについては、man ページをチェックしてください。</p>
+<p><code>ai_flags</code> には様々なものを設定することができますが、ここでは重要なものをいくつか紹介します。（複数のフラグを指定するには、<code>|</code> 演算子でビット単位の OR を指定します。）フラグの完全なリストについては、man ページをチェックしてください。</p>
 <p><code>AI_CANONNAME</code> は、結果の <code>ai_canonname</code> をホストの標準的な（実際の）名前で埋め尽くすようにします。<code>AI_PASSIVE</code> は、結果の IP アドレスを <code>INADDR_ANY</code>（IPv4）または <code>in6addr_any</code>（IPv6）で埋めます。これにより、その後の <code>bind()</code> への呼び出しで、<code>struct sockaddr</code> の IP アドレスが現在のホストのアドレスで自動的に埋められるようになります。これは、アドレスをハードコードしたくない場合に、サーバをセットアップするのに優れています。</p>
 <p>もし、<code>AI_PASSIVE</code> フラグを使用する場合は、<code>nodename</code> に <code>NULL</code> を渡すことができます（<code>bind()</code> が後でそれを埋めてくれるからです）。</p>
 <p>続けて、入力パラメータについてですが、おそらく <code>ai_family</code> を <code>AF_UNSPEC</code> に設定すると、<code>getaddrinfo()</code> に IPv4 と IPv6 の両方のアドレスを検索させることができるようになります。また、<code>AF_INET</code> や <code>AF_INET6</code> でどちらか一方に限定することもできます。</p>
